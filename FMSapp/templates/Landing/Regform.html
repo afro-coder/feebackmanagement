@@ -1,0 +1,17 @@
+{% extends "Landing/base.html" %}
+
+{% block body %}
+
+<table>
+
+<form action="{{url_for('auth.register')}}" method="POST">
+{{form.csrf_token}}
+
+<tr><td>{{form.name.label}}</td> <td>{{form.name()}}</td></tr>
+<tr><td>{{form.password.label}}</td> <td> {{form.password()}}</td></tr>
+<tr><td>{{form.email.label }}</td> <td>{{form.email()}}</td></tr>
+<tr><td>{{form.submit()}}</td></tr>
+
+</form>
+</table>
+{% endblock %}
