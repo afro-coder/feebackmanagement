@@ -7,5 +7,5 @@ def register():
     form=RegForm()
 
     if request.method == "POST" and form.validate():
-        
+        return "Sucess"
     return render_template('Landing/Regform.html',form=form)
