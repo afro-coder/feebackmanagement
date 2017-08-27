@@ -1,0 +1,4 @@
+
+            [console_scripts]
+            flasktools=flasktools:cli
+        

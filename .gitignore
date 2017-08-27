@@ -1,0 +1,8 @@
+osapp/
+test-cookie/
+test-templates/
+Docs/
+tem/
+*.pyc
+__pycache__
+.inve
