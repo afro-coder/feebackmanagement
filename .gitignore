@@ -6,3 +6,4 @@ tem/
 *.pyc
 __pycache__
 .inve
+.egg-info

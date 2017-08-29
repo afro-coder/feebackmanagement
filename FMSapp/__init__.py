@@ -4,9 +4,14 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask import render_template,url_for
 import os
+from flask_login import LoginManager
 
 bootstrap=Bootstrap()
 db=SQLAlchemy()
+
+login_manager = LoginManager()
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'auth.login'
 
 def create_app(config_name=None):
     '''Create all the blue prints and everything'''
@@ -21,7 +26,8 @@ def create_app(config_name=None):
 
     bootstrap.init_app(app)
     db.init_app(app)
-    
+    login_manager.init_app(app)
+
 
     from .Modules.home import viewhome
     from .Modules.Auth import auth

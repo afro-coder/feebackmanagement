@@ -3,8 +3,9 @@ from FMSapp import create_app,db
 from flask.cli import FlaskGroup
 import os
 from FMSapp.models import users
-
+from flask_migrate import Migrate,MigrateCommand
 app=create_app('development')
+migrate=Migrate(app,db)
 
 def create_cli_app(info):
     return app
@@ -21,13 +22,14 @@ def cli(debug):
         os.environ['FLASK_DEBUG'] = '1'
 
 
-@cli.command()
-@click.option('--dbin')
+@app.cli.command()
 def initdb():
     """Initialize the database."""
     click.echo("done")
     db.create_all()
-
+@app.cli.command()
+def migratedb():
+    return  MigrateCommand
 
 
 if __name__ == '__main__':
