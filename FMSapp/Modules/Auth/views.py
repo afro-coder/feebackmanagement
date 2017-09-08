@@ -11,7 +11,7 @@ def register():
         fname=form.fname.data,
         lname=form.lname.data,
         email=form.email.data,
-        password_hash=form.password.data)
+        password=form.password.data)
         db.session.add(enter)
         return redirect(url_for('viewhome.home'))
 
@@ -20,6 +20,12 @@ def register():
 @auth.route('/login',methods=['GET','POST'])
 def login():
     form=LoginForm()
-
     if form.validate_on_submit():
-        pass
+        user=User.query.filter_by(email=form.email.password)
+        if user  is not None and User.verify_password(form.data.password):
+            flash("Success")
+
+    return render_template('Landing/Login.html')
+    #if form.validate_on_submit():
+        #user=User.query.filter_by(email=form.email.data).first()
+        #if user is not None and User.verify_password(form.password.data)
