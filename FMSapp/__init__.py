@@ -31,9 +31,15 @@ def create_app(config_name=None):
 
     from .Modules.home import viewhome
     from .Modules.Auth import auth
+    from .Modules.Admin import admin
+    from .Modules.Question import question
+
+
 
     app.register_blueprint(viewhome, template_folder='templates')
     app.register_blueprint(auth, template_folder='templates')
+    app.register_blueprint(admin, template_folder='templates')
+    app.register_blueprint(question, template_folder='templates')
 
     #global error  handler
     @app.errorhandler(404)

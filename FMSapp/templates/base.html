@@ -2,10 +2,13 @@
 <head>
  {% block head %}
 
- <meta charset="utf-8">
-	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+ <meta charset="utf-8"/>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0" />
 	<meta name="description" content="">
-	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
+	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)" />
  <title>{% block title %}Landing Page{% endblock %} </title>
     {% block css %}
     <link rel="shortcut icon" href="{{url_for('static',filename='images/gt_favicon.png') }}">
@@ -16,45 +19,49 @@
     <!-- Custom styles for our template -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap-theme.css') }}" media="screen" >
     <link rel="stylesheet" href="{{url_for('static',filename='css/main.css') }}">
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-	<script src="{{url_for('static',filename='js/html5shiv.js') }}"></script>
-	<script src="{{url_for('static',filename='js/respond.min.js') }}"></script>
-	<![endif]-->
-
     {% endblock css %}
- {% endblock %}
+
+{% block cust_script %}{% endblock cust_script %}
+ {% endblock head %}
 </head>
-<body>
+<body class="home">
 {% block navbar %}
 <div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
 			<div class="navbar-header">
 				<!-- Button for smallest screens -->
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-				<a class="navbar-brand" href="index.html"><img src="assets/images/logo.png" alt="Progressus HTML5 template"></a>
+				<a class="navbar-brand" href="{{url_for('viewhome.home')}}"><img src="{{ url_for('static',filename='images/logo.png') }}" alt="Progressus HTML5 template"></a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav pull-right">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="about.html">About</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">More Pages <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="sidebar-left.html">Left Sidebar</a></li>
-							<li class="active"><a href="sidebar-right.html">Right Sidebar</a></li>
-						</ul>
-					</li>
-					<li><a href="contact.html">Contact</a></li>
-					<li><a class="btn" href="signin.html">SIGN IN / SIGN UP</a></li>
+					<li class="active"><a href="{{url_for('viewhome.home')}}">Home</a></li>
+
+					<li><a class="btn"  href="{{url_for('auth.entry')}}" >SIGN IN / SIGN UP</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
 	</div>
-{% endblock %}
+{% endblock navbar %}
 
 
-{% block body %}{% endblock %}
+{% block body %}
+{% block messages %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+ {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+{% endblock messages%}
+
+
+
+{% endblock body %}
 
 {% block footer %}
 <footer id="footer" class="top-space">
@@ -104,12 +111,7 @@
 
                 <div class="col-md-6 widget">
                     <div class="widget-body">
-                        <p class="simplenav">
-                            <a href="#">Home</a> |
-                            <a href="about.html">About</a> |
-                            <a href="sidebar-right.html">Sidebar</a> |
-                            <a href="contact.html">Contact</a> |
-                            <b><a href="signup.html">Sign up</a></b>
+
                         </p>
                     </div>
                 </div>
@@ -128,13 +130,25 @@
 
 </footer>
 {% endblock footer %}
-{% block script%}
+{% block script %}
 <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script src="{{ url_for('static',filename='js/headroom.min.js') }}"></script>
-<script src="{{ url_for('static',filename='js/jQuery.headroom.min.js') }}"></script>
-<script src="{{ url_for('static',filename='js/template.js') }}"></script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static',filename='js/headroom.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/jQuery.headroom.min.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/template.js') }}"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script type="text/javascript" src="{{url_for('static',filename='js/html5shiv.js') }}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='js/respond.min.js') }}"></script>
+<![endif]-->
+    <!-- modal-->
 
 {% endblock script %}
 </body>

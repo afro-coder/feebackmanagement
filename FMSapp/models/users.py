@@ -6,15 +6,15 @@ class User(UserMixin,db.Model):
     id=db.Column(db.Integer,primary_key=True)
     fname=db.Column(db.String(50),nullable=False,unique=True)
     lname=db.Column(db.String(50),nullable=False,unique=True)
-    username=db.Column(db.String(64),unique=True,nullable=False,index=True)
+
     password_hash=db.Column(db.String(128),nullable=False)
     email=db.Column(db.String(120),unique=True,nullable=False)
 
 
-    def __init__(self,fname,lname,username,password,email):
+    def __init__(self,fname,lname,password,email):
         self.fname=fname
         self.lname=lname
-        self.username=username
+        #self.username=username
         self.password=password
         self.email=email
 
@@ -32,4 +32,4 @@ class User(UserMixin,db.Model):
 
 
     def __repr__(self):
-        return "<Users %r >" % self.username
+        return "<Users %r >" % self.fname

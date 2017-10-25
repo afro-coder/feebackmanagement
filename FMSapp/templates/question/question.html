@@ -1,0 +1,152 @@
+<html>
+<head>
+    <title>Welcome</title>
+    <link href="{{url_for('static',filename='admin/css/bootstrap.css') }}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="{{url_for('static',filename='admin/css/font-awesome.css') }}" rel="stylesheet" />
+<link href="{{url_for('static',filename='admin/css/custom-styles.css') }}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<style>
+.mg
+{
+    left: 7%;
+    font-size: 18px;
+
+}
+input[type="radio"]
+
+{   height: 100%;
+    margin-top: -1px;
+    vertical-align: middle;
+
+}
+body
+{
+    font-family: 'Open Sans', sans-serif;
+    background: #e6e6e6;
+}
+.box
+{   background-color: #fff;
+    width: 80%;
+	height: 100%;
+    overflow-x: auto;
+
+	position: absolute;
+	top:9%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+    padding: 2% 3% 4% 5%;
+	margin: auto;
+    -moz-box-shadow: 0 0 3px #ccc;
+-webkit-box-shadow: 0 0 3px #ccc;
+box-shadow: 0 0 3px #ccc;
+}
+.text-edit
+{
+    text-align:left;
+    vertical-align:inherit;
+}
+.sel
+{
+    width: 50%;
+}
+
+.dispdiv
+{
+    display:;
+}
+
+</style>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('').on('click', function(e)  {
+        var currentAttrValue = jQuery(this).attr('href');
+
+        // Show/Hide Tabs
+        //jQuery('.tabs ' + currentAttrValue).fadeIn(900).siblings().hide();
+        jQuery('.tabs ' + currentAttrValue).slideDown(400).siblings().slideUp(400);
+
+        // Change/remove current tab to active
+        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+
+        e.preventDefault();
+    });
+});
+</script>
+</head>
+<body>
+    <div class="box">
+        <div class="page-wrapper">
+        <div class="header">
+            <div class="panel-body">
+
+
+            <h1 class="page-header">Welcome</h1>
+            <hr>
+            <div class="page-inner">
+                <br />
+                <div class="col-lg-8">
+
+                        <div class="form-group">
+                            <label>Teachers</label>
+                            <select class="form-control sel">
+                                <option></option>
+                                {% for teacher in teacher_names%}
+                                <option>
+                                    {{teacher}}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <select class="form-control sel" id="selector">
+                            <option selected="true" ></option>
+                            {% for semester in semesters%}
+
+                            <option>
+                                {{semester}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                <br />
+                <br />
+                    <div class="form-group dispdiv">
+                {% for key,question in quest_dict.items() %}
+
+                    <h4 class="text-edit">{{key}}. {{question}}</h4>
+                    <br />
+                <label class="radio-inline  mg">
+                    <input type="radio" name="optionsRadiosInline{{key}}" id="optionsRadiosInline" value="option{{key}}" >Yes  </label>
+                <label class="radio-inline mg">
+                    <input type="radio" name="optionsRadiosInline{{key}}" id="optionsRadiosInline" value="option{{key}}" >No  </label>
+                    <br />
+
+                {% endfor %}
+
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>Suggestions</label>
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+
+                <a href="#" class="btn btn-default" style="float:right;">Submit</a>
+            </div>
+        </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+</body>
