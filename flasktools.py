@@ -27,10 +27,15 @@ def initdb():
     """Initialize the database."""
     click.echo("done")
     db.create_all()
+    
 @app.cli.command()
 def migratedb():
     return  MigrateCommand
 
+
+
+
+#Create a INIT FUNCTION TO INTIALIZE ALL POSSIBLE THINGS session.app.session_interface.db.create_all(); current_app.session_interface.db.create_all()'
 
 if __name__ == '__main__':
     cli()

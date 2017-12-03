@@ -23,8 +23,9 @@
 
 {% block cust_script %}{% endblock cust_script %}
  {% endblock head %}
+
 </head>
-<body class="home">
+<body>
 {% block navbar %}
 <div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -36,32 +37,42 @@
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav pull-right">
 					<li class="active"><a href="{{url_for('viewhome.home')}}">Home</a></li>
-
-					<li><a class="btn"  href="{{url_for('auth.entry')}}" >SIGN IN / SIGN UP</a></li>
-				</ul>
+                    {% if current_user.is_authenticated %}
+                    <li><a>Welcome, {{current_user.fname}}</a></li>
+                     <li><a class="btn" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                     {% else %}
+					<li><a class="btn"  href="{{ url_for('auth.register')}}" >SIGN UP</a></li>
+                    <li><a class="btn"  href="{{ url_for('auth.login') }}" >SIGN IN</a></li>
+                    {% endif %}
+                </ul>
 			</div><!--/.nav-collapse -->
 		</div>
 	</div>
 {% endblock navbar %}
 
 
-{% block body %}
-{% block messages %}
+
+
+{% block content %}
+<!--<div>-->
+    <header  id="head" class="secondary"></header>
 {% with messages = get_flashed_messages(with_categories=true) %}
  {% if messages %}
+<div class="">
+        <div>
         {% for category, message in messages %}
         <div class="alert alert-{{ category }} alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         {{ message }}
         </div>
         {% endfor %}
+    </div>
+</div>
     {% endif %}
     {% endwith %}
-{% endblock messages%}
-
-
-
-{% endblock body %}
+    {% block page_content %}{% endblock page_content %}
+<!--</div>-->
+{% endblock content %}
 
 {% block footer %}
 <footer id="footer" class="top-space">
@@ -152,6 +163,4 @@
 
 {% endblock script %}
 </body>
-
-
 </html>
