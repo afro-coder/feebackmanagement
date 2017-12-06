@@ -50,7 +50,7 @@
 						<div id="register-form" class="tab">
 							<form action="{{url_for('auth.register')}}" method="post" name="register">
 								{{form.csrf_token}}
-								
+
 						   <div class="top-margin">
 							   <label>Username( Company Name ) <span class="text-danger">*</span></label>
 							   {{ render_field(form.username,class="form-control") }}

@@ -6,23 +6,56 @@ from flask import current_app
 import datetime
 
 class Roles(db.Model):
+    __tablename__='roles'
     id=db.Column(db.Integer,primary_key=True)
-    name=db.Column(db.String(50),unique=True)
+    name=db.Column(db.String(50),unique=True,index=True)
+    users=db.relationship('Users',backref='role',lazy='dynamic')
+
+    def __repr__(self):
+        return "<Roles %r >" %self.name
+
 class Organization(db.Model):
     __tablename__='organization'
     id=db.Column(db.Integer,primary_key=True)
     #user_id=db.Column(db.Integer,db.ForeignKey('users.id'),nullable=False)
-    domain=db.Column(db.String(25),unique=True,nullable=False)
-    organization_rel=db.relationship('Users',backref='organization_id',lazy='dynamic')
-
-    def __init__(self,user_id,domain):
-        self.user_id=user_id
-        self.domains=domain
-
-
+    organization_domain=db.Column(db.String(25),unique=True,nullable=False,index=True)
+    date_created=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
+    organization_rel_users=db.relationship('Users',backref='organization_user_id',lazy='dynamic')
+    organization_rel_users=db.relationship('Questions',backref='organization_question_id',lazy='dynamic')
 
     def __repr__(self):
-        return "<Domains %r >" % self.domains
+        return "<Organization %r >" % self.organization_domain
+
+class Questions(db.Model):
+    __tablename__='questions'
+    id=db.Column(db.Integer,primary_key=True)
+    question=db.Column(db.String(500),index=True,nullable=False)
+    organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
+    question_sub=db.relationship('Submissions',backref='question_sub',lazy='dynamic')
+    def __repr__(self):
+        return "<Questions %r>" %self.question
+
+class Stream(db.Model):
+    __tablename__='streams'
+    id=db.Column(db.Integer,primary_key=True)
+    stream=db.Column(db.String(50),index=True,nullable=False,unique=True)
+    sub_id=db.relationship('Submissions',backref='stream_id',lazy='dynamic')
+
+    def __repr__(self):
+        return "<Stream %r>" %self.stream
+
+class Submissions(db.Model):
+    __tablename__='submissions'
+    id=db.Column(db.Integer,primary_key=True)
+    submission=db.Column(db.Integer,nullable=False,index=True)
+    user_id=db.Column(db.Integer,db.ForeignKey('users.id'))
+    stream_id=db.Column(db.Integer,db.ForeignKey('streams.id'))
+    question_id=db.Column(db.Integer,db.ForeignKey('questions.id'))
+
+    def __repr__(self):
+        return "<Submissions %r>" %self.submissions
+
+
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -33,8 +66,10 @@ class User(UserMixin,db.Model):
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
     password_hash=db.Column(db.String(128),nullable=False)
     email=db.Column(db.String(30),unique=True,nullable=False,index=True)
-    created_on=db.Column(db.DateTime,index=True,server_default=datetime.utcnow)
+    role_id=db.Column(db.Integer,db.ForeignKey('roles.id'))
+    created_on=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
     confirmed=db.Column(db.Boolean,default=False)
+    user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
 
 

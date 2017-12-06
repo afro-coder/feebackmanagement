@@ -2,7 +2,7 @@ from . import auth
 from .forms import RegForm,LoginForm
 from flask import request,render_template,url_for,redirect,flash,session
 from flask_login import current_user,logout_user,login_required,login_user
-from ...models.users import User,Domains
+from ...models.users import User
 from FMSapp import db
 
 #from FMSapp import sess
