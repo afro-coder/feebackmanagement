@@ -31,7 +31,7 @@ def create_app(config_name=None):
     bootstrap.init_app(app)
     mail.init_app(app)
     db.init_app(app)
-    #sess.init_app(app)
+    sess.init_app(app)
     #sess.app.session_interface.db.create_all()
     login_manager.init_app(app)
 

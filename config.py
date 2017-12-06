@@ -21,9 +21,9 @@ class Config(object):
     MAIL_SENDER = 'Osfapp Admin <lmnography@gmail.com>'
     MAIL_USERNAME=os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD')
-    #PERMANENT_SESSION_LIFETIME=420
-    #SESSION_SQLALCHEMY_TABLE='sessions'
-    #SESSION_TYPE='sqlalchemy'
+    PERMANENT_SESSION_LIFETIME=420
+    SESSION_SQLALCHEMY_TABLE='sessions'
+    SESSION_TYPE='sqlalchemy'
 
 
     @staticmethod
