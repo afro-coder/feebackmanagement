@@ -7,7 +7,6 @@ import os
 from flask_login import LoginManager
 from flask_sessionstore import Session
 from flask_mail import Mail
-
 bootstrap=Bootstrap()
 
 sess=Session()
@@ -41,6 +40,7 @@ def create_app(config_name=None):
     app.register_blueprint(auth, template_folder='templates')
     from .Modules.Admin import admin
     app.register_blueprint(admin, template_folder='templates')
+
     from .Modules.Question import question
     app.register_blueprint(question, template_folder='templates')
 

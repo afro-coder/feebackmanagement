@@ -4,6 +4,11 @@ from  .. import mail
 from flask_mail import Message
 from threading import Thread
 
+from flask_login import current_user
+from flask import url_for, redirect
+from functools import wraps
+from ..models.users import UserLogin
+
 def create_hashid(id):
     hashids = Hashids(min_length=5, salt=current_app.config['SECRET_KEY'])
     hashid = hashids.encode(id)
@@ -31,3 +36,14 @@ def send_email(to,subject,template,**kwargs):
     thr = Thread(target=send_async_email, args=[app, msg])
     thr.start()
     return thr
+
+def requires_roles(*roles):
+  def wrapper(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+      if current_user.get_role() not in roles:
+        #Redirect the user to an unauthorized notice!
+        return redirect(url_for('unauthorized'))
+      return f(*args, **kwargs)
+    return wrapped
+  return wrapper

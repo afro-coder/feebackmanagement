@@ -2,7 +2,7 @@ from . import auth
 from .forms import RegForm,LoginForm
 from flask import request,render_template,url_for,redirect,flash,session
 from flask_login import current_user,logout_user,login_required,login_user
-from ...models.users import User
+from ...models.users import User,Organization
 from FMSapp import db
 
 #from FMSapp import sess
@@ -36,12 +36,16 @@ def register():
 
     if form.validate_on_submit():
 
-        user=User(
+        user=User(fname=form.lname.data,
+        lname=form.email.data,
         email=form.email.data,
-        organization_name=form.username.data,
+        #organization_name=form.username.data,
         password=form.password.data)
+        organization=Organization(organization_domain=form.username.data)
+        user.organization_id.append(organization)
         db.session.add(user)
         #db.session.commit()
+
         db.session.flush()
         token=user.generate_confirmation_token()
         try:
@@ -52,6 +56,7 @@ def register():
         except Exception as e:
             print("LINE 48 EMAIL: "+str(e))
             db.session.rollback()
+    print(form.errors)        
     return render_template('auth/register.html',form=form)
 
 

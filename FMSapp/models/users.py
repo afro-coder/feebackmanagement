@@ -9,7 +9,7 @@ class Roles(db.Model):
     __tablename__='roles'
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(50),unique=True,index=True)
-    users=db.relationship('Users',backref='role',lazy='dynamic')
+    users=db.relationship('User',backref='role',lazy='dynamic')
 
     def __repr__(self):
         return "<Roles %r >" %self.name
@@ -39,7 +39,7 @@ class Stream(db.Model):
     __tablename__='streams'
     id=db.Column(db.Integer,primary_key=True)
     stream=db.Column(db.String(50),index=True,nullable=False,unique=True)
-    sub_id=db.relationship('Submissions',backref='stream_id',lazy='dynamic')
+    sub_id=db.relationship('Submissions',backref='streamid',lazy='dynamic')
 
     def __repr__(self):
         return "<Stream %r>" %self.stream
@@ -74,6 +74,10 @@ class User(UserMixin,db.Model):
 
 
     #def __init__(self,fname,lname,password,email,organization_name):
+    def __init__(self,**kwargs):
+        if self.role_id is None:
+            self.role_id=Roles.query.filter_by(id=2).first()
+
     #    self.fname=fname
     #    self.lname=lname
 
@@ -88,6 +92,8 @@ class User(UserMixin,db.Model):
     @password.setter
     def password(self,password):
        self.password_hash = generate_password_hash(password,method='pbkdf2:sha512',salt_length=64)
+
+    #def set_role(self):
 
 
     def verify_password(self,password):
@@ -158,10 +164,35 @@ class User(UserMixin,db.Model):
     def __repr__(self):
         return "<Users %r >" % self.organization_name
 
+class UserLogin(UserMixin):
+    def __init__(self):
+        self.user_id=None
+
+    def get_id(self):
+        return self.user_id
+    def get_role(self):
+        return self.role_id
+
+    def is_teacher(self):
+        return True if self.role == 'teacher' else False
+
+    def set_role(self, role):
+        self.role = role
 
 
 
+#@login_manager.user_loader
+#def load_user(user_id):
+#    print("FROM USERs :: "+user_id )
+#    return User.query.get(int(user_id))
 @login_manager.user_loader
 def load_user(user_id):
-    print("FROM USERs :: "+user_id )
-    return User.query.get(int(user_id))
+    #user=User.query.get(int(user_id))
+    user=User.query.filter_by(id=int(user_id)).first()
+    if not user:
+        return
+    flask_user=UserLogin()
+    flask_user.user_id=user.id
+    flask_user.role=user.role_id
+    return flask_user
+#    return User.query.get(int(user_id))

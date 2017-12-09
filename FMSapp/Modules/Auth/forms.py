@@ -16,7 +16,8 @@ class RegForm(FlaskForm):
     #username = StringField('Username',validators=[InputRequired(),
     #Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,'Usernames must have only letters, '
     #                                        'numbers, dots or underscores')])
-
+    fname=StringField('First Name',validators=[InputRequired()])
+    lname=StringField('Last Name',validators=[InputRequired()])
     username=StringField('Username',validators=[InputRequired(),Regexp('(([a-zA-Z0-9])(-[a-zA-Z0-9])*)')])
 
     password = PasswordField('Password',validators=[InputRequired(),
@@ -32,9 +33,9 @@ class RegForm(FlaskForm):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
-    def validate_username(self, field):
-        if User.query.filter_by(organization_name=field.data).first():
-            raise ValidationError('Username already in use.')
+    #def validate_username(self, field):
+    #    if User.query.filter_by(organization_name=field.data).first():
+    #        raise ValidationError('Username already in use.')
 
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Old password', validators=[DataRequired()])
