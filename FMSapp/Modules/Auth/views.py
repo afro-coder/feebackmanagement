@@ -42,8 +42,9 @@ def register():
         #organization_name=form.username.data,
         password=form.password.data)
         organization=Organization(organization_domain=form.username.data)
-        user.organization_id.append(organization)
+        organization.organization_rel_users.append(user)
         db.session.add(user)
+        db.session.add(organization)
         #db.session.commit()
 
         db.session.flush()
@@ -56,7 +57,7 @@ def register():
         except Exception as e:
             print("LINE 48 EMAIL: "+str(e))
             db.session.rollback()
-    print(form.errors)        
+    print(form.errors)
     return render_template('auth/register.html',form=form)
 
 

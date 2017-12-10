@@ -25,6 +25,7 @@ class Config(object):
     SESSION_SQLALCHEMY_TABLE='sessions'
     SESSION_TYPE='sqlalchemy'
 
+    SQLALCHEMY_ECHO=True
 
     @staticmethod
     def init_app(app):

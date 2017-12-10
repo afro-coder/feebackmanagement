@@ -20,8 +20,8 @@ class Organization(db.Model):
     #user_id=db.Column(db.Integer,db.ForeignKey('users.id'),nullable=False)
     organization_domain=db.Column(db.String(25),unique=True,nullable=False,index=True)
     date_created=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
-    organization_rel_users=db.relationship('Users',backref='organization_user_id',lazy='dynamic')
-    organization_rel_users=db.relationship('Questions',backref='organization_question_id',lazy='dynamic')
+    organization_rel_users=db.relationship('User',backref='organization_user_id',lazy='dynamic')
+    organization_rel_questions=db.relationship('Questions',backref='organization_question_id',lazy='dynamic')
 
     def __repr__(self):
         return "<Organization %r >" % self.organization_domain
@@ -64,9 +64,11 @@ class User(UserMixin,db.Model):
     lname=db.Column(db.String(50),nullable=False,index=True)
     #organization_name=db.Column(db.String(50),nullable=False,unique=True,index=True)
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
+    organization_rel=db.relationship('Organization',foreign_keys=[organizaton_id])
     password_hash=db.Column(db.String(128),nullable=False)
     email=db.Column(db.String(30),unique=True,nullable=False,index=True)
     role_id=db.Column(db.Integer,db.ForeignKey('roles.id'))
+    role=db.relationship('Roles',foreign_keys=[role_id])
     created_on=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
     confirmed=db.Column(db.Boolean,default=False)
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
@@ -75,8 +77,8 @@ class User(UserMixin,db.Model):
 
     #def __init__(self,fname,lname,password,email,organization_name):
     def __init__(self,**kwargs):
-        if self.role_id is None:
-            self.role_id=Roles.query.filter_by(id=2).first()
+
+        vars(self).update(kwargs)
 
     #    self.fname=fname
     #    self.lname=lname
@@ -84,7 +86,14 @@ class User(UserMixin,db.Model):
     #    self.password=password
     #    self.email=email
     #    self.organization_name=organization_name
+    @property
+    def role_id(self):
+        return self.role_id
 
+    @role_id.setter
+    def role_id(self,role=Roles.query.filter(id=2).first()):
+        if self.role is None:
+            self.role=role
     @property
     def password(self):
         raise AttributeError("password is readonly")
