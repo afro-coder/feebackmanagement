@@ -38,7 +38,7 @@
 				<ul class="nav navbar-nav pull-right">
 					<li class="active"><a href="{{url_for('viewhome.home')}}">Home</a></li>
                     {% if current_user.is_authenticated %}
-                    <li><a>Welcome, {{current_user.organization_name}}</a></li>
+                    <li><a>Welcome, {{current_user.fname}}</a></li>
                      <li><a class="btn" href="{{ url_for('auth.logout') }}">Logout</a></li>
                      {% else %}
 					<li><a class="btn"  href="{{ url_for('auth.register')}}" >SIGN UP</a></li>

@@ -25,7 +25,8 @@ class Config(object):
     SESSION_SQLALCHEMY_TABLE='sessions'
     SESSION_TYPE='sqlalchemy'
 
-    SQLALCHEMY_ECHO=True
+    #SQLALCHEMY_ECHO=True
+    ADMIN_EMAIL='kocamirade@minex-coin.com'
 
     @staticmethod
     def init_app(app):

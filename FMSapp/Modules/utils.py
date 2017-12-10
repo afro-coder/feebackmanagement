@@ -1,4 +1,4 @@
-from flask import current_app, render_template
+from flask import current_app, render_template,flash
 from hashids import Hashids
 from  .. import mail
 from flask_mail import Message
@@ -7,7 +7,7 @@ from threading import Thread
 from flask_login import current_user
 from flask import url_for, redirect
 from functools import wraps
-from ..models.users import UserLogin
+from ..models.users import User
 
 def create_hashid(id):
     hashids = Hashids(min_length=5, salt=current_app.config['SECRET_KEY'])
@@ -38,12 +38,15 @@ def send_email(to,subject,template,**kwargs):
     return thr
 
 def requires_roles(*roles):
-  def wrapper(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-      if current_user.get_role() not in roles:
-        #Redirect the user to an unauthorized notice!
-        return redirect(url_for('unauthorized'))
-      return f(*args, **kwargs)
-    return wrapped
-  return wrapper
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            print("\t\t\t DECORAT ",*roles)
+            if current_user.get_role() not in roles:
+                print("decorator")
+                print(current_user.get_role())
+                flash("Unauthorized")
+                return redirect(url_for('viewhome.home'))
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
