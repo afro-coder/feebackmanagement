@@ -108,7 +108,8 @@ class User(UserMixin,db.Model):
     def __repr__(self):
         return "<Users %r >" % self.fname
 
-
+    def __unicode__(self):
+        return self.username
 
 
 

@@ -35,14 +35,14 @@ def create_app(config_name=None):
     sess.init_app(app)
     #sess.app.session_interface.db.create_all()
     login_manager.init_app(app)
-    admin.init_app(app)
+    #admin.init_app(app)
 
     from .Modules.home import viewhome
     app.register_blueprint(viewhome, template_folder='templates')
     from .Modules.Auth import auth
     app.register_blueprint(auth, template_folder='templates')
-    #from .Modules.Admin import admin_interface
-    #app.register_blueprint(admin_interface, template_folder='templates')
+    from .Modules.Admin import admin_interface
+    app.register_blueprint(admin_interface, template_folder='templates')
 
     from .Modules.Question import question
     app.register_blueprint(question, template_folder='templates')
@@ -54,6 +54,6 @@ def create_app(config_name=None):
     @app.errorhandler(404)
     def pg_not_found(e):
         return render_template(template_name_or_list='error/404.html'),404
-
+    admin.init_app(app)
 
     return app
