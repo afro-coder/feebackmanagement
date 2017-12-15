@@ -3,11 +3,12 @@ from flask import Blueprint
 from flask_admin import Admin,AdminIndexView,expose
 
 class MyHomeView(AdminIndexView):
-
     @expose('/')
     def index(self):
 
-        return self.render('admin/admin_base.html')
+        return self.render('admin/index.html')
+
+
 class AdminBlueprint(Blueprint):
     views=None
 
@@ -18,7 +19,7 @@ class AdminBlueprint(Blueprint):
         return super().__init__('admin_user', __name__,
         #url_prefix='/admin1',
         static_folder='static',
-        static_url_path='/static/admin',
+        static_url_path='/static/',
         template_folder='templates'
 
         )
@@ -30,7 +31,8 @@ class AdminBlueprint(Blueprint):
     def register(self,app, options, first_registration=False):
         print(app)
         #admin = Admin(app, name='FMSAdmin', template_mode='bootstrap3',url='/admin',static_url_path='/static/admin')
-        admin = Admin(app, index_view=MyHomeView(name='FMSapp'),template_mode='bootstrap3')
+        admin = Admin(app,url='/admin',name='FeedBack App',index_view=MyHomeView(name='Home',template='admin/index.html'), template_mode='bootstrap3')
+        # admin = Admin(app,url='/admin',template_mode='bootstrap3')
 
         for v in self.views:
             admin.add_view(v)

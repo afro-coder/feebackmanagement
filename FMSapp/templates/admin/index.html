@@ -1,1 +1,12 @@
-{% extends 'admin/admin_base.html' %}
+{% extends 'admin/master.html' %}
+
+{% block title %} FMsapp {% endblock %}
+
+{% block brand %}
+	  <a class="navbar-brand" href="#">{{ admin_view.admin.name|capitalize }}</a>
+	  {% endblock %}
+
+{% block body %}
+    <h1>MicroBlog Edit View</h1>
+
+{% endblock %}
