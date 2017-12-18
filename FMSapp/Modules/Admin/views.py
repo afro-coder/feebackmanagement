@@ -10,7 +10,8 @@ from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
 from ... import db
-from ...models.users import (User,Questions,Roles,Stream,Organization)
+from ...models.users import (User,Questions,Roles,
+Stream,Organization,Subject)
 from werkzeug.security import generate_password_hash
 
 #BaseView is not for models it is for a standalone-view
@@ -79,7 +80,7 @@ admin.add_view(UserView(User,db.session))
 # admin.add_view(UserView(name='hello'))
 
 class QuestionView(CustomModelView):
-    column_exclude_list=['org_ques_id','question_sub',]
+    column_exclude_list=['question_sub',]
     #form_excluded_columns
     column_labels=dict(question='Question',
     org_ques_id='Organization ID')
@@ -93,6 +94,18 @@ class QuestionView(CustomModelView):
 admin.add_view(QuestionView(Questions,db.session))
 
 class StreamView(CustomModelView):
-    
-    pass
+    form_columns=['stream',]
+    form_excluded_columns=['submissions_id']
+
 admin.add_view(StreamView(Stream,db.session))
+class SubjectView(CustomModelView):
+    form_excluded_columns=['submission_rel']
+    column_labels=dict(streamsub='Stream')
+    #form_columns=['stream','subjects',]
+    #form_excluded_columns=['sub_id']
+admin.add_view(SubjectView(Subject,db.session))
+
+
+@admin.teardown_app_request
+def close(self):
+    db.session.close()

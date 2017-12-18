@@ -21,6 +21,11 @@ class Roles(db.Model):
     def __repr__(self):
         return "<Role %r>" %self.role_name
 
+teachersubject=db.Table(
+'teachersub',db.Column('userid',db.Integer,db.ForeignKey('users.id'),primary_key=True),
+db.Column('subjectid',db.Integer,db.ForeignKey('subject.id'),primary_key=True)
+)
+
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
     id=db.Column(db.Integer,primary_key=True)
@@ -150,17 +155,6 @@ class Organization(db.Model):
     def __repr__(self):
         return "<Organization %r >" % self.organization_domain
 
-
-
-class Stream(db.Model):
-    __tablename__='streams'
-    id=db.Column(db.Integer,primary_key=True)
-    stream=db.Column(db.String(50),index=True,nullable=False,unique=True)
-    sub_id=db.relationship('Submissions',backref='streamid',lazy='dynamic')
-
-    def __repr__(self):
-        return "<Stream %r>" %self.stream
-
 class Submissions(db.Model):
     __tablename__='submissions'
     id=db.Column(db.Integer,primary_key=True)
@@ -168,36 +162,45 @@ class Submissions(db.Model):
     user_id=db.Column(db.Integer,db.ForeignKey('users.id'))
     stream_id=db.Column(db.Integer,db.ForeignKey('streams.id'))
     question_id=db.Column(db.Integer,db.ForeignKey('questions.id'))
+    subject_id=db.Column(db.Integer,db.ForeignKey('subject.id'))
 
     def __repr__(self):
         return "<Submissions %r>" %self.submissions
 
+class Subject(db.Model):
+    __tablename__='subject'
+    id=db.Column(db.Integer,primary_key=True)
+    subject_name=db.Column(db.String,index=True,nullable=False,unique=True)
+    submission_rel=db.relationship('Submissions',foreign_keys=[Submissions.subject_id],
+    backref=db.backref('submission_id',lazy='joined'),lazy='dynamic')
+    #add required field
+    stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
+    def __str__(self):
+        return "<Subject %s>" %self.subject_name
+
+class Stream(db.Model):
+    __tablename__='streams'
+    id=db.Column(db.Integer,primary_key=True)
+    stream=db.Column(db.String(50),index=True,nullable=False,unique=True)
+    #sub_id=db.relationship('Submissions',backref='streamid',lazy='dynamic')
+    subjects=db.relationship('Subject',foreign_keys=[Subject.stream],
+    backref=db.backref('streamsub',lazy='joined'),lazy='dynamic')
+
+    submissions_id=db.relationship('Submissions',
+    foreign_keys=[Submissions.stream_id],
+    backref=db.backref('streamid',lazy='joined'),lazy='dynamic')
+
+    def __repr__(self):
+        return "<Stream %r>" %self.stream
+    def __str__(self):
+        return "<Stream %s>" %self.stream
 
 
 
-
-#class UserLogin(UserMixin):
-#    def __init__(self,**kwargs):
-#        super(UserLogin,self).__init__(**kwargs)
-#        self.user_id=None
-#    def get_id(self):
-#        return self.user_id
-#    def get_role(self):
-#        return self.role_id
-#    def is_teacher(self):
-#        return True if self.role == 'teacher' else False
-#    def set_role(self, role):
-#        self.role = role
-
-
-#@login_manager.user_loader
-#def load_user(user_id):
-#    print("FROM USERs :: "+user_id )
-#    return User.query.get(int(user_id))
 class AnonymousUser(AnonymousUserMixin):
 
 
-    def is_administrator(self):
+    def is_admin(self):
         return False
 
 login_manager.anonymous_user = AnonymousUser
