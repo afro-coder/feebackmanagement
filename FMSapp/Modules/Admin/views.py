@@ -3,13 +3,14 @@ from . import admin
 #from flask_login import login_required
 #from ..utils import requires_roles
 from wtforms import PasswordField,TextField,Form
+from flask_admin.contrib.sqla.fields import QuerySelectField
 from wtforms.validators import InputRequired,EqualTo
 from flask_admin.form import SecureForm
 from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
 from ... import db
-from ...models.users import User
+from ...models.users import (User,Questions,Roles,Stream,Organization)
 from werkzeug.security import generate_password_hash
 
 #BaseView is not for models it is for a standalone-view
@@ -74,7 +75,24 @@ class UserView(CustomModelView):
     )
 
 
-
-
 admin.add_view(UserView(User,db.session))
 # admin.add_view(UserView(name='hello'))
+
+class QuestionView(CustomModelView):
+    column_exclude_list=['org_ques_id','question_sub',]
+    #form_excluded_columns
+    column_labels=dict(question='Question',
+    org_ques_id='Organization ID')
+    form_args = {
+        'org_ques_id': {
+            #add a current user proxy right here
+            'query_factory': lambda: db.session.query(Organization).filter_by(id = '1')
+        }
+    }
+
+admin.add_view(QuestionView(Questions,db.session))
+
+class StreamView(CustomModelView):
+    
+    pass
+admin.add_view(StreamView(Stream,db.session))

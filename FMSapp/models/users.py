@@ -117,11 +117,12 @@ class Questions(db.Model):
     __tablename__='questions'
     id=db.Column(db.Integer,primary_key=True)
     question=db.Column(db.String(500),index=True,nullable=False)
+
     #from Organization to Questions
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
 
     #from Question to Submissions
-    question_sub=db.relationship('Submissions',backref='question_sub',lazy='dynamic')
+    #question_sub=db.relationship('Submissions',backref='question_sub',lazy='dynamic')
 
     def __repr__(self):
         return "<Questions %r>" %self.question
@@ -194,8 +195,7 @@ class Submissions(db.Model):
 #    print("FROM USERs :: "+user_id )
 #    return User.query.get(int(user_id))
 class AnonymousUser(AnonymousUserMixin):
-    def can(self, permissions):
-        return False
+
 
     def is_administrator(self):
         return False
@@ -203,17 +203,14 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
 
     user=User.query.get(int(user_id))
 
-    #user=User.query.filter_by(id=int(user_id)).first()
+
     if not user:
         return
-    #current_u=User()
-    #current_u.user_id=user.id
-    #current_u.role=user.role
-    #return current_u
 
     return user

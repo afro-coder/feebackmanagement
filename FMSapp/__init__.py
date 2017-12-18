@@ -8,13 +8,15 @@ from flask_login import LoginManager
 from flask_sessionstore import Session
 from flask_mail import Mail
 #from flask_admin import Admin
+from flask_wtf.csrf import CSRFProtect
 
 
 bootstrap=Bootstrap()
 
-sess=Session()
 mail=Mail()
 db=SQLAlchemy()
+#csrf=CSRFProtect()
+sess=Session()
 #admin=Admin()
 
 login_manager = LoginManager()
@@ -33,16 +35,19 @@ def create_app(config_name=None):
 
     bootstrap.init_app(app)
     mail.init_app(app)
+
+
+    #csrf.init_app(app)
     db.init_app(app)
+
+    login_manager.init_app(app)
+    app.config["SESSION_SQLALCHEMY"]=db
+
     sess.init_app(app)
     #sess.app.session_interface.db.create_all()
-    login_manager.init_app(app)
-    #admin.init_app(app)
-    #f_admin = Admin(
-     # app,
-      #name='Admin',
-      #index_view=CustomAdminIndexView(template='admin/dashboard.html')
-     # )
+
+
+
     from .Modules.home import viewhome
     app.register_blueprint(viewhome, template_folder='templates')
 
@@ -67,5 +72,9 @@ def create_app(config_name=None):
 
     #init_admin(f_admin)
     #admin.init_app(app)
+
+
+
     print(app.url_map)
+    print(app.extensions)
     return app

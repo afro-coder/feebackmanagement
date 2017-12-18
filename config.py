@@ -8,7 +8,7 @@ class Config(object):
 
 
     WTF_CSRF_SECRET_KEY =b'\xba\xfa\x11_\xb0\xcb\x10Cns\x1e_y\xe4\x01\xe2\xf1\xe0\x82\xea\x17\xc7\xda\x08m-f\xe4'
-
+    #WTF_CSRF_ENABLED=True
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SERVER_NAME='fmsapp.com:5000'
@@ -21,12 +21,17 @@ class Config(object):
     MAIL_SENDER = 'Osfapp Admin <lmnography@gmail.com>'
     MAIL_USERNAME=os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD')
-    PERMANENT_SESSION_LIFETIME=420
-    SESSION_SQLALCHEMY_TABLE='sessions'
-    SESSION_TYPE='sqlalchemy'
 
+
+
+    SESSION_SQLALCHEMY_TABLE='sessions'
+
+    SESSION_TYPE='sqlalchemy'
+    #SESSION_COOKIE_SECURE=True
+    PERMANENT_SESSION_LIFETIME=420
     #SQLALCHEMY_ECHO=True
-    ADMIN_EMAIL='kocamirade@minex-coin.com'
+
+    ADMIN_EMAIL='leon9923@gmail.com'
 
     @staticmethod
     def init_app(app):

@@ -2,7 +2,7 @@ import click
 from FMSapp import create_app,db
 from flask.cli import FlaskGroup
 import os
-from FMSapp.models import users
+
 from flask_migrate import Migrate,MigrateCommand
 app=create_app('development')
 migrate=Migrate(app,db)
@@ -12,6 +12,7 @@ def create_cli_app(info):
 
 @app.shell_context_processor
 def make_context():
+    from FMSapp.models import users
     return dict(app=app,db=db,users=users)
 
 
