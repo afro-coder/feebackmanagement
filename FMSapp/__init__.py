@@ -1,4 +1,5 @@
 from flask import Flask
+from .mod_util import create_hashid
 from config import config
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -10,12 +11,11 @@ from flask_mail import Mail
 #from flask_admin import Admin
 from flask_wtf.csrf import CSRFProtect
 
-
 bootstrap=Bootstrap()
 
 mail=Mail()
 db=SQLAlchemy()
-#csrf=CSRFProtect()
+csrf=CSRFProtect()
 sess=Session()
 #admin=Admin()
 
@@ -37,7 +37,7 @@ def create_app(config_name=None):
     mail.init_app(app)
 
 
-    #csrf.init_app(app)
+    csrf.init_app(app)
     db.init_app(app)
 
     login_manager.init_app(app)
@@ -62,6 +62,7 @@ def create_app(config_name=None):
 
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
+    app.jinja_env.globals.update(create_hashid=create_hashid)
     #global error  handler
 
     @app.errorhandler(404)
@@ -75,6 +76,6 @@ def create_app(config_name=None):
 
 
 
-    print(app.url_map)
-    print(app.extensions)
+    #print(app.url_map)
+    #print(app.extensions)
     return app

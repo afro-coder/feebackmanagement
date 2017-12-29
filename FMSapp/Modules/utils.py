@@ -1,28 +1,20 @@
 from flask import current_app, render_template,flash
 from hashids import Hashids
-from  .. import mail
 from flask_mail import Message
 from threading import Thread
-
+from  FMSapp import mail
 from flask_login import current_user
 from flask import url_for, redirect
 from functools import wraps
 from ..models.users import User
-
-def create_hashid(id):
-    hashids = Hashids(min_length=5, salt=current_app.config['SECRET_KEY'])
-    hashid = hashids.encode(id)
-    return hashid
-
-def decode_hashid(hashid):
-    hashids = Hashids(min_length=5, salt=current_app.config['SECRET_KEY'])
-    id = hashids.decode(hashid)
-    return id
+import random,string
 
 
 
 #app.config['MAIL_SUBJECT_PREFIX'] = '[OSFapp]'
 #app.config['MAIL_SENDER'] = 'Flasky Admin <lmnography@gmail.com>'
+
+
 def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
@@ -50,3 +42,8 @@ def requires_roles(*roles):
             return f(*args, **kwargs)
         return wrapped
     return wrapper
+
+def generate_form_token(N):
+    form_token=''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
+
+    return form_token

@@ -58,13 +58,13 @@ box-shadow: 0 0 3px #ccc;
 
 .dispdiv
 {
-    display:;
+    display:none;
 }
 
 </style>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-    jQuery('').on('click', function(e)  {
+    jQuery('sel').on('click', function(e)  {
         var currentAttrValue = jQuery(this).attr('href');
 
         // Show/Hide Tabs
@@ -121,7 +121,7 @@ jQuery(document).ready(function() {
                 <br />
                 <br />
                     <div class="form-group dispdiv">
-                {% for key,question in quest_dict.items() %}
+                {% for key,question in quest_dict %}
 
                     <h4 class="text-edit">{{key}}. {{question}}</h4>
                     <br />

@@ -16,15 +16,18 @@ class Roles(db.Model):
     users=db.relationship('User',backref='role',lazy='dynamic')
 
     def __str__(self):
-        return self.role_name
+        return "%s" %format(self.role_name)
 
     def __repr__(self):
         return "<Role %r>" %self.role_name
 
-teachersubject=db.Table(
-'teachersub',db.Column('userid',db.Integer,db.ForeignKey('users.id'),primary_key=True),
-db.Column('subjectid',db.Integer,db.ForeignKey('subject.id'),primary_key=True)
-)
+teachersubject=db.Table('teachersub',db.metadata,
+db.Column('id',db.Integer,primary_key=True),
+db.Column('userid',db.Integer,
+db.ForeignKey('users.id')),
+
+db.Column('subjectid',db.Integer,
+db.ForeignKey('subject.id')))
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -35,20 +38,22 @@ class User(UserMixin,db.Model):
     email=db.Column(db.String(30),unique=True,nullable=False,index=True)
     created_on=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
     confirmed=db.Column(db.Boolean,default=False)
-
-        #organization_name=db.Column(db.String(50),nullable=False,unique=True,index=True)
-
     # Organization to User
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
     #organization_rel=db.relationship('Organization',foreign_keys=[organization_id])
-
     #role to user connection
     role_id=db.Column(db.Integer,db.ForeignKey('roles.id'),nullable=False)
     #role_rel=db.relationship('Roles',foreign_keys=[role_id])
-
-
+    #User to Submissions
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
+    #User many to many with subjects
+    sub_id=db.relationship('Subject',backref=db.backref("teacher_id"),secondary=teachersubject)
+
+    #teacher_sub=db.relationship('Subject',
+    #secondary=teachersubject,
+    #backref=db.backref('teacher',
+    #lazy="subquery"))
 
 
         #def __init__(self,fname,lname,password,email,organization_name):
@@ -113,8 +118,8 @@ class User(UserMixin,db.Model):
     def __repr__(self):
         return "<Users %r >" % self.fname
 
-    def __unicode__(self):
-        return self.username
+    def __str__(self):
+        return "%s" %format(self.fname)
 
 
 
@@ -127,10 +132,12 @@ class Questions(db.Model):
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
 
     #from Question to Submissions
-    #question_sub=db.relationship('Submissions',backref='question_sub',lazy='dynamic')
+    question_sub=db.relationship('Submissions',backref='question_sub',lazy='dynamic')
 
     def __repr__(self):
         return "<Questions %r>" %self.question
+    def __str__(self):
+        return "%s" %format(self.question)
 
 
 class Organization(db.Model):
@@ -141,59 +148,75 @@ class Organization(db.Model):
     date_created=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
 
     #organization to User
-    organization_rel_users=db.relationship('User',foreign_keys=[User.organization_id],
-    backref=db.backref('organizationid',
-    lazy='joined'),
-    lazy='dynamic')
+
+    organization_rel_users=db.relationship('User',backref='organizationid',lazy='dynamic')
+    #organization_rel_users=db.relationship('User',foreign_keys=[User.organization_id],
+    #backref=db.backref('organizationid',
+    #lazy='joined'),
+    #lazy='dynamic')
 
     #organization to Question
-    #organization_rel_questions=db.relationship('Questions',backref='organization_question_id',lazy='dynamic')
-    organization_rel_questions=db.relationship('Questions',foreign_keys=[Questions.organization_id],
-    backref=db.backref('org_ques_id',lazy='joined'),
-    lazy='dynamic')
+    organization_rel_questions=db.relationship('Questions',backref='organization_question_id',lazy='dynamic')
+    #organization_rel_questions=db.relationship('Questions',foreign_keys=[Questions.organization_id],
+    #backref=db.backref('org_ques_id',lazy='joined'),
+    #lazy='dynamic')
 
     def __repr__(self):
         return "<Organization %r >" % self.organization_domain
+    def __str__(self):
+        return " %s " % format(self.organization_domain)
 
 class Submissions(db.Model):
     __tablename__='submissions'
     id=db.Column(db.Integer,primary_key=True)
+    form_id=db.Column(db.String,index=True)
     submission=db.Column(db.Integer,nullable=False,index=True)
-    user_id=db.Column(db.Integer,db.ForeignKey('users.id'))
-    stream_id=db.Column(db.Integer,db.ForeignKey('streams.id'))
-    question_id=db.Column(db.Integer,db.ForeignKey('questions.id'))
-    subject_id=db.Column(db.Integer,db.ForeignKey('subject.id'))
+    user_id=db.Column(db.Integer,db.ForeignKey('users.id'),index=True)
+    stream_id=db.Column(db.Integer,db.ForeignKey('streams.id'),index=True)
+    question_id=db.Column(db.Integer,db.ForeignKey('questions.id'),index=True)
+    subject_id=db.Column(db.Integer,db.ForeignKey('subject.id'),index=True)
+    suggestions=db.Column(db.Text,index=True)
 
     def __repr__(self):
-        return "<Submissions %r>" %self.submissions
+        return "<Submissions %r>" %format(self.submissions)
+
 
 class Subject(db.Model):
     __tablename__='subject'
     id=db.Column(db.Integer,primary_key=True)
     subject_name=db.Column(db.String,index=True,nullable=False,unique=True)
+
     submission_rel=db.relationship('Submissions',foreign_keys=[Submissions.subject_id],
     backref=db.backref('submission_id',lazy='joined'),lazy='dynamic')
     #add required field
+
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
+    teacher_name=db.relationship('User',backref=db.backref("subject_det"),secondary=teachersubject)
+
+
     def __str__(self):
-        return "<Subject %s>" %self.subject_name
+        return " %s" %self.subject_name
 
 class Stream(db.Model):
     __tablename__='streams'
     id=db.Column(db.Integer,primary_key=True)
     stream=db.Column(db.String(50),index=True,nullable=False,unique=True)
     #sub_id=db.relationship('Submissions',backref='streamid',lazy='dynamic')
-    subjects=db.relationship('Subject',foreign_keys=[Subject.stream],
-    backref=db.backref('streamsub',lazy='joined'),lazy='dynamic')
 
+    # subjects=db.relationship('Subject',foreign_keys=[Subject.stream],
+    # backref=db.backref('streamsub',lazy='joined'),lazy='dynamic')
+
+    subjects=db.relationship('Subject',backref='streamsub',lazy='dynamic')
+    # subjects=db.relationship('Subject',primaryjoin=Subjecstate: dropdown.state.t.id ==id,backref="streamsub")
     submissions_id=db.relationship('Submissions',
     foreign_keys=[Submissions.stream_id],
     backref=db.backref('streamid',lazy='joined'),lazy='dynamic')
 
-    def __repr__(self):
-        return "<Stream %r>" %self.stream
+
+
+
     def __str__(self):
-        return "<Stream %s>" %self.stream
+        return "%s" %self.stream
 
 
 

@@ -29,10 +29,11 @@ class Config(object):
     SESSION_TYPE='sqlalchemy'
     #SESSION_COOKIE_SECURE=True
     PERMANENT_SESSION_LIFETIME=420
-    #SQLALCHEMY_ECHO=True
+    # SQLALCHEMY_ECHO=True
 
     ADMIN_EMAIL='leon9923@gmail.com'
-
+    REMEMBER_COOKIE_HTTPONLY=True
+    SESSION_COOKIE_HTTPONLY = True
     @staticmethod
     def init_app(app):
         pass

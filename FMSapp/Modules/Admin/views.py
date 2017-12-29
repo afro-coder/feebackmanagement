@@ -1,7 +1,9 @@
 from . import admin
-#from flask import request,render_template,url_for,redirect,flash
+from flask import request,url_for,redirect,jsonify,make_response
+from  ...mod_util import create_hashid
 #from flask_login import login_required
 #from ..utils import requires_roles
+
 from wtforms import PasswordField,TextField,Form
 from flask_admin.contrib.sqla.fields import QuerySelectField
 from wtforms.validators import InputRequired,EqualTo
@@ -11,12 +13,15 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
 from ... import db
 from ...models.users import (User,Questions,Roles,
-Stream,Organization,Subject)
+Stream,Organization,Subject,Submissions)
 from werkzeug.security import generate_password_hash
+from .forms import StreamForm
 
 #BaseView is not for models it is for a standalone-view
 # ModelView is for Models
 #AdminIndexView is for Admin Home page
+
+#try using ajax for loading fields
 class MyPassField(PasswordField):
     def process_data(self, value):
         self.data = ''  # even if password is already set, don't show hash here
@@ -41,7 +46,9 @@ class CustomModelView(ModelView):
     # def is_accessible(self):
         # return current_user.is_authenticated() and
         # current_user.is_admin()
-    form_base_class=SecureForm
+    # IF you enable CsrfProtect switch to wtforms Form class instead of secure form
+    # form_base_class=SecureForm
+    form_base_class=Form
 
 
 
@@ -72,6 +79,7 @@ class UserView(CustomModelView):
     message='Passwords must match ')]),
 
     confirm_password=dict(validators=[InputRequired()]),
+    created_on=dict(render_kw={'disabled':'disabled'})
 
     )
 
@@ -99,13 +107,45 @@ class StreamView(CustomModelView):
 
 admin.add_view(StreamView(Stream,db.session))
 class SubjectView(CustomModelView):
+    #RECHECK HERE
     form_excluded_columns=['submission_rel']
-    column_labels=dict(streamsub='Stream')
+    column_labels=dict(streamsub='Stream',teachersubj='Teacher')
     #form_columns=['stream','subjects',]
     #form_excluded_columns=['sub_id']
 admin.add_view(SubjectView(Subject,db.session))
 
+class LinkView(BaseView):
+    @expose('/',methods=['GET','POST'])
+    def index(self):
+        #formdata=[(stream.id,stream.stream) for stream in Stream.query.all()]
+        form=StreamForm()
 
+        #form=StreamForm(stream=formdata)
+        return self.render('admin/link.html',form=form)
+
+    @expose('/_generatelink',methods=['GET'])
+    def genlink(self):
+        if request.method == "GET":
+
+            stream_name=request.args.get('b',0,type=int)
+            print(stream_name)
+
+
+            print(request.script_root)
+            url=url_for('question.display_question',hashid=create_hashid(stream_name))
+            print(url)
+
+
+        return jsonify(d=url)
+
+
+
+
+admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
+
+class  SubmissionView(CustomModelView):
+    pass
+admin.add_view(SubmissionView(Submissions,db.session))
 @admin.teardown_app_request
 def close(self):
     db.session.close()

@@ -1,0 +1,67 @@
+{% extends 'admin/master.html' %}
+{% from '_macro.html' import render_field %}
+
+{%  block body %}
+<div class="form-group">
+    <div class="col-xs-2">
+
+
+    <form  method="POST">
+        {{form.csrf_token}}
+        {{render_field(form.stream,class="form-control",id="stream_select")}}
+
+    </br>
+        {{form.submit}}
+
+    </div>
+    <br/>
+    <div <div class="col-xs-2">
+        <span id="link_load"></span>
+    </div>
+</form>
+
+</div>
+
+{% endblock %}
+{%block tail%}
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.url_root[:-1]|tojson|safe }};
+</script>
+<script charset="utf-8" type="text/javascript">
+
+$(function()
+{
+    updatedata();
+    function updatedata()
+    {
+    $('#stream_select').on('change',function(){
+        stream_name= $('#stream_select option:selected').text();
+        stream_id= $('#stream_select option:selected').val();
+        if(stream_id == '__None')
+        {
+            return false;
+        }
+        $.getJSON("{{url_for('linkgen.genlink')}}",{
+            a:stream_name,
+            b:stream_id
+        },function(data){
+            $('#link_load').html("<H1><a href="+data.d+">"+$SCRIPT_ROOT+data.d+" </a>")
+
+        });
+
+    });
+}
+});
+
+</script>
+
+
+{%endblock%}
+
+
+
+{% block tail_js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+{{super()}}
+{% endblock %}

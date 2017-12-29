@@ -6,11 +6,12 @@ http://creativecommons.org/licenses/by/3.0/
 
 
 /*----------------------------------------------
-    COMMON  STYLES    
+    COMMON  STYLES
 ------------------------------------------------*/
 body {
     font-family: 'Open Sans', sans-serif;
     background: #1F1F1F;
+
 }
 
  #wrapper {
@@ -27,7 +28,7 @@ body {
     margin:10px 20px 10px 0px;
     background-color:transparent;
     padding: 15px 30px;
-    min-height:1200px;
+    min-height:auto;
 }
 .header .container-fluid{
 padding:0;
@@ -39,7 +40,7 @@ padding:0;
     border:1px solid #f3f3f3;
 }
 
-h1, .h1, h2, .h2, h3, .h3 {
+h1, .h1, h2, .h2, h3, .h3 h4 .h4 {
 margin-top: 7px;
 margin-bottom: -5px;
 }
@@ -48,9 +49,10 @@ h2 {
 }
 h4 {
     padding-top:10px;
+    padding-left: 20px;
 }
 .square-btn-adjust {
-    border: 0px solid transparent; 
+    border: 0px solid transparent;
    -webkit-border-radius: 0px;
 -moz-border-radius: 0px;
 border-radius: 0px;
@@ -62,7 +64,7 @@ p {
     padding-top:20px;
 }
 .navbar-side {
-    z-index: 0; 
+    z-index: 0;
 }
 .panel{
 border-radius:0px;
@@ -141,14 +143,14 @@ border-radius: 0;
   border-radius: 10px;
 }
 /*----------------------------------------------
-   DASHBOARD STYLES    
+   DASHBOARD STYLES
 ------------------------------------------------*/
 .page-header {
 padding-bottom: 9px;
 margin: 0;
 border-bottom: 1px solid transparent;
 text-align: left;background-color: #fff;padding: 32px 22px 32px 15px;}
-.panel-left{  
+.panel-left{
 width: 100px;
 height: 100px;
 background: #0866C6;
@@ -163,14 +165,14 @@ color: rgba(255, 255, 255, 0.69);
 padding: 29px 0;
 margin-bottom:30px;
 }
-.panel-right{  
+.panel-right{
 height: 124px;
 background: transparent;
 margin-bottom: 0;
 color: #FFFFFF;
 
 float: left;text-align: left;padding-left: 20px;font-size: 16px;text-shadow: none;font-weight: 100;}
-.panel-right h3{  
+.panel-right h3{
 font-size: 40px;
 padding: 18px 10px 13px 0;
 color: #FFFFFF;
@@ -255,13 +257,13 @@ color:#fff;
   .brown {
 background-color: #F5B252;
 color:#fff;
-} 
+}
  .back-footer-red {
 background-color: #F0433D;
 color:#fff;
 border-top: 0px solid #fff;
 }
- 
+
  .icon-box-right {
 display: block;
 float: right;
@@ -349,10 +351,14 @@ line-height: 30px;
 #easypiechart-orange .percent { color: #ffb53e;}
 #easypiechart-red .percent { color: #ef4040;}
 
-	 
+
  .chat-panel .panel-body {
 height: 450px;
 overflow-y: scroll;
+-moz-box-shadow: 0 0 3px #ccc;
+-webkit-box-shadow: 0 0 3px #ccc;
+box-shadow: 0 0 3px #ccc;
+top:9%;
 }
  .chat-box {
 margin: 0;
@@ -378,7 +384,7 @@ footer p{
 font-size: 14px;
 }
 /*----------------------------------------------
-    MENU STYLES    
+    MENU STYLES
 ------------------------------------------------*/
 
 
@@ -443,7 +449,7 @@ overflow: hidden;
 background-color: #f5f5f5;
 border-radius: 0px;
 }
-.dropdown-tasks > li > a { 
+.dropdown-tasks > li > a {
 padding: 0px 15px;
 }
 .dropdown-tasks p {
@@ -506,10 +512,10 @@ background: #000000;
 }
 .sidebar-collapse .nav > li > a:hover,
 .sidebar-collapse .nav > li > a:focus {
-	 
+
 	outline:0;
 }
- 
+
 .navbar-side {
 	border:none;
 	background: #1F1F1F;
@@ -521,7 +527,7 @@ background: #000000;
 .top-navbar .nav > li > a > i {
 margin-right: 2px;
 }
-.top-navbar .navbar-brand:hover { 
+.top-navbar .navbar-brand:hover {
 color: #FFFFFF;
 
 background-color: rgb(43, 46, 51);
@@ -531,7 +537,7 @@ margin: 8px 0;
 }
 .navbar-default {
 border:0px solid black;
-     
+
 }
 .navbar-header {
     background: transparent;
@@ -573,7 +579,7 @@ ul.dropdown-menu.dropdown-messages li a div {
   padding: 2px 0;
 }
 /*----------------------------------------------
-    UI ELEMENTS STYLES     
+    UI ELEMENTS STYLES
 ------------------------------------------------*/
 .btn-circle {
 width: 50px;
@@ -588,26 +594,26 @@ line-height: 1.428571429;
 }
 
 /*----------------------------------------------
-    MEDIA QUERIES     
+    MEDIA QUERIES
 ------------------------------------------------*/
- 
+
  @media(min-width:768px) {
      #page-wrapper{
                margin: 0 0 0 260px;
                padding: 0;
                min-height: 1200px;
     }
-	
-	
+
+
     .navbar-side {
         width: 260px;
         z-index: 1;
     }
 
    .navbar {
- border-radius: 0px; 
+ border-radius: 0px;
 }
-   
+
 }
  @media(max-width:480px) {
 .page-header small {
@@ -617,11 +623,9 @@ font-size: 19px;
 }
 .panel-left {
   width: 85px;
-  height: 85px; 
+  height: 85px;
   border-radius: 100%;
   overflow: hidden;
   margin: 14px;
 }
 }
-
-
