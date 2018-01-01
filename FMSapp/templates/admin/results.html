@@ -1,0 +1,184 @@
+{% extends 'admin/master.html' %}
+{% from '_macro.html' import render_field %}
+{% block head %}
+<style>
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>
+
+
+{%endblock head%}
+{% block body %}
+<div class="container">
+    <div class="row">
+            <form  method="GET" class="form-inline">
+                <div class="form-group">
+                {{form.csrf_token}}
+
+                {{render_field(form.stream,class="form-control",id="stream_select")}}
+            </div>
+            <div class="form-group">
+                {{render_field(form.subject_select,class="form-control",id="subject_select")}}
+
+
+            </div>
+            <div class="form-group">
+                {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
+            </div>
+
+</form>
+
+<div id="showdata">
+
+</div>
+
+</div>
+</div>
+{% endblock %}
+
+{% block tail%}
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+    $("#subject_select,#teacher_select").hide();
+
+
+
+
+    $("#stream_select").on('change',function(){
+
+        var dataset={
+            stream:$("#stream_select").val()
+        };
+        console.log("Dataset :"+dataset["stream"])
+        if(dataset["stream"]=='__None')
+        {
+            $("#subject_select").hide(500)
+            return false;
+        }
+        else
+        {
+            $.getJSON(
+                "{{url_for('results.submissions')}}",
+                {
+                    b:dataset["stream"]
+                },
+                function(data)
+                {console.log("DATA FROM first select :"+data)
+                    var options=$("#subject_select");
+                    if (options.val())
+                    {   options.html("").val("");
+                        data.forEach(function(item){
+                            options.append(
+                                $('<option />',{
+                                    value:item[0],
+                                    html:item[1]
+
+                                })
+                            );
+                        });
+
+                        $("#subject_select").show();
+                        $("#subject_select").removeAttr('disabled');
+                    }
+                });
+
+        }
+    }); //Stream
+
+
+    });
+
+
+
+</script>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+
+
+$("#subject_select").on('click',function(){
+
+    var subject_id=$("#subject_select").val();
+    if(subject_id == 0)
+    {
+        $("#subject_select").html("").val("").hide();
+        return false;
+    }
+    else
+    {   console.log("ajax")
+        $.getJSON(
+            "{{url_for('question.gen_teacher')}}",
+            {b:subject_id},
+            function(data)
+            {
+                var options=$("#teacher_select");
+                if(options.val())
+                {
+                    options.html("");
+                    data.forEach(function(item)
+                    {
+                        options.append(
+                            $('<option />',{
+                                value:item[0],
+                                html:item[1]
+
+                            })
+                        );
+                    });
+                    $("#teacher_select").show();
+                    $("#teacher_select").removeAttr('disabled');
+                }
+            }
+        )
+
+        }
+
+    });
+    });
+</script>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+    $("#teacher_select").on('click',function(){
+
+            stream_id=$("stream_select").val();
+            subject_id=$("subject_select").val();
+            teacher_id=$("teacher_select").val();
+
+        // $.ajax({
+        //     url:"{{url_for('results.load_chart')}}",
+        //     type:"GET",
+        //     data:{stream:stream_id,
+        //             subject:subject_id,
+        //             teacher_id:teacher_id
+        //         },
+        //     success:function(response){
+        //
+        //         console.log(response)
+        //
+        //     }
+        //
+        // })
+        // var url = "https://www.gstatic.com/charts/loader.js"
+        // $.getScript(url);
+
+
+        $('#showdata').load("{{url_for('results.load_chart')}}")
+
+
+
+    });
+
+});
+
+</script>
+{% endblock %}
+
+{% block tail_js %}
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+
+{% endblock %}

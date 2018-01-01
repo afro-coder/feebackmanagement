@@ -62,7 +62,7 @@ def gen_teacher():
         # t=[(row.id,row.fname) for row in  User.query.filter(User.subject_det.any(id=subject_id)).all()]
         t=[(row.id,row.fname)  for row in  User.query.filter(User.subject_det.any(id=subject_id)).all()]
         #a=[b[0] for b in t ]
-
+        print(t)
         return jsonify(t)
 
     if request.method == "POST":
@@ -102,19 +102,19 @@ def gen_teacher():
         session["dict_form_id"]=dictv["form_id"]
         print("\t\t\After Posting",session["dict_form_id"])
         #
-        # for key,value in d.items():
-        #     datasub=Submissions()
-        #
-        #     datasub.form_id=dictv["form_id"]
-        #     datasub.user_id=int(dictv["teacher_select"])
-        #     datasub.subject_id=int(dictv["subject_data"])
-        #     datasub.stream_id=int(stream)
-        #     datasub.question_id=int(key)
-        #     datasub.submission=int(value)
-        #     if key == "1":
-        #         datasub.suggestions=dictv["suggestions"]
-        #     db.session.add(datasub)
-        # db.session.commit()
+        for key,value in d.items():
+            datasub=Submissions()
+
+            datasub.form_id=dictv["form_id"]
+            datasub.user_id=int(dictv["teacher_select"])
+            datasub.subject_id=int(dictv["subject_data"])
+            datasub.stream_id=int(stream)
+            datasub.question_id=int(key)
+            datasub.submission=int(value)
+            if key == "1":
+                datasub.suggestions=dictv["suggestions"]
+            db.session.add(datasub)
+        db.session.commit()
 
 
         # for key,value in dictv.items():

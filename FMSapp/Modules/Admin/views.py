@@ -1,6 +1,7 @@
 from . import admin
 from flask import request,url_for,redirect,jsonify,make_response
 from  ...mod_util import create_hashid
+
 #from flask_login import login_required
 #from ..utils import requires_roles
 
@@ -11,11 +12,13 @@ from flask_admin.form import SecureForm
 from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
-from ... import db
+from ... import db,charts
 from ...models.users import (User,Questions,Roles,
 Stream,Organization,Subject,Submissions)
 from werkzeug.security import generate_password_hash
-from .forms import StreamForm
+
+from .forms import SubmissionForm
+from flask_googlecharts import PieChart
 
 #BaseView is not for models it is for a standalone-view
 # ModelView is for Models
@@ -146,6 +149,77 @@ admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 class  SubmissionView(CustomModelView):
     pass
 admin.add_view(SubmissionView(Submissions,db.session))
+
+class ResultsView(BaseView):
+    @expose('/')
+    def index(self):
+
+        # my_chart=PieChart("new_chart",options={'title': 'My Chart', "width": 500,"height": 300,"is3D":True})
+        # ans_yes=Submissions.query.filter_by(submission=1,question_id=1,user_id=2).count()
+        # ans_no=Submissions.query.filter_by(submission=2,question_id=1,user_id=2).count()
+        # print("\t\t\tANS_YES",ans_yes)
+        # print("\t\t\tANS_No",ans_no)
+        # my_chart.add_column("string", "Answer")
+        # my_chart.add_column("number", "percent")
+        # my_chart.add_rows([["Yes", ans_yes],
+        #                 ["NO", ans_no],
+        #                 ])
+        # charts.register(my_chart)
+        form=SubmissionForm()
+
+        form.subject_select.choices=[(0,"Select a Subject")]
+        form.teacher_select.choices=[(0,"Select a Teacher")]
+        question=[(ques.id,ques.question) for ques in Questions.query.all()]
+
+        return self.render('admin/results.html',form=form,question=question)
+    @expose('/_submissions',methods=["GET"])
+    def submissions(self):
+        if request.method=="GET":
+            try:
+                stream_id=request.args.get('b',0,type=int)
+
+
+
+                data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id)]
+                print(data)
+                return jsonify(data)
+                # if len(subject_id) > 0:
+                #     # data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id)]
+                #     data=[(row.id,row.fname)  for row in  User.query.filter(User.subject_det.any(id=subject_id)).all()]
+                #     print(data)
+                #     return jsonify(data)
+
+            except Exception as e:
+                return jsonify(success=0, error_msg=str(e))
+
+
+    @expose('/_charts',methods=["GET","POST"])
+    def load_chart(self):
+        stream_id=request.args.get('stream',0,type=int)
+        subject_id=request.args.get('subject',0,type=int)
+        teacher_id=request.args.get('teacher',0,type=int)
+        question=[(ques.id,ques.question) for ques in Questions.query.all()]
+        chart_data=[]
+        for key,value in question:
+            ans_yes=Submissions.query.filter_by(submission=1,question_id=1,subject_id=1,user_id=2).count()
+            ans_no=Submissions.query.filter_by(submission=2,question_id=1,subject_id=1,user_id=2).count()
+            # ans_no=Submissions.query.filter_by(submission=2,question_id=key,subject_id=subject_id,user_id=teacher_id).count()
+            my_chart=PieChart("teacher_chart"+str(key),options={'title': 'Submission', "width": 500,"height": 300,"is3D":True})
+            my_chart.add_column("string", "Answer")
+            my_chart.add_column("number", "percent")
+            print("\t\t\t",ans_no)
+            print("\t\t\t",ans_yes)
+            my_chart.add_rows([["Yes", ans_yes],["NO", ans_no]])
+            chart_data.append((my_chart.name,key,value))
+
+            charts.register(my_chart)
+
+        print(chart_data )
+        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data)
+    #pass a list of variables and the then convert them to jinja
+
+admin.add_view(ResultsView(name='Results',endpoint='results'))
+
 @admin.teardown_app_request
 def close(self):
     db.session.close()

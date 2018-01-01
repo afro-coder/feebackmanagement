@@ -10,6 +10,7 @@ from flask_sessionstore import Session
 from flask_mail import Mail
 #from flask_admin import Admin
 from flask_wtf.csrf import CSRFProtect
+from flask_googlecharts import GoogleCharts
 
 bootstrap=Bootstrap()
 
@@ -17,6 +18,7 @@ mail=Mail()
 db=SQLAlchemy()
 csrf=CSRFProtect()
 sess=Session()
+charts=GoogleCharts()
 #admin=Admin()
 
 login_manager = LoginManager()
@@ -45,7 +47,7 @@ def create_app(config_name=None):
 
     sess.init_app(app)
     #sess.app.session_interface.db.create_all()
-
+    charts.init_app(app)
 
 
     from .Modules.home import viewhome
