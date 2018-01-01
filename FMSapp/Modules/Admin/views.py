@@ -201,11 +201,13 @@ class ResultsView(BaseView):
         question=[(ques.id,ques.question) for ques in Questions.query.all()]
         chart_data=[]
         dictv =request.form.to_dict()
+        dictv.pop('csrf_token')
+
         print(dictv)
         print(request.json)
         for key,value in question:
-            ans_yes=Submissions.query.filter_by(submission=1,question_id=1,subject_id=1,user_id=2).count()
-            ans_no=Submissions.query.filter_by(submission=2,question_id=1,subject_id=1,user_id=2).count()
+            ans_yes=Submissions.query.filter_by(submission=1,question_id=key,subject_id=dictv['subject_select'],user_id=dictv['teacher_select']).count()
+            ans_no=Submissions.query.filter_by(submission=2,question_id=key,subject_id=dictv['subject_select'],user_id=dictv['teacher_select']).count()
             # ans_no=Submissions.query.filter_by(submission=2,question_id=key,subject_id=subject_id,user_id=teacher_id).count()
             my_chart=PieChart("teacher_chart"+str(key),options={'title': 'Submission', "width": 500,"height": 300,"is3D":True})
             my_chart.add_column("string", "Answer")

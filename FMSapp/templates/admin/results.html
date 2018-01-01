@@ -7,7 +7,7 @@
   flex-wrap: wrap;
 }
 </style>
-<!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 {%endblock head%}
 {% block body %}
@@ -161,9 +161,9 @@ $(document).ready(function(){
         //     }
         //
         // })
-        var url = "https://www.gstatic.com/charts/loader.js"
-
-        $.getScript(url);
+        // var url = "https://www.gstatic.com/charts/loader.js"
+        //
+        // $.getScript(url);
         $('#showdata').load("{{url_for('results.load_chart')}}",datas)
 
 
