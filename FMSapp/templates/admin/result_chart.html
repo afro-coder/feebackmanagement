@@ -1,6 +1,6 @@
 
 
-
+{{ charts_init }}
 {#    {% for k in chart_data %}
     {% for key,questions in question %}
         <p>{{questions}}</p>
@@ -21,22 +21,24 @@
         {{ charts.teacher_chart1 }}
         #}
 
-<div class="container">
+<div class="box">
+
 
     {% for ch_name,key,question in chart_data %}
-    <div class="row" >
-    <p>{{key}},{{question}}</p>
-    <br
-    <div class="row" >
+<div class="row">
+
+    <p>{{key}}.&nbsp;{{question}}</p>
+</div>
+    <br>
+
     <br>
     {{charts[ch_name]}}
-</div>
+
 <br>
 </div>
     {% endfor %}
 
-
 </div>
 
-{{ charts_init }}
+
 <!-- <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script> -->

@@ -200,6 +200,9 @@ class ResultsView(BaseView):
         teacher_id=request.args.get('teacher',0,type=int)
         question=[(ques.id,ques.question) for ques in Questions.query.all()]
         chart_data=[]
+        dictv =request.form.to_dict()
+        print(dictv)
+        print(request.json)
         for key,value in question:
             ans_yes=Submissions.query.filter_by(submission=1,question_id=1,subject_id=1,user_id=2).count()
             ans_no=Submissions.query.filter_by(submission=2,question_id=1,subject_id=1,user_id=2).count()
@@ -215,7 +218,7 @@ class ResultsView(BaseView):
             charts.register(my_chart)
 
         print(chart_data )
-        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data)
+        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data),"success"
     #pass a list of variables and the then convert them to jinja
 
 admin.add_view(ResultsView(name='Results',endpoint='results'))

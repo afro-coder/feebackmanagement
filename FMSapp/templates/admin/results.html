@@ -7,13 +7,13 @@
   flex-wrap: wrap;
 }
 </style>
-
+<!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
 
 {%endblock head%}
 {% block body %}
 <div class="container">
     <div class="row">
-            <form  method="GET" class="form-inline">
+            <form  method="POST" class="form-inline" id="resform">
                 <div class="form-group">
                 {{form.csrf_token}}
 
@@ -140,30 +140,32 @@ $("#subject_select").on('click',function(){
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
     $("#teacher_select").on('click',function(){
+        var dataset={
 
-            stream_id=$("stream_select").val();
-            subject_id=$("subject_select").val();
-            teacher_id=$("teacher_select").val();
-
+            stream_id:$("stream_select").val(),
+            subject_id:$("subject_select").val(),
+            teacher_id:$("teacher_select").val()
+        }
+        datas=$("form#resform").serializeArray()
         // $.ajax({
         //     url:"{{url_for('results.load_chart')}}",
+        //
         //     type:"GET",
-        //     data:{stream:stream_id,
-        //             subject:subject_id,
-        //             teacher_id:teacher_id
-        //         },
+        //     data:datas,
         //     success:function(response){
         //
-        //         console.log(response)
+        //
+        //
+        //
         //
         //     }
         //
         // })
-        // var url = "https://www.gstatic.com/charts/loader.js"
-        // $.getScript(url);
+        var url = "https://www.gstatic.com/charts/loader.js"
 
+        $.getScript(url);
+        $('#showdata').load("{{url_for('results.load_chart')}}",datas)
 
-        $('#showdata').load("{{url_for('results.load_chart')}}")
 
 
 
@@ -177,8 +179,8 @@ $(document).ready(function(){
 {% block tail_js %}
 
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
 
 {% endblock %}
