@@ -1,18 +1,40 @@
 {% extends 'admin/master.html' %}
 {% from '_macro.html' import render_field %}
 {% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style>
 .row {
   display: flex;
   flex-wrap: wrap;
 }
-</style>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+.vertical-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+#pdfconv
+{
 
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+
+}
+
+</style>
+
+
+<script src="https://use.fontawesome.com/c99c76631d.js"></script>
 {%endblock head%}
 {% block body %}
 <div class="container">
     <div class="row">
+
             <form  method="POST" class="form-inline" id="resform">
                 <div class="form-group">
                 {{form.csrf_token}}
@@ -29,10 +51,25 @@
             </div>
 
 </form>
+<div class="row" id="hidepd">
+    <div class="col-xs-8">
+        <div id="hidepdf">
+
+
+        <!-- <button id="pdfcon" >    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true">PDf</i></button> -->
+        <form method="POST" id="sendData" action="{{url_for('results.pdfgen')}}">
+   <button id="pdfconv"> <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true">PDf</i></button>
+   <!-- <input type="submit" id="pdfconv" value="pdf"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true">PDf</i></input> -->
+   <div id="hidedata">
+
+   </div>
+</form>
+</div>
+</div>
+</div>
 
 <div id="showdata">
-
-</div>
+    </div>
 
 </div>
 </div>
@@ -42,6 +79,7 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
     $("#subject_select,#teacher_select").hide();
+    $("#hidepd").hide();
 
 
 
@@ -164,6 +202,9 @@ $(document).ready(function(){
         // var url = "https://www.gstatic.com/charts/loader.js"
         //
         // $.getScript(url);
+        $("#hidepd").show(500);
+
+        // $("#showdata").appendTo('<label>'+$("#teacher_select option:selected").text()+'</label>');
         $('#showdata').load("{{url_for('results.load_chart')}}",datas)
 
 
@@ -172,15 +213,51 @@ $(document).ready(function(){
     });
 
 });
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
 
+
+    // var dataa={
+    //     // 'datadiv':$('#showdata').html(),
+    //     'actdata':$('#show').html()
+    // }
+    // data=$("form#resform").serializeArray()
+
+
+$('#pdfconv').click(function(e){
+    var data=$('#pdfco').html();
+
+    $("#hidedata").append($('<input ></input>').attr('type','hidden').attr('value',data).attr('id','sendD').attr('name','sendD'));
+    $("#sendData").submit().remove();
+    $("#hidedata").hide()
+    // e.preventDefault();
+});
+});
 </script>
 {% endblock %}
 
 {% block tail_js %}
 
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- <script src="http://www.google.com/jsapi"></script> -->
 
+<!-- <script type="text/javascript" src=https://cdnjs.cloudflare.com/ajax/libs/jquery.fileDownload/1.4.2/jquery.fileDownload.js></script> -->
+
+<script  type="text/javascript" src="{{ url_for('static',filename='jquery/jquery.fileDownload.js') }}"></script>
+<!-- <script  type="text/javascript" src="{{ url_for('static',filename='jspdf/plugins/from_html.js') }}"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script> -->
+<!-- <script  type="text/javascript" src="{{ url_for('static',filename='jspdf/plugins/addhtml.js') }}"></script> -->
+<!-- <script  type="text/javascript" src="{{ url_for('static',filename='jspdf/libs/html2pdf.js') }}"></script> -->
+<!--
+<script  type="text/javascript" src="{{ url_for('static',filename='jspdf/plugins/javascript.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='jspdf/plugins/canvas.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='jspdf/plugins/context2d.js') }}"></script> -->
+
+<!-- <script type="text/javascript" src=https://cdnjs.cloudflare.com/ajax/libs/jquery.fileDownload/1.4.2/jquery.fileDownload.js></script> -->
+<!-- <script type="text/javascript" src="{{url_for('static',filename='js/from_html.js')}}"></script> -->
 <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
 
 {% endblock %}

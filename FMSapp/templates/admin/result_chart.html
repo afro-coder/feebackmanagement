@@ -1,45 +1,55 @@
 
-
 {{ charts_init }}
-{#    {% for k in chart_data %}
-    {% for key,questions in question %}
-        <p>{{questions}}</p>
-
-        {{ charts[k] }}
-
-        {% endfor %}
-
-        {% endfor %}
-        <br>
-        {% endfor %}
-
-
-        {{ charts.teacher_chart2 }}
-        {{ charts.teacher_chart3 }}
-        {{ charts.teacher_chart4 }}
-        {{ charts.teacher_chart5 }}
-        {{ charts.teacher_chart1 }}
-        #}
-
-<div class="container">
-
-
-    {% for ch_name,key,question in chart_data %}
+<div class="container-fluid" id="loadcontain">
     <br>
-<div class="row">
+    <!-- <div class="row">
+        <span class="">
+        <button value="print" class="btn btn-success btn-md glyphicon glyphicon-print" onclick=onprint(); id="printbutton" name="print">Print</button>
+    </span>
+    </div> -->
+    <!-- <div class="row">
 
-    <p>{{key}}.&nbsp;{{question}}</p>
-</div>
+    <div  id="add_data" style="width:100%;margin:0 auto;text-align:center;">
+        <h3>Report</h3>
+    </div>
+    </div> -->
+<div class="row" id="pdfco">
+
+    <!-- <div  id="add_data" style="width:100%;margin:0 auto;text-align:center;margin-left:-12%"> -->
+    <div  id="add_data" style="width:100%;margin:0 auto;text-align:center;margin-left:-12%">
+    <div class="text-center">
+        <h2>Report</h2>
+    </div>
+    </div>
+    <hr>
+
+
+<br>
+    {% for ch_name,key,question in chart_data %}
+
+    <div class="col-xs-8 col-md-6" >
+
+    <br>
+
+</label>{{key}}.&nbsp;{{question}}<label>
     <br>
 
     <br>
     {{charts[ch_name]}}
 
-<br>
+
+
 </div>
+<br>
     {% endfor %}
 
 </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
 
+$("#add_data").append('<h4>'+$("#teacher_select option:selected").text()+', '+$("#subject_select option:selected").text()+'</h4>');
+});
+</script>
 
 <!-- <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script> -->

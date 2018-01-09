@@ -1,5 +1,5 @@
 import os
-
+#
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
@@ -10,7 +10,7 @@ class Config(object):
     WTF_CSRF_SECRET_KEY =b'\xba\xfa\x11_\xb0\xcb\x10Cns\x1e_y\xe4\x01\xe2\xf1\xe0\x82\xea\x17\xc7\xda\x08m-f\xe4'
     #WTF_CSRF_ENABLED=True
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     SERVER_NAME='fmsapp.com:5000'
     print(SERVER_NAME)
 
@@ -28,7 +28,7 @@ class Config(object):
 
     SESSION_TYPE='sqlalchemy'
     #SESSION_COOKIE_SECURE=True
-    PERMANENT_SESSION_LIFETIME=420
+    PERMANENT_SESSION_LIFETIME=3600
     # SQLALCHEMY_ECHO=True
 
     ADMIN_EMAIL='leon9923@gmail.com'
@@ -43,7 +43,8 @@ class Config(object):
 class DevConfig(Config):
 
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, "devdb.sqlite")
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, "devdb.sqlite")
+    SQLALCHEMY_DATABASE_URI = 'postgresql://leon:@ll0wfmsapp#@localhost/fmsapp'
 
     TEMPLATES_AUTO_RELOAD=True
 

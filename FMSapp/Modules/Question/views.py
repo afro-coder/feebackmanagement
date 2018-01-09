@@ -60,7 +60,8 @@ def gen_teacher():
         #teacher = Subject.query.filter(Subject.teacher.any(fname='phil'))
         # t=[(row.) ]
         # t=[(row.id,row.fname) for row in  User.query.filter(User.subject_det.any(id=subject_id)).all()]
-        t=[(row.id,row.fname)  for row in  User.query.filter(User.subject_det.any(id=subject_id)).all()]
+        # t=[(row.id,row.fname)  for row in  User.query.filter(User.subject_det.any(id=subject_id)).all()]
+        t=[(row.id,row.fname)  for row in  User.query.filter(User.sub_id.any(id=subject_id)).all()]
         #a=[b[0] for b in t ]
         print(t)
         return jsonify(t)
@@ -68,6 +69,7 @@ def gen_teacher():
     if request.method == "POST":
         #datasub=Submissions()
         dictv =request.form.to_dict()
+        print(dictv)
         dictv.pop('csrf_token')
         print("debug")
         print(dictv)
@@ -99,8 +101,8 @@ def gen_teacher():
 
         # if session["form_id"] != dictv["form_id"]:
         #     return False
-        session["dict_form_id"]=dictv["form_id"]
-        print("\t\t\After Posting",session["dict_form_id"])
+        # session["dict_form_id"]=dictv["form_id"]
+        # print("\t\t\After Posting",session["dict_form_id"])
         #
         for key,value in d.items():
             datasub=Submissions()
@@ -133,6 +135,9 @@ def gen_teacher():
         # t={(row.fname,row.teacherid.__dict__) for row in User.query.join(User.subjectid).filter(User.id==Subject.id)}
         # print(p)
         # print(t)
+@question.route('/success')
+def suc():
+    return "Thank you"
 @question.route('/test_question',methods=["GET","POST"])
 def testques():
     # questions=dict(enumerate((ques.question for ques in Questions.query.all()),start=1))
@@ -153,6 +158,7 @@ def testques():
 def subform():
     print("Hello")
     dictv = request.form.to_dict()
+    print(dictv)
     dictv.pop('csrf_token')
     print(dictv)
     d={key[-1:]:dictv[key] for key in dictv if key.startswith('options')}

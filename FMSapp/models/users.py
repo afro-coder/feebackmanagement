@@ -19,7 +19,7 @@ class Roles(db.Model):
         return "%s" %format(self.role_name)
 
     def __repr__(self):
-        return "<Role %r>" %self.role_name
+        return "%r" %self.role_name
 
 teachersubject=db.Table('teachersub',db.metadata,
 db.Column('id',db.Integer,primary_key=True),
@@ -34,7 +34,7 @@ class User(UserMixin,db.Model):
     id=db.Column(db.Integer,primary_key=True)
     fname=db.Column(db.String(50),nullable=False,index=True)
     lname=db.Column(db.String(50),nullable=False,index=True)
-    password_hash=db.Column(db.String(128),nullable=False)
+    password_hash=db.Column(db.String(256),nullable=False)
     email=db.Column(db.String(30),unique=True,nullable=False,index=True)
     created_on=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
     confirmed=db.Column(db.Boolean,default=False)
@@ -114,6 +114,9 @@ class User(UserMixin,db.Model):
 
         return self.role
 
+    def is_admin(self):
+        return True if str(self.role) == 'admin' else False
+
 
     def __repr__(self):
         return "<Users %r >" % self.fname
@@ -191,7 +194,7 @@ class Subject(db.Model):
     #add required field
 
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
-    teacher_name=db.relationship('User',backref=db.backref("subject_det"),secondary=teachersubject)
+    # teacher_name=db.relationship('User',backref=db.backref("subject_det"),secondary=teachersubject)
 
 
     def __str__(self):
@@ -223,6 +226,7 @@ class Stream(db.Model):
 class AnonymousUser(AnonymousUserMixin):
 
 
+
     def is_admin(self):
         return False
 
@@ -234,6 +238,10 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
 
     user=User.query.get(int(user_id))
+    # user.is_admin=user.is_admin()
+    # print("USER IS ADMIn?")
+    # print(user.is_admin)
+
 
 
     if not user:

@@ -71,7 +71,7 @@ def confirm(token):
         print('\tENTERED')
         flash('Account confirmed ','success')
     else:
-        flash('Invalid Link or Link has expired','Warning')
+        flash('Invalid Link or Link has expired','warning')
     return redirect(url_for('viewhome.home'))
 
 @auth.route('/confirm')
@@ -101,8 +101,10 @@ def login():
         if user is not None and user.verify_password(form.password.data):
             login_user(user,form.remember_me.data)
             print("REQUEST ARGS "+str(request.args.get('next')))
+
+
             return redirect(request.args.get('next') or url_for('viewhome.home'))
-        flash('Invalid username or password')
+        flash('Invalid username or password','info')
     return render_template('auth/login.html',form=form)
     #if form.validate_on_submit():
         #user=User.query.filter_by(email=form.email.data).first()
@@ -137,7 +139,7 @@ def password_reset_request():
                        user=user, token=token,
                        next=request.args.get('next'))
         flash('An email with instructions to reset your password has been '
-              'sent to you.')
+              'sent to you.','success')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
 
@@ -170,7 +172,7 @@ def change_email_request():
                   'address has been sent to you.','success')
             return redirect(url_for('main.index'))
         else:
-            flash('Invalid email or password.')
+            flash('Invalid email or password.','danger')
     return render_template("auth/change_email.html", form=form)
 
 @auth.route('/change_email/<token>')
@@ -187,6 +189,7 @@ def change_email(token):
 @login_required
 def logout():
     logout_user()
+    session.clear()
     flash("You have been logged out","success")
     return redirect(url_for("viewhome.home"))
 

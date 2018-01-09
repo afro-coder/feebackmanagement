@@ -1,12 +1,14 @@
 from . import admin
-from flask import request,url_for,redirect,jsonify,make_response
+from flask import request,url_for,redirect,jsonify,make_response,render_template,session
 from  ...mod_util import create_hashid
-
+from ..utils import requires_roles
 #from flask_login import login_required
-#from ..utils import requires_roles
+from ..utils import requires_roles
 
 from wtforms import PasswordField,TextField,Form
+from flask_wtf import FlaskForm
 from flask_admin.contrib.sqla.fields import QuerySelectField
+from flask_admin.contrib.sqla.validators import Unique
 from wtforms.validators import InputRequired,EqualTo
 from flask_admin.form import SecureForm
 from flask_login import current_user
@@ -17,9 +19,9 @@ from ...models.users import (User,Questions,Roles,
 Stream,Organization,Subject,Submissions)
 from werkzeug.security import generate_password_hash
 
-from .forms import SubmissionForm
+from .forms import SubmissionForm,StreamForm
 from flask_googlecharts import PieChart
-
+import pdfkit
 #BaseView is not for models it is for a standalone-view
 # ModelView is for Models
 #AdminIndexView is for Admin Home page
@@ -46,12 +48,15 @@ class MyPassField(PasswordField):
 
 
 class CustomModelView(ModelView):
-    # def is_accessible(self):
-        # return current_user.is_authenticated() and
-        # current_user.is_admin()
+    def is_accessible(self):
+          return current_user.is_authenticated and current_user.is_admin()
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('auth.login',next=request.url))
     # IF you enable CsrfProtect switch to wtforms Form class instead of secure form
-    # form_base_class=SecureForm
-    form_base_class=Form
+    form_base_class=SecureForm
+    # form_base_class=Form
+    # form_base_class=FlaskForm
+
 
 
 
@@ -82,7 +87,8 @@ class UserView(CustomModelView):
     message='Passwords must match ')]),
 
     confirm_password=dict(validators=[InputRequired()]),
-    created_on=dict(render_kw={'disabled':'disabled'})
+    created_on=dict(render_kw={'disabled':'disabled'}),
+    email=dict(validators=[Unique(model=User, db_session=db.session,column='email')])
 
     )
 
@@ -92,7 +98,7 @@ admin.add_view(UserView(User,db.session))
 
 class QuestionView(CustomModelView):
     column_exclude_list=['question_sub',]
-    #form_excluded_columns
+    form_excluded_columns=['question_sub']
     column_labels=dict(question='Question',
     org_ques_id='Organization ID')
     form_args = {
@@ -119,6 +125,7 @@ admin.add_view(SubjectView(Subject,db.session))
 
 class LinkView(BaseView):
     @expose('/',methods=['GET','POST'])
+    @requires_roles('admin')
     def index(self):
         #formdata=[(stream.id,stream.stream) for stream in Stream.query.all()]
         form=StreamForm()
@@ -127,11 +134,12 @@ class LinkView(BaseView):
         return self.render('admin/link.html',form=form)
 
     @expose('/_generatelink',methods=['GET'])
+    @requires_roles('admin')
     def genlink(self):
         if request.method == "GET":
 
             stream_name=request.args.get('b',0,type=int)
-            print(stream_name)
+            # print(stream_name)
 
 
             print(request.script_root)
@@ -140,6 +148,8 @@ class LinkView(BaseView):
 
 
         return jsonify(d=url)
+    def is_accessible(self):
+         return current_user.is_authenticated and current_user.is_admin()
 
 
 
@@ -147,11 +157,13 @@ class LinkView(BaseView):
 admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
+
     pass
 admin.add_view(SubmissionView(Submissions,db.session))
 
 class ResultsView(BaseView):
-    @expose('/')
+    @expose('/',methods=["GET","POST"])
+    @requires_roles('admin')
     def index(self):
 
         # my_chart=PieChart("new_chart",options={'title': 'My Chart', "width": 500,"height": 300,"is3D":True})
@@ -173,6 +185,7 @@ class ResultsView(BaseView):
 
         return self.render('admin/results.html',form=form,question=question)
     @expose('/_submissions',methods=["GET"])
+    @requires_roles('admin')
     def submissions(self):
         if request.method=="GET":
             try:
@@ -194,6 +207,7 @@ class ResultsView(BaseView):
 
 
     @expose('/_charts',methods=["GET","POST"])
+    @requires_roles('admin')
     def load_chart(self):
         stream_id=request.args.get('stream',0,type=int)
         subject_id=request.args.get('subject',0,type=int)
@@ -204,26 +218,75 @@ class ResultsView(BaseView):
         dictv.pop('csrf_token')
 
         print(dictv)
-        print(request.json)
+
         for key,value in question:
-            ans_yes=Submissions.query.filter_by(submission=1,question_id=key,subject_id=dictv['subject_select'],user_id=dictv['teacher_select']).count()
-            ans_no=Submissions.query.filter_by(submission=2,question_id=key,subject_id=dictv['subject_select'],user_id=dictv['teacher_select']).count()
+            ans_yes=Submissions.query.filter_by(submission=1,question_id=key,
+            subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
+
+            ans_no=Submissions.query.filter_by(submission=2,question_id=key,
+            subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
             # ans_no=Submissions.query.filter_by(submission=2,question_id=key,subject_id=subject_id,user_id=teacher_id).count()
+
             my_chart=PieChart("teacher_chart"+str(key),options={'title': 'Submission', "width": 500,"height": 300,"is3D":True})
             my_chart.add_column("string", "Answer")
             my_chart.add_column("number", "percent")
             print("\t\t\t",ans_no)
             print("\t\t\t",ans_yes)
-            my_chart.add_rows([["Yes", ans_yes],["NO", ans_no]])
+            my_chart.add_rows([["Yes", ans_yes],["No", ans_no]])
             chart_data.append((my_chart.name,key,value))
 
             charts.register(my_chart)
-
+        # session['chart']=chart_data
         print(chart_data )
-        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data),"success"
-    #pass a list of variables and the then convert them to jinja
 
+        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data),"success"
+
+    @expose('/_pdfgen',methods=["GET","POST"])
+    def pdfgen(self):
+
+        # from flask import Response,send_file
+        #
+        # dictv =request.form.to_dict()
+        # dictv=request.form['sendD'];
+        dictv=request.form.to_dict();
+        dic=request.form['sendD']
+        # print(dic)
+        # print(dictv)
+        options={'page-size': 'A4',
+    'margin-top': '0.70in',
+    'margin-right': '0.60in',
+    'margin-bottom': '0.40in',
+    'margin-left': '0.60in',
+    'encoding': "UTF-8",
+
+    }
+        pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
+        # pdfk=pdfkit.from_string(dictv,False)
+        # # #
+        response = make_response(pdfk, 200)
+        # response.headers['Content-type'] = 'application/octet-stream'
+        response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
+        response.headers['Content-disposition'] = "inline;filename=output.pdf"
+        # reponse.headers['Set-Cookie']="fileDownload=true; path=/"
+        # reponse.set_cookie('Set-Cookie',"fileDownload=true; path=/")
+        return response
+        # return 'success'
+        # response.headers['Set-Cookie'] = ''
+
+        #
+        # return redirect(url_for('viewhome.home'))
+        #
+        # chart_data=session['chart']
+        # print(chart_data)
+        # self.render('admin/result_chart.html',chart_data=chart_data)
+
+
+
+    def is_accessible(self):
+         return current_user.is_authenticated and current_user.is_admin()
 admin.add_view(ResultsView(name='Results',endpoint='results'))
+
+
 
 @admin.teardown_app_request
 def close(self):

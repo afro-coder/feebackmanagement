@@ -16,13 +16,15 @@ bootstrap=Bootstrap()
 
 mail=Mail()
 db=SQLAlchemy()
-csrf=CSRFProtect()
+# csrf=CSRFProtect()
 sess=Session()
 charts=GoogleCharts()
 #admin=Admin()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
+login_manager.login_message = 'You Must Login to Access This Page!'
+login_manager.login_message_category = 'info'
 login_manager.login_view = 'auth.login'
 
 def create_app(config_name=None):
@@ -39,12 +41,11 @@ def create_app(config_name=None):
     mail.init_app(app)
 
 
-    csrf.init_app(app)
+    # csrf.init_app(app)
     db.init_app(app)
 
     login_manager.init_app(app)
     app.config["SESSION_SQLALCHEMY"]=db
-
     sess.init_app(app)
     #sess.app.session_interface.db.create_all()
     charts.init_app(app)
@@ -65,7 +66,9 @@ def create_app(config_name=None):
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.globals.update(create_hashid=create_hashid)
+    app.jinja_env.globals.update(charts=charts)
     #global error  handler
+
 
     @app.errorhandler(404)
     def pg_not_found(e):
@@ -78,6 +81,6 @@ def create_app(config_name=None):
 
 
 
-    #print(app.url_map)
+    # print(app.url_map)
     #print(app.extensions)
     return app
