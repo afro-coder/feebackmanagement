@@ -179,7 +179,7 @@ class Submissions(db.Model):
     question_id=db.Column(db.Integer,db.ForeignKey('questions.id'),index=True)
     subject_id=db.Column(db.Integer,db.ForeignKey('subject.id'),index=True)
     suggestions=db.Column(db.Text,index=True)
-
+    date=db.Column(db.Date,index=True,default=datetime.date.today())
     def __repr__(self):
         return "<Submissions %r>" %format(self.submissions)
 
@@ -224,9 +224,7 @@ class Stream(db.Model):
 
 
 class AnonymousUser(AnonymousUserMixin):
-
-
-
+    is_authenticated=False
     def is_admin(self):
         return False
 

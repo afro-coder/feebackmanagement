@@ -149,7 +149,9 @@ class LinkView(BaseView):
 
         return jsonify(d=url)
     def is_accessible(self):
-         return current_user.is_authenticated and current_user.is_admin()
+        return current_user.is_authenticated and current_user.is_admin()
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('auth.login',next=request.url))
 
 
 
@@ -157,8 +159,7 @@ class LinkView(BaseView):
 admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
-
-    pass
+    column_sortable_list = ('date','date')
 admin.add_view(SubmissionView(Submissions,db.session))
 
 class ResultsView(BaseView):
@@ -283,7 +284,9 @@ class ResultsView(BaseView):
 
 
     def is_accessible(self):
-         return current_user.is_authenticated and current_user.is_admin()
+        return current_user.is_authenticated and current_user.is_admin()
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('auth.login',next=request.url))
 admin.add_view(ResultsView(name='Results',endpoint='results'))
 
 
