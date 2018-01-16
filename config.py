@@ -57,6 +57,7 @@ class TestConfig(Config):
 
 
 class ProdConfig(Config):
+    # SQLALCHEMY_DATABASE_URI = 'postgresql://leon:@ll0wfmsapp#@localhost/fmsapp'
     SQLALCHEMY_DATABASE_URI= 'sqlite:///' + os.path.join(basedir, "prodb.sqlite")
     DEBUG = False
 

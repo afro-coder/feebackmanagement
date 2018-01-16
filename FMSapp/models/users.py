@@ -40,23 +40,19 @@ class User(UserMixin,db.Model):
     confirmed=db.Column(db.Boolean,default=False)
     # Organization to User
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
-    #organization_rel=db.relationship('Organization',foreign_keys=[organization_id])
-    #role to user connection
+
     role_id=db.Column(db.Integer,db.ForeignKey('roles.id'),nullable=False)
-    #role_rel=db.relationship('Roles',foreign_keys=[role_id])
+
     #User to Submissions
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
     #User many to many with subjects
     sub_id=db.relationship('Subject',backref=db.backref("teacher_id"),secondary=teachersubject)
 
-    #teacher_sub=db.relationship('Subject',
-    #secondary=teachersubject,
-    #backref=db.backref('teacher',
-    #lazy="subquery"))
 
 
-        #def __init__(self,fname,lname,password,email,organization_name):
+
+
     def __init__(self,**kwargs):
         super(User,self).__init__(**kwargs)
         if self.role is None:
@@ -146,23 +142,16 @@ class Questions(db.Model):
 class Organization(db.Model):
     __tablename__='organization'
     id=db.Column(db.Integer,primary_key=True)
-    #user_id=db.Column(db.Integer,db.ForeignKey('users.id'),nullable=False)
     organization_domain=db.Column(db.String(25),unique=True,nullable=False,index=True)
     date_created=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
 
     #organization to User
 
     organization_rel_users=db.relationship('User',backref='organizationid',lazy='dynamic')
-    #organization_rel_users=db.relationship('User',foreign_keys=[User.organization_id],
-    #backref=db.backref('organizationid',
-    #lazy='joined'),
-    #lazy='dynamic')
+
 
     #organization to Question
     organization_rel_questions=db.relationship('Questions',backref='organization_question_id',lazy='dynamic')
-    #organization_rel_questions=db.relationship('Questions',foreign_keys=[Questions.organization_id],
-    #backref=db.backref('org_ques_id',lazy='joined'),
-    #lazy='dynamic')
 
     def __repr__(self):
         return "<Organization %r >" % self.organization_domain
@@ -204,13 +193,9 @@ class Stream(db.Model):
     __tablename__='streams'
     id=db.Column(db.Integer,primary_key=True)
     stream=db.Column(db.String(50),index=True,nullable=False,unique=True)
-    #sub_id=db.relationship('Submissions',backref='streamid',lazy='dynamic')
-
-    # subjects=db.relationship('Subject',foreign_keys=[Subject.stream],
-    # backref=db.backref('streamsub',lazy='joined'),lazy='dynamic')
 
     subjects=db.relationship('Subject',backref='streamsub',lazy='dynamic')
-    # subjects=db.relationship('Subject',primaryjoin=Subjecstate: dropdown.state.t.id ==id,backref="streamsub")
+
     submissions_id=db.relationship('Submissions',
     foreign_keys=[Submissions.stream_id],
     backref=db.backref('streamid',lazy='joined'),lazy='dynamic')
@@ -236,9 +221,6 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
 
     user=User.query.get(int(user_id))
-    # user.is_admin=user.is_admin()
-    # print("USER IS ADMIn?")
-    # print(user.is_admin)
 
 
 

@@ -195,7 +195,7 @@ class ResultsView(BaseView):
 
 
                 data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id)]
-                print(data)
+                # print(data)
                 return jsonify(data)
                 # if len(subject_id) > 0:
                 #     # data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id)]
@@ -231,8 +231,8 @@ class ResultsView(BaseView):
             my_chart=PieChart("teacher_chart"+str(key),options={'title': 'Submission', "width": 500,"height": 300,"is3D":True})
             my_chart.add_column("string", "Answer")
             my_chart.add_column("number", "percent")
-            print("\t\t\t",ans_no)
-            print("\t\t\t",ans_yes)
+            # print("\t\t\t",ans_no)
+            # print("\t\t\t",ans_yes)
             my_chart.add_rows([["Yes", ans_yes],["No", ans_no]])
             chart_data.append((my_chart.name,key,value))
 

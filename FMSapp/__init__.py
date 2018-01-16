@@ -31,7 +31,8 @@ def create_app(config_name=None):
     '''Create all the blue prints and everything'''
     if not config_name:
         config_name=os.environ.get('FLASK_CONFIG','development')
-
+        
+    print(config_name)
     app = Flask(__name__)
 
     app.config.from_object(config[config_name]) #config dict
