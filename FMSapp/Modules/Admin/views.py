@@ -267,7 +267,7 @@ class ResultsView(BaseView):
         response = make_response(pdfk, 200)
         # response.headers['Content-type'] = 'application/octet-stream'
         response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
-        response.headers['Content-disposition'] = "inline;filename=output.pdf"
+        response.headers['Content-disposition'] = "attachment;filename=output.pdf"
         # reponse.headers['Set-Cookie']="fileDownload=true; path=/"
         # reponse.set_cookie('Set-Cookie',"fileDownload=true; path=/")
         return response

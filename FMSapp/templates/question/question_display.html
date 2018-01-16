@@ -50,6 +50,7 @@ textarea {
 .message{display: none;}
 </style>
 <body>
+<!-- <div class="container"> -->
 
     <div id="wrapper">
 
@@ -148,8 +149,8 @@ textarea {
                 </div>
             </div>
         </div>
-    </div>
 
+<!-- </div> -->
 </body>
 
 
@@ -221,7 +222,8 @@ $(function(){
                 // jQuery("div#test option:last-child").remove();
                 // $('#subject_select option:selected').prop('disabled',true);
                 for (i=0; i<response.length; i++){
-                $messageDiv.show().html("<div class='alert alert-"+ response[i]['type'] + " alert-dismissible > <button type='button' class='close' data-dismiss='alert' aria-label='close'><span aria-hidden='true'>&times;</span></button> "+response[i].message); // show and set the message
+                // $messageDiv.show().html("<div class='alert alert-"+ response[i]['type'] + " alert-dismissible > <button type='button' class='close' data-dismiss='alert' aria-label='close'><span aria-hidden='true'>&times;</span></button> "+response[i].message); // show and set the message
+                $messageDiv.show().html("<div class='alert alert-"+response[i]['type']+" alert-dismissable'><a  class='close' data-dismiss='alert' aria-label='close'>×</a><strong>"+response[i].message+"</strong> </div>"); // show and set the message
                 setTimeout(function(){ $messageDiv.slideDown("slow").html('');}, 3000);
             }
                 $('#subject_select option:selected').remove();

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "_macro.html" import render_field %}
 
-	{% block title %}Login- Progressus Bootstrap template{% endblock title%}
+	{% block title %}Login{% endblock title%}
 {% block css %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/cust.css') }}" media="screen">
 
@@ -20,8 +20,8 @@
 	<div class="container">
 
 		<ol class="breadcrumb">
-			<li><a href="index.html">Home</a></li>
-			<li class="active">Registration</li>
+			<li><a href="{{url_for('viewhome.home')}}">Home</a></li>
+			<li class="active">Login</li>
 		</ol>
 
 		<div class="row">
@@ -79,7 +79,7 @@
 							   </div>
 						   </div>
 					   </form>
-					   
+
 				   </div>
 
 					</div>
