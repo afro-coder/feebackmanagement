@@ -183,6 +183,7 @@ class Subject(db.Model):
     #add required field
 
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
+    semester=db.Column(db.Integer,db.ForeignKey('semester.id'))
     # teacher_name=db.relationship('User',backref=db.backref("subject_det"),secondary=teachersubject)
 
 
@@ -205,6 +206,15 @@ class Stream(db.Model):
 
     def __str__(self):
         return "%s" %self.stream
+
+class Semester(db.Model):
+    __tablename__='semester'
+    id=db.Column(db.Integer,primary_key=True)
+    semester_name=db.Column(db.Integer,unique=True,nullable=False)
+    subject_col=db.relationship('Subject',backref='subject_ref',lazy='dynamic')
+	
+    def __str__(self):
+        return "%s" %self.semester_name
 
 
 

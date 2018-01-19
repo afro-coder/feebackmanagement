@@ -16,7 +16,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
 from ... import db,charts
 from ...models.users import (User,Questions,Roles,
-Stream,Organization,Subject,Submissions)
+Stream,Organization,Subject,Submissions,Semester)
 from werkzeug.security import generate_password_hash
 
 from .forms import SubmissionForm,StreamForm
@@ -123,6 +123,10 @@ class SubjectView(CustomModelView):
     #form_excluded_columns=['sub_id']
 admin.add_view(SubjectView(Subject,db.session))
 
+class SemesterView(CustomModelView):
+    form_excluded_columns=["subject_col"]
+    column_labels=dict(semester_name='Semester',)
+admin.add_view(SemesterView(Semester,db.session))
 class LinkView(BaseView):
     @expose('/',methods=['GET','POST'])
     @requires_roles('admin')
@@ -240,7 +244,7 @@ class ResultsView(BaseView):
         # session['chart']=chart_data
         print(chart_data )
 
-        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data),"success"
+        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data),200
 
     @expose('/_pdfgen',methods=["GET","POST"])
     def pdfgen(self):
@@ -261,7 +265,14 @@ class ResultsView(BaseView):
     'encoding': "UTF-8",
 
     }
-        pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
+    #Windows
+        # path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+        # config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
+        # pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
+    #linux
+        path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+        config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
+        pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
         # pdfk=pdfkit.from_string(dictv,False)
         # # #
         response = make_response(pdfk, 200)
