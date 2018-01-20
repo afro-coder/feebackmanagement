@@ -143,11 +143,12 @@ class LinkView(BaseView):
         if request.method == "GET":
 
             stream_name=request.args.get('b',0,type=int)
+            semester_name=request.args.get('a',0,type=int)
             # print(stream_name)
 
 
             print(request.script_root)
-            url=url_for('question.display_question',hashid=create_hashid(stream_name))
+            url=url_for('question.display_question',hashid=create_hashid(stream_name),semester=create_hashid(semester_name))
             print(url)
 
 
@@ -270,9 +271,9 @@ class ResultsView(BaseView):
         # config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
         # pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
     #linux
-        path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-        config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
-        pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
+        #path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+        #config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
+        pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
         # pdfk=pdfkit.from_string(dictv,False)
         # # #
         response = make_response(pdfk, 200)

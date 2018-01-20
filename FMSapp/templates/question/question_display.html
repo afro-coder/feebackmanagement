@@ -238,7 +238,8 @@ $(function(){
                 if(numopt<1)
                 {   setTimeout(function(){
                     alert("Thank You");
-                    window.location.href = "{{url_for('question.suc')}}";
+                    // window.location.href = "{{url_for('question.suc')}}";
+                    window.location.replace("{{url_for('question.suc',_external=True)}}");
 
                 },2000)
 

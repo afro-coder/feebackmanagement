@@ -85,6 +85,6 @@ def create_app(config_name=None):
 
 
 
-    print(app.url_map)
+    #print(app.url_map)
     #print(app.extensions)
     return app

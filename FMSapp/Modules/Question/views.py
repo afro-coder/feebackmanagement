@@ -13,15 +13,21 @@ from FMSapp.Modules.utils import generate_form_token
 def before_req():
     pass
 
-@question.route("/stream/<hashid>", methods=['GET', 'POST'])
-def display_question(hashid):
+@question.route("/stream/<hashid>/<semester>", methods=['GET', 'POST'])
+def display_question(hashid,semester):
 
     dec=decode_hashid(hashid=hashid)
     (dec,)=dec
-    print("CHECK THIS")
-    print(str(dec))
     stream_id=dec
-    subjects= Subject.query.filter_by(stream=dec)
+    print(stream_id)
+
+    dec1=decode_hashid(hashid=semester)
+    (dec1,)=dec1
+    semester_id=dec1
+    print(semester_id)
+
+    subjects= Subject.query.filter_by(stream=dec,semester=dec1)
+
 
     question=[(ques.id,ques.question) for ques in Questions.query.all()]
     form=QuestionSelect()

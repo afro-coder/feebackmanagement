@@ -1,25 +1,48 @@
 {% extends 'admin/master.html' %}
 {% from '_macro.html' import render_field %}
 {% block title %} FMsapp {% endblock %}
-
+{% block head %}
+<style>
+.message-div{display: none;}
+</style>
+{% endblock %}
 {%  block body %}
-<div class="form-group">
-    <div class="col-xs-2">
+<div class="row">
+<div class="col-xs-12 message">
+    <div id="message-data">
+
+    </div>
+</div>
+</div>
 
 
-    <form  method="POST">
+
+    <div class="row">
+        <div class="col-xs-6">
+
+
+    <form  class="form-inline" method="POST">
         {{form.csrf_token}}
-        {{render_field(form.stream,class="form-control",id="stream_select")}}
+        <div class="form-group">
+
+            {{render_field(form.stream,class="form-control",id="stream_select")}}
+        </div>
+        <div class="form-group">
+
+        {{render_field(form.semester,class="form-control",id="semester_select")}}
+    </div>
+
 
     </br>
-        {{form.submit}}
+
 
     </div>
     <br/>
-    <div <div class="col-xs-2">
-        <span id="link_load"></span>
-    </div>
 </form>
+</div>
+<div class="col-xs-2">
+    <span id="link_load"></span>
+</div>
 
 </div>
 
@@ -30,20 +53,48 @@
 </script>
 <script charset="utf-8" type="text/javascript">
 
+// $(function()
+// {
+//     updatedata();
+//     function updatedata()
+//     {
+//     $('#stream_select').on('change',function(){
+//         stream_name= $('#stream_select option:selected').text();
+//         stream_id= $('#stream_select option:selected').val();
+//         if(stream_id == '__None')
+//         {
+//             return false;
+//         }
+//         $.getJSON("{{url_for('linkgen.genlink')}}",{
+//             a:stream_name,
+//             b:stream_id
+//         },function(data){
+//             $('#link_load').html("<H1><a href="+data.d+">"+$SCRIPT_ROOT+data.d+" </a>")
+//
+//         });
+//
+//     });
+// }
+// });
 $(function()
 {
     updatedata();
     function updatedata()
     {
-    $('#stream_select').on('change',function(){
+    $('#semester_select').on('change',function(){
         stream_name= $('#stream_select option:selected').text();
         stream_id= $('#stream_select option:selected').val();
-        if(stream_id == '__None')
+        semester_name=$("#semester_select option:selected").text();
+        semester_id=$("#semester_select option:selected").val();
+
+        if(stream_id == '__None' || semester_id == '__None')
         {
+            $(".message").show().html("<div class='alert alert-danger alert-dismissable'><a  class='close' data-dismiss='alert'       aria-label='close'>×</a><strong>Both are required</strong> </div>"); // show and set the message
+            setTimeout(function(){ $(".message").hide(300).html('');}, 3000);
             return false;
         }
         $.getJSON("{{url_for('linkgen.genlink')}}",{
-            a:stream_name,
+            a:semester_id,
             b:stream_id
         },function(data){
             $('#link_load').html("<H1><a href="+data.d+">"+$SCRIPT_ROOT+data.d+" </a>")
