@@ -381,14 +381,15 @@ $(function(){
                 numopt--;
                 console.log(numopt);
                 if(numopt<1)
-                {   setTimeout(function(){
+                {   $('html, body').animate({
+                scrollTop: $(".test").offset().top}, 200);
+                    setTimeout(function(){
                     var $messageDiv = $('#flash');
                     $messageDiv.show().html("<div class='alert alert-success alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Thank you</strong> </div>"); // show and set the message
 
-                    $('html, body').animate({
-                    scrollTop: $(".test").offset().top}, 200);
 
-                    setTimeout(function(){ $messageDiv.slideDown("slow").html('')}, 4000);
+
+                    // setTimeout(function(){ $messageDiv.slideDown("slow").html('')}, 4000);
 
                     // window.location.href = "{{url_for('question.suc')}}";
                     window.location.replace("{{url_for('question.suc',_external=True)}}");
