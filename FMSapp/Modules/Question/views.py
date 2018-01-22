@@ -32,6 +32,7 @@ def display_question(hashid,semester):
     question=[(ques.id,ques.question) for ques in Questions.query.all()]
     form=QuestionSelect()
     form.subject_data.query=subjects
+    # form.teacher_select.choices={('__None','Select a Teacher')}
     form.teacher_select.choices=[]
 
     # if form.validate_on_submit():

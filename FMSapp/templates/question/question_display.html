@@ -1,10 +1,17 @@
 {% from "_macro.html" import render_field %}
-<html>
+<!Doctype html>
+<html lang="en">
 <head>
     <title>Welcome</title>
     <link href="{{url_for('static',filename='admin/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{url_for('static',filename='admin/css/font-awesome.css') }}" rel="stylesheet" />
-     <link href="{{url_for('static',filename='admin/css/custom-styles.css') }}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="{{url_for('static',filename='css/style.css')}}" rel="stylesheet">
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/css/mdb.min.css"> -->
+
+
+
+     <!-- <link href="{{url_for('static',filename='admin/css/custom-styles.css') }}" rel="stylesheet" /> -->
     <meta id="stream_id" data-name="{{hashid}}" data-other="{{hashid}}">
     <meta id="form_id" data-uid="{{form_id}}" >
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,26 +21,40 @@
 .question-ans
 {
     display: none;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
-.mg
+/* .mg
 {
     left: 7%;
     font-size: 15px;
 
-}
-input[type="radio"]
+} */
+/* input[type="radio"]
 
 {   height: 100%;
     margin-top: -20px;
     vertical-align: middle;
 
+} */
+html {
+  position: relative;
+  min-height: 100%;
 }
 body
 {
-    font-family: 'Open Sans', sans-serif;
-    background: #e6e6e6;
+    font-family: 'Roboto', sans-serif;
+
+    /* background: #e6e6e6; */
 }
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px; /* Set the fixed height of the footer here */
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #212121;
+}
+
 .panel {
 
 
@@ -44,116 +65,235 @@ box-shadow: 0 0 6px #090707;
 }
 
 textarea {
-    overflow-y: scroll;
+    overflow-y: hidden;
     resize: none;
+
 }
 .message{display: none;}
+
+.colorme{
+
+    /* width: 100%; */
+    min-height:150px;
+    /* height: 29%; */
+    /* background: #388E3C; */
+    /* background: #00C853; */
+    background: #009587;
+    /* background: #673AB7; */
+    z-index: -3;
+}
+.mat-body
+{
+    /* background: #EEEEEE; */
+    /* background:#F7F7F7; */
+    background:#eee;
+    margin-bottom: 60px;
+
+}
+.test
+{
+    width: 55% ;
+
+
+    min-height: 200px;
+    float:none;
+    margin 0 auto;
+    margin-top: -5%;
+
+    /* z-index: 34; */
+    -webkit-box-shadow:0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+    border-radius: 2px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border:0;
+
+    background-color: #FFFFFF;
+    padding-top: 5px;
+    /* border: solid 2px black; */
+    /* -moz-box-shadow: 0 0 3px #ccc;
+    -webkit-box-shadow: 0 0 3px #ccc;
+    box-shadow: 0 0 6px #090707; */
+    /* display: block;
+
+    float: none;
+    width:60%;
+    height: 100%;
+    background:
+    border: 2px solid black; */
+}
+.navbg{
+    background-color: #388E3C;
+}
+.first-select{font-size: 18px; font-family: "Roboto script=all rev=2", "Adobe Blank"}
+
+.align-resp label{font-size: 16px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 15px;margin-left: 16%;}
+/* .question-fix{font-size: 16.4px;padding-left: 4%;font-family: sans-serif,"Times New Roman", Times ;margin-left: 15px; line-height: 20px; letter-spacing: 0.4;} */
+.question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ;margin-left: 15px; line-height: 30px; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
+
+.sugbox{margin-left: 5%;}
+
+.sugbox label{margin-left: 5%;font-weight:100px;font-size: 19px;font-family: "Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times ;}
+
+.subbut{float: right;padding: 7px 6px 6px 8px;margin-bottom: 4%; margin-right:  15px;}
+
+.extra-pad{padding: 12px 12px 12px 12px}
+
+
+/** select**/
+
+
 </style>
-<body>
-<!-- <div class="container"> -->
+<body class="mat-body">
 
-    <div id="wrapper">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 colorme">
+        <div class="row navbar-brand">
+            <div class="col-xs-12"><img width=240px src="{{url_for('static',filename='images/fmsapplogo.png')}}"></div>
+        </div>
+        </div>
+    </div>
+<div class="row ">
+    <div class="col-xs-12 test  center-block">
+        <div class="header">
+            <h1 class="text-center">Welcome</h1>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-xs-12">
 
+            <div id="flash">
 
-
-
-
-
-        <div id="page-inner">
-            <div class="row">
-                <div class="col-lg-6 col-md-offset-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-
-                            <div class="panel-heading">
-
-                                        <h3 align="center">Welcome </h3>
-
-                            </div>
-                            <div id="flash">
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12  ">
-
-                                    <hr>
-                                    <div class="row">
-                                    <form name="teacherform" id="teacherform"  method="GET">
-
-
-                                        <div class="form-group">
-                                            {{form.csrf_token}}
-                                            <div class="col-md-5 col-md-offset-1">
-                                                <label>Subject</label>
-                                                {{render_field(form.subject_data,class="form-control",id="subject_select")}}
-                                        </div>
-                                        <div class="col-md-5">
-                                            <label>Teacher</label>
-                                                {{render_field(form.teacher_select,class="form-control ",id="teacher_select")}}
-                                    </div>
-                                </div>
-                            </form>
-                            </div><!--- Select row-->
-                            <hr>
-                            <div class="col-md-12 question-ans">
-                            <!-- <div class="form-group question-an"> -->
-                                <form method="POST"  name="questionform" id="questionform">
-                                    {{form.csrf_token}}
-
-                                       {#<!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> -->
-                                       #}
-                                     {% for key,questions in question %}
-                                     <!-- <div class="row"> -->
-                                     <div class="form-group">
-
-                                          <label>{{key}}. {{questions}}</label>
-
-
-                                          <br/>
-                                          <label class="radio-inline mg" for='options{{key}}'>Yes
-                                           <input type="radio" name="options{{key}}" id="options" value="1" required >
-
-                                           </label>
-
-
-
-                                           <label class="radio-inline mg" for='options{{key}}'> No
-                                          <input type="radio" name="options{{key}}" id="options" value="2" required >
-
-
-                                          </label>
-
-
-
-                                      </div>
-                                  <!-- </div> -->
-                                       {% endfor %}
-                                       <hr>
-                                       <div class="form-group">
-                                           <label>Suggestions</label>
-
-                                           <textarea class="form-control" id="suggestions" ></textarea>
-                                       </div>
-                                       <!-- <input type="button"   class="btn btn-default" name="submitbut" id="submitv" value="Submit"> -->
-                                       <input type="submit" class="btn btn-default" name="submit" id="submitv" value="Submit">
-
-
-                                   </form>
-
-                                <!-- </div> -->
-                            </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
+        </div>
+        <div class="row">
 
-<!-- </div> -->
+        <form name="teacherform" id="teacherform" class="form-inline "  method="GET">
+            <div class="col-xs-4 col-xs-offset-2">
+
+            {{form.csrf_token}}
+            <div class="form-group ">
+
+                    <label class="first-select">Subject</label>
+                    {{render_field(form.subject_data,class="form-control",id="subject_select")}}
+            </div>
+        </div>
+        <div class="col-xs-4 col-xs-offset-1">
+
+            <div class="form-group override">
+
+                <label class="first-select ">Teacher</label>
+                {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
+
+            </div>
+        </div>
+        </form>
+    </div>
+    <hr>
+    <div class="row question-an">
+        <div class="col-xs-12 ">
+            <div class="extra-pad">
+
+
+
+        <form method="POST"   class="form-inline space" name="questionform" id="questionform">
+            {{form.csrf_token}}
+
+
+
+            {% for key,questions in question %}
+            <!-- <ul class="list-inline list-group ">
+            <li>
+                {{questions}}
+            </li>
+            <ul class="list-inline list-group ">
+                <li>
+
+                </li>
+
+                <li >
+                    <div class=" radio-inline">
+
+                        <label  for="options1{{key}}">
+                            <input type="radio" name="options{{key}}" id="options1{{key}}" value="1" required >Yes
+                        </label>
+                    </div>
+
+                </li>
+                <li>
+
+                </li>
+                <li>
+                    <div class="form-group radio-inline ">
+
+
+                        <label  for='options2{{key}}'>
+                            <input type="radio" name="options{{key}}" id="options2{{key}}" value="2" required >No
+                        </label>
+                    </div>
+                </li>
+
+            </ul> -->
+
+
+                    <div class="question-fix" >
+                        <p>{{key}}.&nbsp;{{questions}} </p>
+                    </div>
+
+                        <div class="align-resp">
+
+
+                        <div class="form-group radio-inline">
+
+                       <label class="text-nowrap"  for="options1{{key}}">
+                           <input type="radio" name="options{{key}}" id="options1{{key}}" value="1" required >Yes
+                       </label>
+                   </div>
+
+                   <div class="form-group radio-inline ">
+
+
+                       <label  for='options2{{key}}'>
+                           <input type="radio" name="options{{key}}" id="options2{{key}}" value="2" required >No
+                       </label>
+                   </div>
+               </div>
+
+           <!-- </ul> -->
+              {% endfor %}
+          </div>
+
+               <hr>
+               <div class="form-group sugbox">
+
+                   <label>Suggestions <br>
+                   <textarea class="form-control" rows="3" cols="30" id="suggestions" ></textarea>
+               </label>
+               </div>
+               <!-- <input type="button"   class="btn btn-default" name="submitbut" id="submitv" value="Submit"> -->
+               <br>
+               <div class="subbut">
+
+                   <input type="submit" class="btn btn-default" name="submit" id="submitv" value="Submit">
+               </div>
+
+
+           </form>
+    </div>
+</div>
+    </div>
+</div>
+</div>
+<div class='footer'>
+    <div class="container-fluid">
+
+        <span class="text-muted">Place sticky footer content here.</span>
+    </div>
+</div>
 </body>
-
-
 
 
 
@@ -166,11 +306,16 @@ textarea {
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.url_root[:-1]|tojson|safe }};
 </script>
+<!-- <script type="text/javascript">
+$(document).ready(function() {
+   $('.mdb-select').material_select();
+ });
+
+</script> -->
 <script type="text/javascript">
 
 $(function(){
     var numopt=document.getElementById("subject_select").options.length-1;
-    console.log(numopt)
 
 
     // $("#questionform").submit(function(e){
@@ -237,11 +382,18 @@ $(function(){
                 console.log(numopt);
                 if(numopt<1)
                 {   setTimeout(function(){
-                    alert("Thank You");
+                    var $messageDiv = $('#flash');
+                    $messageDiv.show().html("<div class='alert alert-success alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Thank you</strong> </div>"); // show and set the message
+
+                    $('html, body').animate({
+                    scrollTop: $(".test").offset().top}, 200);
+
+                    setTimeout(function(){ $messageDiv.slideDown("slow").html('')}, 4000);
+
                     // window.location.href = "{{url_for('question.suc')}}";
                     window.location.replace("{{url_for('question.suc',_external=True)}}");
 
-                },2000)
+                },4000)
 
                 }
              },
@@ -250,7 +402,17 @@ $(function(){
             }
         }); //ajax function end
     }else{
-        alert("all fields required");
+
+        var $messageDiv = $('#flash');
+        $messageDiv.show().html("<div class='alert alert-info alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Please answer all the questions</strong> </div>"); // show and set the message
+
+        $('html, body').animate({
+        scrollTop: $(".test").offset().top}, 200);
+
+        setTimeout(function(){ $messageDiv.slideDown("slow").html('')}, 3000);
+
+        // $messageDiv.show().html("All fields are required");
+        // alert("all fields required");
     }
     // }
 
@@ -301,6 +463,8 @@ $(function()
             var options = $("#teacher_select");
             if (options.val() != "__None"){
                 options.html("");
+                options.append($("<option>").html("Select the teacher").val("__None"));
+
             data.forEach(function(item){
                 options.append(
                     $('<option />',{
@@ -329,10 +493,13 @@ $(function()
 </script>
  <script type="text/javascript">
 $(function(){
-    $('select#teacher_select').click(function(){
+        $('#teacher_select ').click(function(){
+        if($('#teacher_select').val()== '__None')
+        {
+            return false;
+        }
 
     var isdisabled=$('select#teacher_select').prop('disabled');
-    console.log("hello")
     if (isdisabled==false)
     {
             $(".question-ans").slideDown().show();

@@ -10,8 +10,8 @@ def get_subject():
 class QuestionSelect(FlaskForm):
 
     subject_data=QuerySelectField('Stream',
-    allow_blank=True,blank_text="Enter ",validators=[DataRequired('Required Field')])
-    teacher_select=SelectField('Teacher',validators=[DataRequired('Required Field')],render_kw={'disabled':'disabled'})
+    allow_blank=True,blank_text="Select a Subject  ",validators=[DataRequired('Required Field')])
+    teacher_select=SelectField('Select a Teacher',validators=[DataRequired('Required Field')],render_kw={'disabled':'disabled'})
 
 
 

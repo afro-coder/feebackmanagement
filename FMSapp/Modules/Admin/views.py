@@ -267,12 +267,11 @@ class ResultsView(BaseView):
 
     }
     #Windows
-        # path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-        # config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
-        # pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
-    #linux
         #path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
         #config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
+        #pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
+    #linux
+        
         pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
         # pdfk=pdfkit.from_string(dictv,False)
         # # #
