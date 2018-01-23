@@ -6,7 +6,10 @@
     <link href="{{url_for('static',filename='admin/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{url_for('static',filename='admin/css/font-awesome.css') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link href="{{url_for('static',filename='css/style.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='css/bootstrap-material-design.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='css/ripples.min.css')}}" rel="stylesheet">
+
+
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/css/mdb.min.css"> -->
 
 
@@ -128,9 +131,10 @@ textarea {
 }
 .first-select{font-size: 18px; font-family: "Roboto script=all rev=2", "Adobe Blank"}
 
-.align-resp label{font-size: 16px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 15px;margin-left: 16%;}
+.align-resp label{font-size: 16px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 5px;margin-left: 16%;}
 /* .question-fix{font-size: 16.4px;padding-left: 4%;font-family: sans-serif,"Times New Roman", Times ;margin-left: 15px; line-height: 20px; letter-spacing: 0.4;} */
-.question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ;margin-left: 15px; line-height: 30px; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
+
+.question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
 
 .sugbox{margin-left: 5%;}
 
@@ -204,6 +208,7 @@ textarea {
 
 
 
+
             {% for key,questions in question %}
             <!-- <ul class="list-inline list-group ">
             <li>
@@ -238,28 +243,37 @@ textarea {
 
             </ul> -->
 
+            <!-- <div class="question-fix" > -->
+                <!-- <p>{{key}}.&nbsp;{{questions}} </p> -->
+            <!-- </div> -->
 
-                    <div class="question-fix" >
-                        <p>{{key}}.&nbsp;{{questions}} </p>
-                    </div>
 
                         <div class="align-resp">
 
 
-                        <div class="form-group radio-inline">
+                                <p class="lead">{{key}}.&nbsp;{{questions}} </p>
 
-                       <label class="text-nowrap"  for="options1{{key}}">
+                        <div class="form-group">
+
+                        <div class="radio-inline radio radio-primary">
+
+                       <label   for="options1{{key}}">
                            <input type="radio" name="options{{key}}" id="options1{{key}}" value="1" required >Yes
                        </label>
                    </div>
+               </div>
+               <div class="form-group">
 
-                   <div class="form-group radio-inline ">
+                   <div class=" radio-inline radio radio-primary ">
 
 
                        <label  for='options2{{key}}'>
                            <input type="radio" name="options{{key}}" id="options2{{key}}" value="2" required >No
                        </label>
                    </div>
+               </div>
+
+
                </div>
 
            <!-- </ul> -->
@@ -290,7 +304,8 @@ textarea {
 <div class='footer'>
     <div class="container-fluid">
 
-        <span class="text-muted">Place sticky footer content here.</span>
+        <span class="text-muted">Designed by leon nunes.</span>
+        <span class="text-muted">Contact: leon9923@gmail.com.</span>
     </div>
 </div>
 </body>
@@ -303,6 +318,14 @@ textarea {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/ripples.min.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $.material.init();
+});
+</script>
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.url_root[:-1]|tojson|safe }};
 </script>
