@@ -243,7 +243,8 @@ class ResultsView(BaseView):
 
                 my_chart=PieChart(("teacher_chart{0}").format(key),
                 options={'title': 'Submission', "width": 500,"height": 300,
-                "is3D":True,"pieSliceText":'value-and-percentage'})
+                "is3D":True,"pieSliceText":'value-and-percentage','legend': { 'position': 'labeled','textStyle': {'fontName': 'Roboto','fontSize': 16
+      }}})
 
                 my_chart.add_column("string", "Answer")
                 my_chart.add_column("number", "percent")

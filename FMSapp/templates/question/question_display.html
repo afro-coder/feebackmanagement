@@ -6,10 +6,8 @@
     <link href="{{url_for('static',filename='admin/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{url_for('static',filename='admin/css/font-awesome.css') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-
     <link href="{{url_for('static',filename='css/bootstrap-material-design.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='css/ripples.min.css')}}" rel="stylesheet">
-
 
 
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/css/mdb.min.css"> -->
@@ -133,7 +131,7 @@ textarea {
 }
 .first-select{font-size: 18px; font-family: "Roboto script=all rev=2", "Adobe Blank"}
 
-.align-resp label{font-size: 16px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 5px;margin-left: 16%;}
+.align-resp label{font-size: 14px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 5px;margin-left: 16%;}
 /* .question-fix{font-size: 16.4px;padding-left: 4%;font-family: sans-serif,"Times New Roman", Times ;margin-left: 15px; line-height: 20px; letter-spacing: 0.4;} */
 
 .question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
@@ -147,7 +145,14 @@ textarea {
 .extra-pad{padding: 12px 12px 12px 12px}
 
 
+/** select**/
+.edit  {-webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
 
+
+}
+.edit > option {width: 5%;}
 
 
 
@@ -214,42 +219,6 @@ textarea {
 
 
             {% for key,questions in question %}
-            <!-- <ul class="list-inline list-group ">
-            <li>
-                {{questions}}
-            </li>
-            <ul class="list-inline list-group ">
-                <li>
-
-                </li>
-
-                <li >
-                    <div class=" radio-inline">
-
-                        <label  for="options1{{key}}">
-                            <input type="radio" name="options{{key}}" id="options1{{key}}" value="1" required >Yes
-                        </label>
-                    </div>
-
-                </li>
-                <li>
-
-                </li>
-                <li>
-                    <div class="form-group radio-inline ">
-
-
-                        <label  for='options2{{key}}'>
-                            <input type="radio" name="options{{key}}" id="options2{{key}}" value="2" required >No
-                        </label>
-                    </div>
-                </li>
-
-            </ul> -->
-
-            <!-- <div class="question-fix" > -->
-                <!-- <p>{{key}}.&nbsp;{{questions}} </p> -->
-            <!-- </div> -->
 
 
                         <div class="align-resp">
@@ -257,17 +226,9 @@ textarea {
 
                                 <p class="lead">{{key}}.&nbsp;{{questions}} </p>
 
-
                         <div class="form-group">
 
                         <div class="radio-inline radio radio-primary">
-
-
-
-                        <div class="form-group">
-
-                        <div class="radio-inline radio radio-primary">
-
 
                        <label   for="options1{{key}}">
                            <input type="radio" name="options{{key}}" id="options1{{key}}" value="1" required >Yes
@@ -313,14 +274,12 @@ textarea {
     </div>
 </div>
 </div>
-</div>
 <div class='footer'>
     <div class="container-fluid">
 
-        <span class="text-muted">Designed By leon nunes.</span>
-        <span class="text-center text-muted"> Contact:leon9923@gmail.com</span>
+        <span class="text-muted">Designed by leon nunes.</span>
+        <span class="text-muted">Contact: leon9923@gmail.com.</span>
     </div>
-</div>
 </div>
 </body>
 
@@ -355,11 +314,6 @@ $(function(){
     var numopt=document.getElementById("subject_select").options.length-1;
 
 
-    // $("#questionform").submit(function(e){
-    //
-    //     e.preventDefault();
-    // });
-
 
     $("#submitv").click(function(e)
     {   e.preventDefault();
@@ -367,12 +321,6 @@ $(function(){
 
         if($("#questionform")[0].checkValidity()) {
 
-        // if(validate())
-        // {
-        //     console.log("false")
-        // }
-        // else
-        // {
 
         suggestions=$.trim($("#suggestions").val());
 
@@ -392,7 +340,7 @@ $(function(){
         query_data.push({name:"stream_id",value:dataset["stream"]});
         query_data.push({name:"suggestions",value:dataset["suggestions"]});
         query_data.push({name:"numopt",value:dataset["numopt"]});
-        // query_data.push({name:"teacher",value:dataset["teacher"]});
+
 
 
         $.ajax({
@@ -401,12 +349,7 @@ $(function(){
             type: 'POST',
             success: function(response) {
                 console.log(response);
-                 // setTimeout($('#flash').append(flashMessage(response)),3000);
-
-                // jQuery("div#test option:last-child").remove();
-                // $('#subject_select option:selected').prop('disabled',true);
                 for (i=0; i<response.length; i++){
-                // $messageDiv.show().html("<div class='alert alert-"+ response[i]['type'] + " alert-dismissible > <button type='button' class='close' data-dismiss='alert' aria-label='close'><span aria-hidden='true'>&times;</span></button> "+response[i].message); // show and set the message
                 $messageDiv.show().html("<div class='alert alert-"+response[i]['type']+" alert-dismissable'><a  class='close' data-dismiss='alert' aria-label='close'>×</a><strong>"+response[i].message+"</strong> </div>"); // show and set the message
                 setTimeout(function(){ $messageDiv.slideDown("slow").html('');}, 3000);
             }
@@ -424,7 +367,7 @@ $(function(){
                 scrollTop: $(".test").offset().top}, 200);
                     setTimeout(function(){
                     var $messageDiv = $('#flash');
-                    $messageDiv.show().html("<div class='alert alert-success alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Thank you</strong> </div>"); // show and set the message
+                    // $messageDiv.show().html("<div class='alert alert-success alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Thank you</strong> </div>"); // show and set the message
 
 
 
