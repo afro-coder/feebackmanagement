@@ -28,7 +28,7 @@ class Config(object):
 
     SESSION_TYPE='sqlalchemy'
     #SESSION_COOKIE_SECURE=True
-    PERMANENT_SESSION_LIFETIME=3600
+    PERMANENT_SESSION_LIFETIME=7200
     # SQLALCHEMY_ECHO=True
 
     ADMIN_EMAIL='leon9923@gmail.com'
