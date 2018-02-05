@@ -6,6 +6,13 @@
     <link href="{{url_for('static',filename='admin/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{url_for('static',filename='admin/css/font-awesome.css') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<<<<<<< HEAD
+=======
+    <link href="{{url_for('static',filename='css/bootstrap-material-design.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='css/ripples.min.css')}}" rel="stylesheet">
+
+
+>>>>>>> stage-final
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/css/mdb.min.css"> -->
 
 
@@ -127,9 +134,10 @@ textarea {
 }
 .first-select{font-size: 18px; font-family: "Roboto script=all rev=2", "Adobe Blank"}
 
-.align-resp label{font-size: 16px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 15px;margin-left: 16%;}
+.align-resp label{font-size: 16px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 5px;margin-left: 16%;}
 /* .question-fix{font-size: 16.4px;padding-left: 4%;font-family: sans-serif,"Times New Roman", Times ;margin-left: 15px; line-height: 20px; letter-spacing: 0.4;} */
-.question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ;margin-left: 15px; line-height: 30px; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
+
+.question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
 
 .sugbox{margin-left: 5%;}
 
@@ -141,6 +149,14 @@ textarea {
 
 
 /** select**/
+.edit  {-webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+
+
+}
+.edit > option {width: 5%;}
+
 
 
 </style>
@@ -177,7 +193,7 @@ textarea {
             <div class="form-group ">
 
                     <label class="first-select">Subject</label>
-                    {{render_field(form.subject_data,class="form-control",id="subject_select")}}
+                    {{render_field(form.subject_data,class="form-control edit",id="subject_select")}}
             </div>
         </div>
         <div class="col-xs-4 col-xs-offset-1">
@@ -188,6 +204,7 @@ textarea {
                 {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
 
             </div>
+
         </div>
         </form>
     </div>
@@ -200,6 +217,7 @@ textarea {
 
         <form method="POST"   class="form-inline space" name="questionform" id="questionform">
             {{form.csrf_token}}
+
 
 
 
@@ -237,28 +255,37 @@ textarea {
 
             </ul> -->
 
+            <!-- <div class="question-fix" > -->
+                <!-- <p>{{key}}.&nbsp;{{questions}} </p> -->
+            <!-- </div> -->
 
-                    <div class="question-fix" >
-                        <p>{{key}}.&nbsp;{{questions}} </p>
-                    </div>
 
                         <div class="align-resp">
 
 
-                        <div class="form-group radio-inline">
+                                <p class="lead">{{key}}.&nbsp;{{questions}} </p>
 
-                       <label class="text-nowrap"  for="options1{{key}}">
+                        <div class="form-group">
+
+                        <div class="radio-inline radio radio-primary">
+
+                       <label   for="options1{{key}}">
                            <input type="radio" name="options{{key}}" id="options1{{key}}" value="1" required >Yes
                        </label>
                    </div>
+               </div>
+               <div class="form-group">
 
-                   <div class="form-group radio-inline ">
+                   <div class=" radio-inline radio radio-primary ">
 
 
                        <label  for='options2{{key}}'>
                            <input type="radio" name="options{{key}}" id="options2{{key}}" value="2" required >No
                        </label>
                    </div>
+               </div>
+
+
                </div>
 
            <!-- </ul> -->
@@ -288,8 +315,14 @@ textarea {
 </div>
 <div class='footer'>
     <div class="container-fluid">
+<<<<<<< HEAD
         <span class="text-muted">Designed By leon nunes.</span>
         <span class="text-center text-muted"> Contact:leon9923@gmail.com</span>
+=======
+
+        <span class="text-muted">Designed by leon nunes.</span>
+        <span class="text-muted">Contact: leon9923@gmail.com.</span>
+>>>>>>> stage-final
     </div>
 </div>
 </body>
@@ -302,6 +335,14 @@ textarea {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/ripples.min.js') }}"></script>
+<script  type="text/javascript" src="{{ url_for('static',filename='js/material.min.js') }}"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $.material.init();
+});
+</script>
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.url_root[:-1]|tojson|safe }};
 </script>
@@ -341,7 +382,8 @@ $(function(){
         var dataset={
             "stream":$("#stream_id").data("name"),
             "form_id":$("#form_id").data("uid"),
-            "suggestions":suggestions
+            "suggestions":suggestions,
+            "numopt":numopt
         };
 
 
@@ -352,8 +394,9 @@ $(function(){
         query_data.push({name:"form_id",value:dataset["form_id"]});
         query_data.push({name:"stream_id",value:dataset["stream"]});
         query_data.push({name:"suggestions",value:dataset["suggestions"]});
+        query_data.push({name:"numopt",value:dataset["numopt"]});
         // query_data.push({name:"teacher",value:dataset["teacher"]});
-        console.log(query_data);
+
 
         $.ajax({
             url: "{{url_for('question.gen_teacher')}}",
@@ -380,14 +423,15 @@ $(function(){
                 numopt--;
                 console.log(numopt);
                 if(numopt<1)
-                {   setTimeout(function(){
+                {   $('html, body').animate({
+                scrollTop: $(".test").offset().top}, 200);
+                    setTimeout(function(){
                     var $messageDiv = $('#flash');
                     $messageDiv.show().html("<div class='alert alert-success alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Thank you</strong> </div>"); // show and set the message
 
-                    $('html, body').animate({
-                    scrollTop: $(".test").offset().top}, 200);
 
-                    setTimeout(function(){ $messageDiv.slideDown("slow").html('')}, 4000);
+
+                    // setTimeout(function(){ $messageDiv.slideDown("slow").html('')}, 4000);
 
                     // window.location.href = "{{url_for('question.suc')}}";
                     window.location.replace("{{url_for('question.suc',_external=True)}}");
@@ -492,7 +536,7 @@ $(function()
 </script>
  <script type="text/javascript">
 $(function(){
-        $('#teacher_select ').click(function(){
+        $('#teacher_select ').change(function(){
         if($('#teacher_select').val()== '__None')
         {
             return false;
@@ -509,49 +553,8 @@ $(function(){
 });
 
 </script>
-<script type="text/javascript">
-// function validate()
-// {
-//
-// if($('div.question-ans:not(:has(:radio:checked))').length)
-// {
-//     alert("all inputs are required");
-//
-//     return false;
-//
-// }
-// }
-// $(document).ready(function(){
-//     $(".error").hide();
-// $("#submitv").click(function(e){
-//     $(".error").hide();
-//     e.preventDefault();
-//
-//     if($('div.question-ans:not(:has(:radio:checked))').length)
-//     {
-//         alert("all inputs are required");
-//
-//         return false;
-//
-//     }
-//     return true;
-//
-//
-//
 
 
-
-
-    // $.each("input:radio",function(){
-    //         console.log($(this).val());
-    // })
-
-//
-// });
-// });
-
-
-</script>
 
 
 </body>

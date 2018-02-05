@@ -100,11 +100,13 @@ class QuestionView(CustomModelView):
     column_exclude_list=['question_sub',]
     form_excluded_columns=['question_sub']
     column_labels=dict(question='Question',
-    org_ques_id='Organization ID')
+    organization_question_id='Organization ID')
+
     form_args = {
-        'org_ques_id': {
+        # 'org_ques_id':
+        'organization_question_id': {
             #add a current user proxy right here
-            'query_factory': lambda: db.session.query(Organization).filter_by(id = '1')
+            'query_factory': lambda: db.session.query(Organization).filter_by(id = current_user.organization_id)
         }
     }
 
@@ -118,7 +120,7 @@ admin.add_view(StreamView(Stream,db.session))
 class SubjectView(CustomModelView):
     #RECHECK HERE
     form_excluded_columns=['submission_rel']
-    column_labels=dict(streamsub='Stream',teachersubj='Teacher')
+    column_labels=dict(streamsub='Stream',teachersubj='Teacher',subject_ref="Semester")
     #form_columns=['stream','subjects',]
     #form_excluded_columns=['sub_id']
 admin.add_view(SubjectView(Subject,db.session))
@@ -127,6 +129,7 @@ class SemesterView(CustomModelView):
     form_excluded_columns=["subject_col"]
     column_labels=dict(semester_name='Semester',)
 admin.add_view(SemesterView(Semester,db.session))
+
 class LinkView(BaseView):
     @expose('/',methods=['GET','POST'])
     @requires_roles('admin')
@@ -148,7 +151,7 @@ class LinkView(BaseView):
 
 
             print(request.script_root)
-            url=url_for('question.display_question',hashid=create_hashid(stream_name),semester=create_hashid(semester_name))
+            url=url_for('question.question_red',hashid=create_hashid(stream_name),semester=create_hashid(semester_name))
             print(url)
 
 
@@ -164,7 +167,7 @@ class LinkView(BaseView):
 admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
-    column_sortable_list = ('date','date')
+    column_sortable_list = ('date','date_time')
 admin.add_view(SubmissionView(Submissions,db.session))
 
 class ResultsView(BaseView):
@@ -224,28 +227,36 @@ class ResultsView(BaseView):
         dictv.pop('csrf_token')
 
         print(dictv)
+        suggestions=[a.suggestions for a in Submissions.query.filter_by(subject_id=dictv['subject_select'],
+        user_id=dictv['teacher_select'],
+        stream_id=dictv['stream']).all() if str(a.suggestions) not in 'None' ]
 
-        for key,value in question:
-            ans_yes=Submissions.query.filter_by(submission=1,question_id=key,
-            subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
+        print(suggestions)
+        try:
 
-            ans_no=Submissions.query.filter_by(submission=2,question_id=key,
-            subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
-            # ans_no=Submissions.query.filter_by(submission=2,question_id=key,subject_id=subject_id,user_id=teacher_id).count()
+            for key,value in question:
+                ans_yes=Submissions.query.filter_by(submission=1,question_id=key,
+                subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
 
-            my_chart=PieChart("teacher_chart"+str(key),options={'title': 'Submission', "width": 500,"height": 300,"is3D":True})
-            my_chart.add_column("string", "Answer")
-            my_chart.add_column("number", "percent")
-            # print("\t\t\t",ans_no)
-            # print("\t\t\t",ans_yes)
-            my_chart.add_rows([["Yes", ans_yes],["No", ans_no]])
-            chart_data.append((my_chart.name,key,value))
+                ans_no=Submissions.query.filter_by(submission=2,question_id=key,
+                subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
 
-            charts.register(my_chart)
-        # session['chart']=chart_data
-        print(chart_data )
+                my_chart=PieChart(("teacher_chart{0}").format(key),
+                options={'title': 'Submission', "width": 500,"height": 300,
+                "is3D":True,"pieSliceText":'value-and-percentage'})
 
-        return self.render('admin/result_chart.html',stream_id=stream_id,question=question,chart_data=chart_data),200
+                my_chart.add_column("string", "Answer")
+                my_chart.add_column("number", "percent")
+
+                my_chart.add_rows([["Yes", ans_yes],["No", ans_no]])
+                chart_data.append((my_chart.name,key,value))
+                charts.register(my_chart)
+
+
+            return self.render('admin/result_chart.html',chart_data=chart_data,suggestions=suggestions),200
+        except  Exception as e:
+            print(e)
+            return jsonify({'message':'Empty data'}),200
 
     @expose('/_pdfgen',methods=["GET","POST"])
     def pdfgen(self):
@@ -261,7 +272,7 @@ class ResultsView(BaseView):
         options={'page-size': 'A4',
     'margin-top': '0.70in',
     'margin-right': '0.60in',
-    'margin-bottom': '0.40in',
+    'margin-bottom': '2.0in',
     'margin-left': '0.60in',
     'encoding': "UTF-8",
 
@@ -271,7 +282,7 @@ class ResultsView(BaseView):
         #config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
         #pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
     #linux
-        
+
         pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
         # pdfk=pdfkit.from_string(dictv,False)
         # # #
@@ -293,6 +304,43 @@ class ResultsView(BaseView):
         # self.render('admin/result_chart.html',chart_data=chart_data)
 
 
+    @expose('/_download_all',methods=["GET"])
+    def dw_all(self):
+        options={'page-size': 'A4',
+    'margin-top': '0.70in',
+    'margin-right': '0.60in',
+    'margin-bottom': '2.0in',
+    'margin-left': '0.60in',
+    'encoding': "UTF-8",
+
+    }
+        my_chart_1=PieChart("teacher_chartkey",
+        options={'title': 'Submission', "width": 500,"height": 300,
+        "is3D":True,"pieSliceText":'value-and-percentage'})
+        my_chart_1.add_column("string", "Answer")
+        my_chart_1.add_column("number", "percent")
+
+        my_chart_1.add_rows([["Yes", 44],["No", 55]])
+        charts.register(my_chart_1)
+
+        # chart_d=self.render()
+        # users=[a.fname.strip() for a in User.query.filter_by(role='teacher').all()]
+
+        # users=[user.fname.strip() for user in db.session.query(User).filter_by(role_id=2).all()]
+        # subjects=[(user.)_name for subject in db.session.query(Subject).all()]
+        # questions=[question.question for question in db.session.query(Questions).filter_by().all()]
+
+        # users=User.query.filter(Roles.role_name=='teacher').all()
+        # print(users,subjects,questions)
+        # from flask import render_template
+        # pdf=render_template('admin/test_chart.html')
+        # pdfkit.from_string(pdf,False,options=options)
+        # response = make_response(pdf, 200)
+        # response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
+        # response.headers['Content-disposition'] = "inline"
+
+        return self.render('admin/test_chart.html')
+        # return response
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.is_admin()
