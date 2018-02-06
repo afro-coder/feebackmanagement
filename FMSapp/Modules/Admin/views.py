@@ -120,7 +120,7 @@ admin.add_view(StreamView(Stream,db.session))
 class SubjectView(CustomModelView):
     #RECHECK HERE
     form_excluded_columns=['submission_rel']
-    column_labels=dict(streamsub='Stream',teachersubj='Teacher',subject_ref="Semester")
+    column_labels=dict(streamsub='Stream',teachersubj='Teacher',subject_ref="Semester",teacher_id="Teacher")
     #form_columns=['stream','subjects',]
     #form_excluded_columns=['sub_id']
 admin.add_view(SubjectView(Subject,db.session))
@@ -167,7 +167,7 @@ class LinkView(BaseView):
 admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
-    column_sortable_list = ('date','date_time')
+    column_sortable_list = ('date',)
 admin.add_view(SubmissionView(Submissions,db.session))
 
 class ResultsView(BaseView):
@@ -311,24 +311,9 @@ class ResultsView(BaseView):
         # self.render('admin/result_chart.html',chart_data=chart_data)
 
 
-    # @expose('/_download_all',methods=["GET"])
-    # def dw_all(self):
-    #     options={'page-size': 'A4',
-    # 'margin-top': '0.70in',
-    # 'margin-right': '0.60in',
-    # 'margin-bottom': '2.0in',
-    # 'margin-left': '0.60in',
-    # 'encoding': "UTF-8",
-    #
-    # }
-    #     my_chart_1=PieChart("teacher_chartkey",
-    #     options={'title': 'Submission', "width": 500,"height": 300,
-    #     "is3D":True,"pieSliceText":'value-and-percentage'})
-    #     my_chart_1.add_column("string", "Answer")
-    #     my_chart_1.add_column("number", "percent")
-    #
-    #     my_chart_1.add_rows([["Yes", 44],["No", 55]])
-    #     charts.register(my_chart_1)
+    @expose('/_download_all',methods=["GET"])
+    def dw_all(self):
+
 
         # chart_d=self.render()
         # users=[a.fname.strip() for a in User.query.filter_by(role='teacher').all()]
@@ -345,6 +330,33 @@ class ResultsView(BaseView):
         # response = make_response(pdf, 200)
         # response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
         # response.headers['Content-disposition'] = "inline"
+        question=[(ques.id,ques.question) for  ques in Questions.query.all()]
+
+        teacher_details=[(teacher.user_id,teacher.submission_r,teacher.stsub,teacher.usersub) \
+        for teacher in Submissions.query.order_by(Submissions.date.desc()).limit(30).all()]
+
+        teacher_role=[(teacher.fname,teacher.role)for teacher in User.query.join(Roles).filter(Roles.role_name=='teacher')]
+        teacher_sub=[(teacher.fname,teacher.sub_id)for teacher in User.query.all()]
+
+        print(teacher_role)
+
+        # for  name in teacher_details:
+        #     print(name[3])
+        #     for no,ques in question:
+        #         ans=Submissions.query.filter_by(submission=1,user_id=name[0],question_id=no).count()
+        #         ans1=Submissions.query.filter_by(submission=2,user_id=name[0],question_id=no).count()
+        #
+        #         print(no,"",ques,"\n",'yes'," ",ans," no",ans1)
+        #         print('-'*25)
+        #     print('+'*30)
+
+
+        # print(teacher_details)
+
+        # for name in teacher_details:
+        # #print(teacher_details)
+        #     print(question)
+
 
         return self.render('admin/test_chart.html')
         # return response

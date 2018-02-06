@@ -21,7 +21,6 @@ def question_red(hashid,semester):
     # return redirect(url_for('.display_question',hashid=hashid,semester=semester))
 @question.route("/stream/<hashid>/<semester>", methods=['GET', 'POST'])
 def display_question(hashid,semester):
-
     if request.referrer is None:
         return redirect(url_for('.question_red',hashid=hashid,semester=semester))
     dec=decode_hashid(hashid=hashid)

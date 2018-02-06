@@ -48,8 +48,9 @@ class User(UserMixin,db.Model):
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
     #User many to many with subjects
-    sub_id=db.relationship('Subject',backref=db.backref("teacher_id"),secondary=teachersubject)
-
+    #sub_id=db.relationship('Subject',backref=db.backref("teacher_id"),secondary=teachersubject)
+    #use one to many
+    sub_id=db.relationship('Subject',backref='teacher_id',lazy='dynamic')
 
 
 
@@ -170,9 +171,10 @@ class Submissions(db.Model):
     subject_id=db.Column(db.Integer,db.ForeignKey('subject.id'),index=True)
     suggestions=db.Column(db.Text,index=True)
     date=db.Column(db.Date,index=True,default=datetime.date.today(),nullable=False)
-    date_time=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
+    #date_time=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
+
     def __repr__(self):
-        return "<Submissions %r>" %format(self.submission)
+        return "%r" %format(self.submission)
 
 
 class Subject(db.Model):
@@ -187,8 +189,8 @@ class Subject(db.Model):
 
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
     semester=db.Column(db.Integer,db.ForeignKey('semester.id'))
-
-    # teacher_name=db.relationship('User',backref=db.backref("subject_det"),secondary=teachersubject)
+    teacher=db.Column(db.Integer,db.ForeignKey('users.id'))
+    # teacher_name=db.relatinship('User',backref=db.backref("subject_det"),secondary=teachersubject)
 
 
     def __str__(self):
@@ -213,7 +215,7 @@ class Stream(db.Model):
     def __str__(self):
         return "%s" %self.stream
     def __repr__(self):
-        return "%s" %self.stream
+        return "%r" %self.stream
 
 class Semester(db.Model):
     __tablename__='semester'
