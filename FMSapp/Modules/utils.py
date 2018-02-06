@@ -33,12 +33,12 @@ def requires_roles(*roles):
     def wrapper(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
-            print("\t\t\t DECORAT ",*roles)
-            print(type(*roles))
-            print(type(current_user.get_role()))
+            # print("\t\t\t DECORAT ",*roles)
+            # print(type(*roles))
+            # print(type(current_user.get_role()))
             if str(current_user.get_role()) not in roles:
 
-                print("USER role",current_user.get_role())
+                # print("USER role",current_user.get_role())
                 flash("Unauthorized")
                 return redirect(url_for('auth.login'))
             return f(*args, **kwargs)

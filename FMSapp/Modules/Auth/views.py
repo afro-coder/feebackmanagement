@@ -12,8 +12,8 @@ import os
 
 @auth.before_app_request
 def before_request():
-    print("\tREQUEST ENDPOINT ::"+str(request.endpoint))
-    print("\tREQUEST ARGS ::"+str(request.args.get('next')))
+    # print("\tREQUEST ENDPOINT ::"+str(request.endpoint))
+    # print("\tREQUEST ARGS ::"+str(request.args.get('next')))
     if current_user.is_authenticated \
             and not current_user.confirmed \
             and request.endpoint \

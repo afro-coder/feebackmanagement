@@ -226,12 +226,12 @@ class ResultsView(BaseView):
         dictv =request.form.to_dict()
         dictv.pop('csrf_token')
 
-        print(dictv)
+        # print(dictv)
         suggestions=[a.suggestions for a in Submissions.query.filter_by(subject_id=dictv['subject_select'],
         user_id=dictv['teacher_select'],
         stream_id=dictv['stream']).all() if str(a.suggestions) not in 'None' ]
 
-        print(suggestions)
+        # print(suggestions)
         try:
 
             for key,value in question:
@@ -243,7 +243,10 @@ class ResultsView(BaseView):
 
                 my_chart=PieChart(("teacher_chart{0}").format(key),
                 options={'title': 'Submission', "width": 500,"height": 300,
-                "is3D":True,"pieSliceText":'value-and-percentage','legend': { 'position': 'labeled','textStyle': {'fontName': 'Roboto','fontSize': 16
+                "is3D":True,"pieSliceText":'value-and-percentage',
+                'legend': { 'position': 'labeled','labeledValueText': 'both',
+                'textStyle': {'fontName': 'Roboto','fontSize': 13,'color':'blue'
+
       }}})
 
                 my_chart.add_column("string", "Answer")
@@ -279,12 +282,15 @@ class ResultsView(BaseView):
 
     }
     #Windows
-        #path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-        #config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
-        #pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
-    #linux
+        import platform
+        if platform.system() =="Windows":
 
-        pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
+            path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+            config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
+            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
+    #linux
+        else:
+            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
         # pdfk=pdfkit.from_string(dictv,False)
         # # #
         response = make_response(pdfk, 200)
@@ -305,24 +311,24 @@ class ResultsView(BaseView):
         # self.render('admin/result_chart.html',chart_data=chart_data)
 
 
-    @expose('/_download_all',methods=["GET"])
-    def dw_all(self):
-        options={'page-size': 'A4',
-    'margin-top': '0.70in',
-    'margin-right': '0.60in',
-    'margin-bottom': '2.0in',
-    'margin-left': '0.60in',
-    'encoding': "UTF-8",
-
-    }
-        my_chart_1=PieChart("teacher_chartkey",
-        options={'title': 'Submission', "width": 500,"height": 300,
-        "is3D":True,"pieSliceText":'value-and-percentage'})
-        my_chart_1.add_column("string", "Answer")
-        my_chart_1.add_column("number", "percent")
-
-        my_chart_1.add_rows([["Yes", 44],["No", 55]])
-        charts.register(my_chart_1)
+    # @expose('/_download_all',methods=["GET"])
+    # def dw_all(self):
+    #     options={'page-size': 'A4',
+    # 'margin-top': '0.70in',
+    # 'margin-right': '0.60in',
+    # 'margin-bottom': '2.0in',
+    # 'margin-left': '0.60in',
+    # 'encoding': "UTF-8",
+    #
+    # }
+    #     my_chart_1=PieChart("teacher_chartkey",
+    #     options={'title': 'Submission', "width": 500,"height": 300,
+    #     "is3D":True,"pieSliceText":'value-and-percentage'})
+    #     my_chart_1.add_column("string", "Answer")
+    #     my_chart_1.add_column("number", "percent")
+    #
+    #     my_chart_1.add_rows([["Yes", 44],["No", 55]])
+    #     charts.register(my_chart_1)
 
         # chart_d=self.render()
         # users=[a.fname.strip() for a in User.query.filter_by(role='teacher').all()]
