@@ -336,10 +336,11 @@ class ResultsView(BaseView):
         for teacher in Submissions.query.order_by(Submissions.date.desc()).limit(30).all()]
 
         teacher_role=[(teacher.fname,teacher.role)for teacher in User.query.join(Roles).filter(Roles.role_name=='teacher')]
-        teacher_sub=[(teacher.fname,teacher.sub_id)for teacher in User.query.all()]
+        teacher_sub=[(teacher.id,teacher.teacher,teacher.teacher_id) for teacher in Subject.query.join(User).filter(Subject.id==Submissions.subject_id)]
+        print(teacher_sub)
 
         print(teacher_role)
-
+        chart_data=[]
         # for  name in teacher_details:
         #     print(name[3])
         #     for no,ques in question:
