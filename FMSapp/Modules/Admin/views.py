@@ -120,7 +120,7 @@ admin.add_view(StreamView(Stream,db.session))
 class SubjectView(CustomModelView):
     #RECHECK HERE
     form_excluded_columns=['submission_rel']
-    column_labels=dict(streamsub='Stream',teachersubj='Teacher',subject_ref="Semester",teacher_id="Teacher")
+    column_labels=dict(streamsub='Stream',subject_ref="Semester",teacher_id="Teacher")
     #form_columns=['stream','subjects',]
     #form_excluded_columns=['sub_id']
 admin.add_view(SubjectView(Subject,db.session))
