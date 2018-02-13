@@ -11,8 +11,9 @@ class Config(object):
     #WTF_CSRF_ENABLED=True
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SERVER_NAME='fmsapp.com:5000'
-    print(SERVER_NAME)
+    #SERVER_NAME='fmsapp.com:5000'
+    # SERVER_NAME='localhost:5000'
+    # print(SERVER_NAME)
 
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT=587

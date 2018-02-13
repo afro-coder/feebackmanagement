@@ -1,5 +1,5 @@
 {% from "_macro.html" import render_field %}
-<!Doctype html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <title>Welcome</title>
@@ -21,6 +21,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <style>
+.set select
+{
+    padding:6%;
+    -webkit-appearance: none;
+}
+
+
 .question-ans
 {
     display: none;
@@ -131,7 +138,7 @@ textarea {
 }
 .first-select{font-size: 18px; font-family: "Roboto script=all rev=2", "Adobe Blank"}
 .lead{font-size: 19px;}
-.align-resp label{font-size: 10px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 5px;margin-left: 16%;}
+.align-resp label{font-size: 10px;text-indent: 3.5em;font-weight:normal;font-family:"Roboto script=all rev=2", "Adobe Blank",sans-serif,"Times New Roman", Times;margin-bottom: 5px;}
 /* .question-fix{font-size: 16.4px;padding-left: 4%;font-family: sans-serif,"Times New Roman", Times ;margin-left: 15px; line-height: 20px; letter-spacing: 0.4;} */
 
 .question-fix{padding-left: 4%;font-family:"Roboto script=all rev=2", "Adobe Blank",'Open Sans', sans-serif; font-size: 19px; font-weight: 300 ; letter-spacing: 0.4;color: rgba(0,0,0,0.87);}
@@ -146,15 +153,13 @@ textarea {
 
 
 /** select**/
-.edit  {-webkit-appearance: none;
+/* .edit  {-webkit-appearance: none;
    -moz-appearance: none;
    appearance: none;
 
 
 }
-.edit > option {width: 5%;}
-
-
+.edit > option {width: 5%;} */
 
 </style>
 <body class="mat-body">
@@ -184,25 +189,36 @@ textarea {
         <div class="row">
 
         <form name="teacherform" id="teacherform" class="form-inline "  method="GET">
-            <div class="col-xs-4 col-xs-offset-2">
 
             {{form.csrf_token}}
-            <div class="form-group ">
 
-                    <label class="first-select">Subject</label>
-                    {{render_field(form.subject_data,class="form-control edit",id="subject_select")}}
+            <div class="col-xs-4 col-xs-offset-2">
+
+            <div class="form-group ">
+                <div class="col-xs-4 ed">
+                    <div class="set">
+                        <label class="first-select">Subject</label>
+                        {{render_field(form.subject_data,class="form-control edit",id="subject_select")}}
+                    </div>
+
+
+                </div>
             </div>
         </div>
+
+
         <div class="col-xs-4 col-xs-offset-1">
 
-            <div class="form-group override">
+            <div class="form-group ">
+                <div class="set">
 
                 <label class="first-select ">Teacher</label>
-                {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
-
+                {{render_field(form.teacher_select,class="form-control",id="teacher_select",data_width="auto")}}
+            </div>
             </div>
 
         </div>
+
         </form>
     </div>
     <hr>
@@ -224,7 +240,7 @@ textarea {
                         <div class="align-resp">
 
 
-                                <p class="lead">{{key}}.&nbsp;{{questions}} </p>
+                                <h4>{{key}}.&nbsp;{{questions}} </h4>
 
                         <div class="form-group">
 
@@ -294,10 +310,17 @@ textarea {
 <script  type="text/javascript" src="{{ url_for('static',filename='js/ripples.min.js') }}"></script>
 <script  type="text/javascript" src="{{ url_for('static',filename='js/material.min.js') }}"></script>
 
+
 <script type="text/javascript">
 $(document).ready(function(){
     $.material.init();
 });
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.edit').css('width','272%')
+
+})
 </script>
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.url_root[:-1]|tojson|safe }};
@@ -353,14 +376,28 @@ $(function(){
                 $messageDiv.show().html("<div class='alert alert-"+response[i]['type']+" alert-dismissable'><a  class='close' data-dismiss='alert' aria-label='close'>×</a><strong>"+response[i].message+"</strong> </div>"); // show and set the message
                 setTimeout(function(){ $messageDiv.slideDown("slow").html('');}, 3000);
             }
-                $('#subject_select option:selected').remove();
-                $('form#teacherform').find('select').val('__None');
+                var num=document.getElementById("teacher_select").options.length-1;
+                console.log(num)
+                if(num<=1)
+                {
 
-                $('select#teacher_select').html('').prop('disabled',true);
+                    $('#subject_select option:selected').remove();
+                    $('select#teacher_select').html('').prop('disabled',true);
+                    $('form#teacherform').find('select').val('__None');
+                    numopt--;
+                }
+                else
+                {
+                    $('#teacher_select option:selected').remove();
+                    num--;
+                }
+
+
+
                 $('form#questionform').find('input:radio').prop('checked', false);
                 $('#suggestions').val('');
                 $(".question-ans").fadeOut();
-                numopt--;
+                ;
                 console.log(numopt);
                 if(numopt<1)
                 {   $('html, body').animate({

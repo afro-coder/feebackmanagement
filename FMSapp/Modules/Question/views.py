@@ -16,6 +16,7 @@ from FMSapp.Modules.utils import generate_form_token
 @question.route('/stream/red/<hashid>/<semester>',methods=['GET'])
 def question_red(hashid,semester):
     #find the referrer using url for refer to auth login
+    print(request.url_root[7:])
     return render_template('question/ques_redirect.html',hashid=hashid,semester=semester)
 
     # return redirect(url_for('.display_question',hashid=hashid,semester=semester))
@@ -61,7 +62,7 @@ def gen_teacher():
         # print(list)
         print(subject_id)
 
-        t=[(row.id,row.fname)  for row in  User.query.filter(User.sub_id.any(id=subject_id)).all()]
+        t=[(row.id,row.fname+' '+row.lname)  for row in  User.query.filter(User.sub_id.any(id=subject_id)).all()]
 
 
         return jsonify(t)
