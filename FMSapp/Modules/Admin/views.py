@@ -9,7 +9,7 @@ from wtforms import PasswordField,TextField,Form
 from flask_wtf import FlaskForm
 from flask_admin.contrib.sqla.fields import QuerySelectField
 from flask_admin.contrib.sqla.validators import Unique
-from wtforms.validators import InputRequired,EqualTo
+from wtforms.validators import InputRequired,EqualTo,Email
 from flask_admin.form import SecureForm
 from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
@@ -47,13 +47,27 @@ class MyPassField(PasswordField):
        super(MyPassField, self).__init__(name,**kwargs)
 
 
+class MyBaseForm(SecureForm):
+    #used for stripping whitespace
+    class Meta:
+        def bind_field(self, form, unbound_field, options):
+            filters = unbound_field.kwargs.get('filters', [])
+            if my_strip_filter not in filters:
+                filters.append(my_strip_filter)
+            return unbound_field.bind(form=form, filters=filters, **options)
+
+def my_strip_filter(value):
+    if value is not None and hasattr(value, 'strip'):
+        return value.strip()
+    return value
+
 class CustomModelView(ModelView):
     def is_accessible(self):
           return current_user.is_authenticated and current_user.is_admin()
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('auth.login',next=request.url))
     # IF you enable CsrfProtect switch to wtforms Form class instead of secure form
-    form_base_class=SecureForm
+    form_base_class=MyBaseForm
     # form_base_class=Form
     # form_base_class=FlaskForm
 
@@ -61,11 +75,14 @@ class CustomModelView(ModelView):
 
 
 class UserView(CustomModelView):
+
+    column_searchable_list = ( User.fname,User.lname)
     column_exclude_list=['password_hash',]
-    form_excluded_columns=('user_sub')
+    form_excluded_columns=('user_sub',)
     form_columns=('fname','lname','password',
     'confirm_password','email','created_on',
     'confirmed','organizationid','role')
+    column_editable_list = ('fname','lname','email','role')
 
     column_labels=dict(fname='First Name',
     lname='Last Name',password_hash='Password',
@@ -88,7 +105,7 @@ class UserView(CustomModelView):
 
     confirm_password=dict(validators=[InputRequired()]),
     created_on=dict(render_kw={'disabled':'disabled'}),
-    email=dict(validators=[Unique(model=User, db_session=db.session,column='email')])
+    email=dict(validators=[Unique(model=User, db_session=db.session,column='email'),Email(message='Enter a valid email')])
 
     )
 
@@ -97,6 +114,7 @@ admin.add_view(UserView(User,db.session))
 # admin.add_view(UserView(name='hello'))
 
 class QuestionView(CustomModelView):
+
     column_exclude_list=['question_sub',]
     form_excluded_columns=['question_sub']
     column_labels=dict(question='Question',
@@ -119,8 +137,17 @@ class StreamView(CustomModelView):
 admin.add_view(StreamView(Stream,db.session))
 class SubjectView(CustomModelView):
     #RECHECK HERE
+    column_editable_list = ('subject_name',)
+    column_searchable_list = ( Subject.subject_name,)
+    column_exclude_list=['submission_rel','teacher_name']
+    column_display_all_relations=True
+
+    column_filters = (Subject.stream,)
     form_excluded_columns=['submission_rel']
-    column_labels=dict(streamsub='Stream',teachersubj='Teacher',subject_ref="Semester",teacher_id="Teacher")
+    column_labels=dict(streamsub='Stream',subject_ref="Semester",teacher_id="Teacher")
+
+    # column_list=dict(stream='stream',semester='semester',teacher_name='teacher_name',subject_name='Subject')
+
     #form_columns=['stream','subjects',]
     #form_excluded_columns=['sub_id']
 admin.add_view(SubjectView(Subject,db.session))
@@ -168,6 +195,7 @@ admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
     column_sortable_list = ('date',)
+    
 admin.add_view(SubmissionView(Submissions,db.session))
 
 class ResultsView(BaseView):

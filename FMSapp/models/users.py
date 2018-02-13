@@ -21,13 +21,15 @@ class Roles(db.Model):
     def __repr__(self):
         return "%r" %self.role_name
 
-teachersubject=db.Table('teachersub',db.metadata,
+teachersubject=db.Table('teachersub',
 db.Column('id',db.Integer,primary_key=True),
 db.Column('userid',db.Integer,
 db.ForeignKey('users.id')),
 
 db.Column('subjectid',db.Integer,
-db.ForeignKey('subject.id')))
+db.ForeignKey('subject.id')),
+
+)
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -48,11 +50,12 @@ class User(UserMixin,db.Model):
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
     #User many to many with subjects
-    #sub_id=db.relationship('Subject',backref=db.backref("teacher_id"),secondary=teachersubject)
+    sub_id=db.relationship('Subject',backref=db.backref("teacher_id",
+    lazy="subquery"),lazy="dynamic",secondary=teachersubject)
+
+
     #use one to many
-    sub_id=db.relationship('Subject',backref='teacher_id',lazy='dynamic')
-
-
+    # sub_id=db.relationship('Subject',backref='teacher_id',lazy='dynamic')
 
 
     def __init__(self,**kwargs):
@@ -117,10 +120,10 @@ class User(UserMixin,db.Model):
 
 
     def __repr__(self):
-        return "%r" %format(self.fname)
+        return "{0} {1}".format(self.fname,self.lname)
 
     def __str__(self):
-        return "%s" %format(self.fname)
+        return "{0} {1}".format(self.fname,self.lname)
 
 
 
@@ -189,8 +192,18 @@ class Subject(db.Model):
 
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
     semester=db.Column(db.Integer,db.ForeignKey('semester.id'))
-    teacher=db.Column(db.Integer,db.ForeignKey('users.id'))
-    # teacher_name=db.relatinship('User',backref=db.backref("subject_det"),secondary=teachersubject)
+
+
+
+    # teacher=db.Column(db.Integer,db.ForeignKey('users.id'))
+    # teacher_name=db.relationship('User',backref=db.backref("subject_det",lazy="joined",
+    # cascade="all"),lazy="dynamic",secondary=teachersubject,single_parent=True)
+
+    teacher_name=db.relationship('User',backref=db.backref("subject_det",
+    lazy="subquery"),lazy="subquery",secondary=teachersubject)
+
+
+
 
 
     def __str__(self):
