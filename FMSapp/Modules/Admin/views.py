@@ -195,7 +195,7 @@ admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
     column_sortable_list = ('date',)
-    
+
 admin.add_view(SubmissionView(Submissions,db.session))
 
 class ResultsView(BaseView):
@@ -269,6 +269,9 @@ class ResultsView(BaseView):
                 ans_no=Submissions.query.filter_by(submission=2,question_id=key,
                 subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
 
+                ans_no_comment=Submissions.query.filter_by(submission=3,question_id=key,
+                subject_id=dictv['subject_select'],user_id=dictv['teacher_select'],stream_id=dictv['stream']).count()
+
                 my_chart=PieChart(("teacher_chart{0}").format(key),
                 options={'title': 'Submission', "width": 500,"height": 300,
                 "is3D":True,"pieSliceText":'value-and-percentage',
@@ -280,7 +283,7 @@ class ResultsView(BaseView):
                 my_chart.add_column("string", "Answer")
                 my_chart.add_column("number", "percent")
 
-                my_chart.add_rows([["Yes", ans_yes],["No", ans_no]])
+                my_chart.add_rows([["Yes", ans_yes],["No", ans_no],["No Comment", ans_no_comment]])
                 chart_data.append((my_chart.name,key,value))
                 charts.register(my_chart)
 

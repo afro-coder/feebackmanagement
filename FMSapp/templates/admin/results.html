@@ -30,6 +30,7 @@
 #suggestionbox{
     display: none;
 }
+ .input-small {width:88px  !important;display: inline-block;} 
 </style>
 
 
@@ -45,11 +46,14 @@
 
                 {{render_field(form.stream,class="form-control",id="stream_select")}}
             </div>
-            <div class="form-group">
-                {{render_field(form.subject_select,class="form-control",id="subject_select")}}
 
 
-            </div>
+
+            <div class="form-group edit">
+
+                        {{render_field(form.subject_select,class="form-control input-small",id="subject_select")}}
+                </div>
+
             <div class="form-group">
                 {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
             </div>
@@ -82,6 +86,9 @@
 {% endblock %}
 
 {% block tail%}
+<script>
+
+</script>
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
     $("#subject_select,#teacher_select").hide();
