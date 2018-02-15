@@ -30,8 +30,9 @@
 #suggestionbox{
     display: none;
 }
- .input-small {width:88px  !important;display: inline-block;} 
+ .input-small {width:88px  !important;display: inline-block;}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 
 
 <script src="https://use.fontawesome.com/c99c76631d.js"></script>
@@ -56,6 +57,9 @@
 
             <div class="form-group">
                 {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
+            </div>
+            <div class="form-group">
+                <input type="text" name="date" class="form-control" id="date">
             </div>
 
 </form>
@@ -87,10 +91,16 @@
 
 {% block tail%}
 <script>
+$(document).ready(function(){
+    var year = (new Date).getFullYear();
+    $("#date").datepicker({ dateFormat: 'yy',maxDate: new Date(year, 11, 31)});
+});
+
 
 </script>
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
+
     $("#subject_select,#teacher_select").hide();
     $("#hidepd").hide();
 
@@ -98,7 +108,7 @@ $(document).ready(function(){
 
 
     $("#stream_select").on('change',function(){
-
+        console.log(typeof($('#date').val()))
         var dataset={
             stream:$("#stream_select").val()
         };
@@ -248,14 +258,17 @@ $('#pdfconv').click(function(e){
 
 {% block tail_js %}
 
+
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
 <!-- <script src="http://www.google.com/jsapi"></script> -->
 
 <!-- <script type="text/javascript" src=https://cdnjs.cloudflare.com/ajax/libs/jquery.fileDownload/1.4.2/jquery.fileDownload.js></script> -->
+<!--
+<script  type="text/javascript" src="{{ url_for('static',filename='jquery/jquery.fileDownload.js') }}"></script> -->
 
-<script  type="text/javascript" src="{{ url_for('static',filename='jquery/jquery.fileDownload.js') }}"></script>
-
-<script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
 
 {% endblock %}
