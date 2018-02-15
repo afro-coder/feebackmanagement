@@ -493,7 +493,7 @@ $(function()
             b:subject_id
         },function(data){
             var options = $("#teacher_select");
-            // options.val("").html('').text('');
+            options.val("").html('').text('');
             if (options.val() != "__None" ){
                 console.log('func entered')
                 $("#teacher_select").removeAttr('disabled');
@@ -531,7 +531,9 @@ $(function()
 $(function(){
         $('#teacher_select ').change(function(){
         if($('#teacher_select').val()== '__None')
-        {
+        {   $('form#questionform').find('input:radio').prop('checked', false);
+            $('#suggestions').val('');
+            $(".question-ans").fadeOut();
             return false;
         }
 
