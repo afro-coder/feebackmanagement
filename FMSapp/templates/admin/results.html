@@ -58,9 +58,9 @@
             <div class="form-group">
                 {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <input type="text" name="date" class="form-control" id="date">
-            </div>
+            </div> -->
 
 </form>
 
@@ -90,14 +90,14 @@
 {% endblock %}
 
 {% block tail%}
-<script>
+<!-- <script>
 $(document).ready(function(){
     var year = (new Date).getFullYear();
     $("#date").datepicker({ dateFormat: 'yy',maxDate: new Date(year, 11, 31)});
 });
 
 
-</script>
+</script> -->
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
 
