@@ -285,7 +285,7 @@ textarea {
                <div class="form-group sugbox">
 
                    <label>Remarks <br>
-                   <textarea class="form-control" rows="3" cols="30" id="suggestions" maxlength="200"></textarea>
+                   <textarea class="form-control" rows="3" cols="30" id="suggestions" maxlength="200" placeholder="Upto 200 characters only"></textarea>
                </label>
                </div>
                <!-- <input type="button"   class="btn btn-default" name="submitbut" id="submitv" value="Submit"> -->
@@ -383,13 +383,13 @@ $(function(){
             data: query_data,
             type: 'POST',
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 for (i=0; i<response.length; i++){
                 $messageDiv.show().html("<div class='alert alert-"+response[i]['type']+" alert-dismissable'><a  class='close' data-dismiss='alert' aria-label='close'>×</a><strong>"+response[i].message+"</strong> </div>"); // show and set the message
                 setTimeout(function(){ $messageDiv.slideDown("slow").html('');}, 3000);
             }
                 var num=document.getElementById("teacher_select").options.length-1;
-                console.log(num)
+                // console.log(num)
                 if(num<=1)
                 {
 
@@ -409,8 +409,8 @@ $(function(){
                 $('form#questionform').find('input:radio').prop('checked', false);
                 $('#suggestions').val('');
                 $(".question-ans").fadeOut();
-                ;
-                console.log(numopt);
+
+                // console.log(numopt);
                 if(numopt<1)
                 {   $('html, body').animate({
                 scrollTop: $(".test").offset().top}, 200);
@@ -493,7 +493,11 @@ $(function()
             b:subject_id
         },function(data){
             var options = $("#teacher_select");
-            if (options.val() != "__None"){
+            // options.val("").html('').text('');
+            if (options.val() != "__None" ){
+                console.log('func entered')
+                $("#teacher_select").removeAttr('disabled');
+
                 options.html("");
                 options.append($("<option>").html("Select the teacher").val("__None"));
 
@@ -542,7 +546,15 @@ $(function(){
 });
 
 </script>
-
+<script>
+$(function(){
+    $('#teacher_select').on('change',function(){
+        $('form#questionform').find('input:radio').prop('checked', false);
+        $('#suggestions').val('');
+        // $(".question-ans").fadeOut();
+    })
+})
+</script>
 
 
 
