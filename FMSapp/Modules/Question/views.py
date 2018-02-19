@@ -13,17 +13,19 @@ from FMSapp.Modules.utils import generate_form_token
 # def before_req():
 #     pass
 
+
 @question.route('/stream/red/<hashid>/<semester>',methods=['GET'])
 def question_red(hashid,semester):
     #find the referrer using url for refer to auth login
-    print(request.url_root[7:])
+    # print(request.url_root[7:])
+    # print(request.endpoint)
     return render_template('question/ques_redirect.html',hashid=hashid,semester=semester)
 
     # return redirect(url_for('.display_question',hashid=hashid,semester=semester))
 @question.route("/stream/<hashid>/<semester>", methods=['GET', 'POST'])
 def display_question(hashid,semester):
-    if request.referrer is None:
-        return redirect(url_for('.question_red',hashid=hashid,semester=semester))
+    # if request.referrer is None:
+    #     return redirect(url_for('.question_red',hashid=hashid,semester=semester))
     dec=decode_hashid(hashid=hashid)
     (dec,)=dec
     stream_id=dec
@@ -48,8 +50,8 @@ def display_question(hashid,semester):
     #     return "Success"
 
     form_id=generate_form_token(12)
-    session["form_id"]=form_id
-
+    # session["form_id"]=form_id
+    # print(request.endpoint)
     return render_template('question/question_display.html',form=form,question=question,hashid=hashid,form_id=form_id)
 
 
@@ -60,7 +62,7 @@ def gen_teacher():
         subject_id=request.args.get('b',0,type=int)
         # list.append(subject_id)
         # print(list)
-        print(subject_id)
+        # print(subject_id)
 
         t=[(row.id,row.fname+' '+row.lname)  for row in  User.query.filter(User.sub_id.any(id=subject_id)).all()]
 
@@ -74,15 +76,17 @@ def gen_teacher():
         dictv.pop('csrf_token')
         print("debug")
         print(dictv)
-        d={key[-1:]:dictv[key] for key in dictv if key.startswith('options')}
-        if d is None:
-            abort(405)
+        d={key[7:]:dictv[key] for key in dictv if key.startswith('options')}
+        print(d)
+        for a,v in d.items():
+            if v is None or v=='':
+                abort(405)
+
         # for key,value in d.items():
         #     print(key+":::"+value)
 
 
         stream=decode_hashid(dictv["stream_id"])
-        print(dictv["stream_id"])
         (stream,)=stream
 
         # if session["form_id"] != dictv["form_id"]:

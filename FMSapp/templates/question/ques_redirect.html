@@ -37,8 +37,8 @@
             console.log(mylink)
             if (typeof(mylink) == 'string') href=mylink;
             else href=mylink.href;
+            window.open(href, windowname, 'width=1920,height=1080,scrollbars=yes,status=1');
             window.location.replace("about:blank");
-            window.open(href, windowname, 'width=1920,height=1080,scrollbars=yes');
             console.log(href)
 
             return false;

@@ -203,9 +203,9 @@ class Subject(db.Model):
     lazy="subquery"),lazy="subquery",secondary=teachersubject)
 
 
-
-
-
+    #one to many to electives
+    elective_name_id=db.Column(db.Integer,db.ForeignKey('electives.id'),index=True)
+    elective_rel=db.relationship('Electives')
     def __str__(self):
         return " %s" %self.subject_name
     def __repr__(self):
@@ -235,9 +235,25 @@ class Semester(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     semester_name=db.Column(db.Integer,unique=True,nullable=False)
     subject_col=db.relationship('Subject',backref='subject_ref',lazy='dynamic')
+    elective_relationship=db.relationship('Electives',backref='elective_semester',lazy='dynamic')
 
     def __str__(self):
         return "%s" %self.semester_name
+    def __repr__(self):
+        return "%r" %self.semester_name
+
+
+class Electives(db.Model):
+    __tablename__='electives'
+    id=db.Column(db.Integer,primary_key=True)
+    elective_name=db.Column(db.Unicode,unique=True,nullable=False)
+    # subject_relationship=db.relationship('Subject',backref='elective',lazy='select')
+    semester_id=db.Column(db.Integer,db.ForeignKey('semester.id'),index=True)
+
+    def __str__(self):
+        return "%s" %self.elective_name
+    def __repr__(self):
+        return "%r" %self.elective_name
 
 
 

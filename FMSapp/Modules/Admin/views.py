@@ -16,7 +16,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
 from ... import db,charts
 from ...models.users import (User,Questions,Roles,
-Stream,Organization,Subject,Submissions,Semester)
+Stream,Organization,Subject,Submissions,Semester,Electives)
 from werkzeug.security import generate_password_hash
 
 from .forms import SubmissionForm,StreamForm
@@ -143,7 +143,7 @@ class SubjectView(CustomModelView):
     column_display_all_relations=True
 
     column_filters = (Subject.stream,)
-    form_excluded_columns=['submission_rel']
+    form_excluded_columns=['submission_rel','teacher_name']
     column_labels=dict(streamsub='Stream',subject_ref="Semester",teacher_id="Teacher")
 
     # column_list=dict(stream='stream',semester='semester',teacher_name='teacher_name',subject_name='Subject')
@@ -157,6 +157,10 @@ class SemesterView(CustomModelView):
     column_labels=dict(semester_name='Semester',)
 admin.add_view(SemesterView(Semester,db.session))
 
+class ElectivesView(CustomModelView):
+    column_hide_backrefs = True
+
+admin.add_view(ElectivesView(Electives,db.session))
 class LinkView(BaseView):
     @expose('/',methods=['GET','POST'])
     @requires_roles('admin')
