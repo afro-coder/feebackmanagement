@@ -205,7 +205,7 @@ class Subject(db.Model):
 
     #one to many to electives
     elective_name_id=db.Column(db.Integer,db.ForeignKey('electives.id'),index=True)
-    elective_rel=db.relationship('Electives')
+    # elective_rel=db.relationship('Electives',lazy='joined')
     def __str__(self):
         return " %s" %self.subject_name
     def __repr__(self):
@@ -222,7 +222,7 @@ class Stream(db.Model):
     # foreign_keys=[Submissions.stream_id],
     # backref=db.backref('streamid',lazy='joined'),lazy='dynamic')
     submissions_id=db.relationship('Submissions',backref='stsub',lazy='dynamic')
-
+    elective_stream=db.relationship('Electives',backref='stream_elect',lazy='dynamic')
 
 
     def __str__(self):
@@ -247,9 +247,9 @@ class Electives(db.Model):
     __tablename__='electives'
     id=db.Column(db.Integer,primary_key=True)
     elective_name=db.Column(db.Unicode,unique=True,nullable=False)
-    # subject_relationship=db.relationship('Subject',backref='elective',lazy='select')
+    subject_relationship=db.relationship('Subject',backref='elective',lazy='subquery')
     semester_id=db.Column(db.Integer,db.ForeignKey('semester.id'),index=True)
-
+    stream=db.Column(db.Integer,db.ForeignKey('streams.id'),index=True)
     def __str__(self):
         return "%s" %self.elective_name
     def __repr__(self):

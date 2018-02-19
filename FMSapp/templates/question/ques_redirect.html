@@ -26,9 +26,10 @@
 <script  type="text/javascript" src="{{ url_for('static',filename='js/jquery-3.2.1.min.js') }}"></script>
     <script type="text/javascript">
     $(document).ready(function(){
-        $SCRIPT_ROOT = {{ request.url[:-17]|tojson|safe }};
+        // $SCRIPT_ROOT = {{ request.url[:-17]|tojson|safe }};
+        $SCRIPT_ROOT = {{ url_for('question.display_question',hashid=hashid,semester=semester)|tojson|safe }};
         console.log($SCRIPT_ROOT)
-        setTimeout(function(){popup($SCRIPT_ROOT+'{{hashid}}/{{semester}}','Welcome')},2000)
+        setTimeout(function(){popup($SCRIPT_ROOT,'Welcome')},2000)
 
         function popup(mylink, windowname){
 
@@ -38,7 +39,7 @@
             if (typeof(mylink) == 'string') href=mylink;
             else href=mylink.href;
             window.open(href, windowname, 'width=1920,height=1080,scrollbars=yes,status=1');
-            window.location.replace("about:blank");
+            // window.location.replace("about:blank");
             console.log(href)
 
             return false;

@@ -158,7 +158,12 @@ class SemesterView(CustomModelView):
 admin.add_view(SemesterView(Semester,db.session))
 
 class ElectivesView(CustomModelView):
-    column_hide_backrefs = True
+    # column_hide_backrefs = True
+    column_labels=dict(subject_relationship='Subjects',elective_semester='Semester',stream_elect='Stream')
+    column_list=['elective_name','subject_relationship','elective_semester','stream_elect']
+    form_columns=['elective_name','elective_semester','subject_relationship','stream_elect']
+    # column_display_all_relations=True
+
 
 admin.add_view(ElectivesView(Electives,db.session))
 class LinkView(BaseView):
@@ -167,6 +172,7 @@ class LinkView(BaseView):
     def index(self):
         #formdata=[(stream.id,stream.stream) for stream in Stream.query.all()]
         form=StreamForm()
+        form.elective_data.choices=[(0,"Select an Elective")]
 
         #form=StreamForm(stream=formdata)
         return self.render('admin/link.html',form=form)
@@ -178,15 +184,27 @@ class LinkView(BaseView):
 
             stream_name=request.args.get('b',0,type=int)
             semester_name=request.args.get('a',0,type=int)
+            print(semester_name)
+            # elective_name=[(elective.elective_name_id,elective.elective)
+            # for elective in Subject.query.filter_by(semester=semester_name,stream=stream_name).join(Stream)]
+            elective_name=dict(id=elective.id,elective_name=elective.elective_name
+            for elective in Electives.query.filter_by(semester_id=semester_name,stream=stream_name))
+            print(elective_name)
             # print(stream_name)
 
-
-            print(request.script_root)
-            url=url_for('question.question_red',hashid=create_hashid(stream_name),semester=create_hashid(semester_name))
+            # print(request.referrer)
+            url=url_for('question.question_red',hashid=create_hashid(stream_name),
+            semester=create_hashid(semester_name))
             print(url)
 
 
-        return jsonify(d=url)
+        return jsonify(d=url,elective=elective_name)
+    # @expose('/_generatelink',methods=['GET'])
+    # @requires_roles('admin')
+    # def elective(self):
+    #     pass
+
+
     def is_accessible(self):
         return current_user.is_authenticated and current_user.is_admin()
     def inaccessible_callback(self, name, **kwargs):
