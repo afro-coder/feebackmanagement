@@ -37,9 +37,19 @@ def display_question(hashid,semester):
     (dec1,)=dec1
     semester_id=dec1
     #print(semester_id)
+    # if request.args.get('elective',0,type=int))
+    elective=request.args.get('elective',type=int)
 
-    subjects= Subject.query.filter_by(stream=dec,semester=dec1)
+    print(elective)
 
+    # subjects= Subject.query.filter_by(stream=dec,semester=dec1)
+    from sqlalchemy import or_
+    filters=[
+    Subject.stream==dec,
+    Subject.semester==dec1,
+    Subject.elective_name_id==elective if elective else None
+    ]
+    subjects= Subject.query.filter(*filters)
 
     question=[(ques.id,ques.question) for ques in Questions.query.all()]
     form=QuestionSelect()

@@ -101,9 +101,27 @@ $(function()
             a:semester_id,
             b:stream_id
         },function(data){
-            
+            if(data.elective)
+            {
+            options=$('#elective_select')
+            data.elective.forEach(function(item){
+                options.append(
+                    $('<option />',{
+                        value:item[0],
+                        html:item[1]
 
-            $('#link_load').html("<H1><a href="+data.d+">"+$SCRIPT_ROOT+data.d+" </a>")
+                    })
+                );
+            });
+            $("#elective_select").removeAttr('disabled');
+            $('#elective_select').on('change',function(){
+                $('#link_load').html("<H1><a href="+data.d+"?elective="+$('#elective_select').val()+">"+$SCRIPT_ROOT+data.d+"?elective="+$('#elective_select').val()+"</a>")
+            });
+        }
+        else
+        {
+            $('#link_load').html("<H1><a href="+data.d+">"+$SCRIPT_ROOT+data.d+"</a>")
+        }
 
         });
 

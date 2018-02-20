@@ -139,11 +139,11 @@ class SubjectView(CustomModelView):
     #RECHECK HERE
     column_editable_list = ('subject_name',)
     column_searchable_list = ( Subject.subject_name,)
-    column_exclude_list=['submission_rel','teacher_name']
+    column_exclude_list=['submission_rel']
     column_display_all_relations=True
 
     column_filters = (Subject.stream,)
-    form_excluded_columns=['submission_rel','teacher_name']
+    form_excluded_columns=['submission_rel']
     column_labels=dict(streamsub='Stream',subject_ref="Semester",teacher_id="Teacher")
 
     # column_list=dict(stream='stream',semester='semester',teacher_name='teacher_name',subject_name='Subject')
@@ -187,14 +187,17 @@ class LinkView(BaseView):
             print(semester_name)
             # elective_name=[(elective.elective_name_id,elective.elective)
             # for elective in Subject.query.filter_by(semester=semester_name,stream=stream_name).join(Stream)]
-            elective_name=dict(id=elective.id,elective_name=elective.elective_name
-            for elective in Electives.query.filter_by(semester_id=semester_name,stream=stream_name))
+            elective_name=[(elective.id,elective.elective_name)
+            for elective in Electives.query.filter_by(semester_id=semester_name,stream=stream_name)] or None
+
             print(elective_name)
             # print(stream_name)
 
             # print(request.referrer)
             url=url_for('question.question_red',hashid=create_hashid(stream_name),
             semester=create_hashid(semester_name))
+
+
             print(url)
 
 

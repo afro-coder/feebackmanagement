@@ -21,13 +21,14 @@ class Roles(db.Model):
     def __repr__(self):
         return "%r" %self.role_name
 
-teachersubject=db.Table('teachersub',
+teachersubject=db.Table('teachersub',db.Model.metadata,
 db.Column('id',db.Integer,primary_key=True),
 db.Column('userid',db.Integer,
-db.ForeignKey('users.id')),
+db.ForeignKey('users.id',ondelete="CASCADE")),
 
 db.Column('subjectid',db.Integer,
-db.ForeignKey('subject.id')),
+db.ForeignKey('subject.id',ondelete="CASCADE")),
+db.UniqueConstraint('userid','subjectid')
 
 )
 
@@ -250,6 +251,7 @@ class Electives(db.Model):
     subject_relationship=db.relationship('Subject',backref='elective',lazy='subquery')
     semester_id=db.Column(db.Integer,db.ForeignKey('semester.id'),index=True)
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'),index=True)
+
     def __str__(self):
         return "%s" %self.elective_name
     def __repr__(self):
