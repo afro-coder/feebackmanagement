@@ -39,17 +39,20 @@ def display_question(hashid,semester):
     #print(semester_id)
     # if request.args.get('elective',0,type=int))
     elective=request.args.get('elective',type=int)
-
-    print(elective)
-
+    # print(semester_id)
+    # print(elective)
+    #
+    #     elective_search
     # subjects= Subject.query.filter_by(stream=dec,semester=dec1)
     from sqlalchemy import or_
     filters=[
     Subject.stream==dec,
     Subject.semester==dec1,
-    Subject.elective_name_id==elective if elective else None
+
     ]
-    subjects= Subject.query.filter(*filters)
+    # print(*filters)
+    subjects= Subject.query.filter(*filters).filter(or_(\
+    Subject.elective_name_id==elective,Subject.elective_name_id.is_(None)))
 
     question=[(ques.id,ques.question) for ques in Questions.query.all()]
     form=QuestionSelect()

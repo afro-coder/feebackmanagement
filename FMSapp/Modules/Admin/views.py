@@ -161,7 +161,7 @@ class ElectivesView(CustomModelView):
     # column_hide_backrefs = True
     column_labels=dict(subject_relationship='Subjects',elective_semester='Semester',stream_elect='Stream')
     column_list=['elective_name','subject_relationship','elective_semester','stream_elect']
-    form_columns=['elective_name','elective_semester','subject_relationship','stream_elect']
+    form_columns=['elective_name','elective_semester','stream_elect']
     # column_display_all_relations=True
 
 

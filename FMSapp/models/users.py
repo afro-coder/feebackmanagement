@@ -21,15 +21,14 @@ class Roles(db.Model):
     def __repr__(self):
         return "%r" %self.role_name
 
-teachersubject=db.Table('teachersub',db.Model.metadata,
-db.Column('id',db.Integer,primary_key=True),
+teachersubject=db.Table('teachersub',
 db.Column('userid',db.Integer,
 db.ForeignKey('users.id',ondelete="CASCADE")),
 
 db.Column('subjectid',db.Integer,
 db.ForeignKey('subject.id',ondelete="CASCADE")),
-db.UniqueConstraint('userid','subjectid')
-
+db.UniqueConstraint('userid','subjectid'),
+db.PrimaryKeyConstraint('userid','subjectid')
 )
 
 class User(UserMixin,db.Model):
@@ -51,8 +50,11 @@ class User(UserMixin,db.Model):
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
     #User many to many with subjects
-    sub_id=db.relationship('Subject',backref=db.backref("teacher_id",
-    lazy="subquery"),lazy="dynamic",secondary=teachersubject)
+    # sub_id=db.relationship('Subject',backref=db.backref("teacher_id",
+    # lazy="subquery"),lazy="subquery",secondary=teachersubject)
+    sub_id=db.relationship('Subject',secondary=teachersubject,
+    lazy='dynamic',back_populates="teacher_name",
+    )
 
 
     #use one to many
@@ -200,8 +202,11 @@ class Subject(db.Model):
     # teacher_name=db.relationship('User',backref=db.backref("subject_det",lazy="joined",
     # cascade="all"),lazy="dynamic",secondary=teachersubject,single_parent=True)
 
-    teacher_name=db.relationship('User',backref=db.backref("subject_det",
-    lazy="subquery"),lazy="subquery",secondary=teachersubject)
+    # teacher_name=db.relationship('User',backref=db.backref("subject_det",
+    # lazy="subquery"),lazy="subquery",secondary=teachersubject)
+    teacher_name=db.relationship('User',secondary=teachersubject,
+    lazy='joined',back_populates='sub_id',
+    )
 
 
     #one to many to electives
