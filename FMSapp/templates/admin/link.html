@@ -55,6 +55,7 @@
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.url_root[:-1]|tojson|safe }};
 </script>
+
 <script charset="utf-8" type="text/javascript">
 
 // $(function()
@@ -85,11 +86,23 @@ $(function()
     updatedata();
     function updatedata()
     {
+    $('#stream_select').on('change',function(){
+        if ($('#semester_select').prop('selectedIndex')>0)
+        {   $('#elective_select').prop('selectedIndex',0)
+            $('#elective_select').prop('disabled','disabled')
+            $('#semester_select').prop('selectedIndex',0)
+        }
+        $('#link_load').html('');
+    })
+
     $('#semester_select').on('change',function(){
+        $('#link_load').html('');
         stream_name= $('#stream_select option:selected').text();
         stream_id= $('#stream_select option:selected').val();
         semester_name=$("#semester_select option:selected").text();
         semester_id=$("#semester_select option:selected").val();
+
+
 
         if(stream_id == '__None' || semester_id == '__None')
         {
@@ -104,6 +117,9 @@ $(function()
             if(data.elective)
             {
             options=$('#elective_select')
+            options.val('').html('');
+            options.append($("<option>").html("Select an Elective").val("__None"));
+
             data.elective.forEach(function(item){
                 options.append(
                     $('<option />',{
@@ -115,11 +131,16 @@ $(function()
             });
             $("#elective_select").removeAttr('disabled');
             $('#elective_select').on('change',function(){
+                if($('#elective_select option:selected').val()=='__None')
+                {   $('#link_load').html('');
+                    return false;
+                }
                 $('#link_load').html("<H1><a href="+data.d+"?elective="+$('#elective_select').val()+">"+$SCRIPT_ROOT+data.d+"?elective="+$('#elective_select').val()+"</a>")
             });
         }
         else
-        {
+        {   $('#elective_select').prop('selectedIndex',0)
+            $('#elective_select').prop('disabled','disabled')
             $('#link_load').html("<H1><a href="+data.d+">"+$SCRIPT_ROOT+data.d+"</a>")
         }
 

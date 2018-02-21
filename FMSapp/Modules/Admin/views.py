@@ -16,7 +16,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView,expose,AdminIndexView
 from ... import db,charts
 from ...models.users import (User,Questions,Roles,
-Stream,Organization,Subject,Submissions,Semester,Electives)
+Stream,Organization,Subject,Submissions,Semester,Electives,semesterelective)
 from werkzeug.security import generate_password_hash
 
 from .forms import SubmissionForm,StreamForm
@@ -159,9 +159,9 @@ admin.add_view(SemesterView(Semester,db.session))
 
 class ElectivesView(CustomModelView):
     # column_hide_backrefs = True
-    column_labels=dict(subject_relationship='Subjects',elective_semester='Semester',stream_elect='Stream')
-    column_list=['elective_name','subject_relationship','elective_semester','stream_elect']
-    form_columns=['elective_name','elective_semester','stream_elect']
+    column_labels=dict(subject_relationship='Subjects',semester_id='Semester',stream_elect='Stream')
+    column_list=['elective_name','subject_relationship','semester_id','stream_elect']
+    form_columns=['elective_name','semester_id','stream_elect']
     # column_display_all_relations=True
 
 
@@ -184,13 +184,13 @@ class LinkView(BaseView):
 
             stream_name=request.args.get('b',0,type=int)
             semester_name=request.args.get('a',0,type=int)
-            print(semester_name)
+            # print(semester_name)
             # elective_name=[(elective.elective_name_id,elective.elective)
             # for elective in Subject.query.filter_by(semester=semester_name,stream=stream_name).join(Stream)]
             elective_name=[(elective.id,elective.elective_name)
-            for elective in Electives.query.filter_by(semester_id=semester_name,stream=stream_name)] or None
+            for elective in Electives.query.filter(Electives.semester_id.any(id=semester_name),Electives.stream==stream_name)] or None
 
-            print(elective_name)
+            # print(elective_name)
             # print(stream_name)
 
             # print(request.referrer)
@@ -198,10 +198,11 @@ class LinkView(BaseView):
             semester=create_hashid(semester_name))
 
 
-            print(url)
+            # print(url)
 
 
         return jsonify(d=url,elective=elective_name)
+        # return jsonify(d=url)
     # @expose('/_generatelink',methods=['GET'])
     # @requires_roles('admin')
     # def elective(self):

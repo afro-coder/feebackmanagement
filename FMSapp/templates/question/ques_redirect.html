@@ -29,7 +29,15 @@
         // $SCRIPT_ROOT = {{ request.url[:-17]|tojson|safe }};
         $SCRIPT_ROOT = {{ url_for('question.display_question',hashid=hashid,semester=semester)|tojson|safe }};
 
-        setTimeout(function(){popup($SCRIPT_ROOT+"?elective={{request.args.get('elective')}}",'Welcome')},2000)
+        $elective={{request.args.get('elective')}}
+        if($elective=='None'|| $elective=='__None')
+        {
+            $url=$SCRIPT_ROOT+"?elective={{request.args.get('elective')}}"
+        }
+        else {
+            $url=$SCRIPT_ROOT;
+        }
+        setTimeout(function(){popup($url,'Welcome')},2000)
 
         function popup(mylink, windowname){
 

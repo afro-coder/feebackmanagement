@@ -30,6 +30,13 @@ db.ForeignKey('subject.id',ondelete="CASCADE")),
 db.UniqueConstraint('userid','subjectid'),
 db.PrimaryKeyConstraint('userid','subjectid')
 )
+semesterelective=db.Table('semelect',
+db.Column('electiveid',db.Integer,
+db.ForeignKey('electives.id',ondelete="CASCADE")),
+db.Column('semesterid',db.Integer,
+db.ForeignKey('semester.id',ondelete="CASCADE")),
+db.PrimaryKeyConstraint('electiveid','semesterid')
+)
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -230,7 +237,6 @@ class Stream(db.Model):
     submissions_id=db.relationship('Submissions',backref='stsub',lazy='dynamic')
     elective_stream=db.relationship('Electives',backref='stream_elect',lazy='dynamic')
 
-
     def __str__(self):
         return "%s" %self.stream
     def __repr__(self):
@@ -241,8 +247,13 @@ class Semester(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     semester_name=db.Column(db.Integer,unique=True,nullable=False)
     subject_col=db.relationship('Subject',backref='subject_ref',lazy='dynamic')
-    elective_relationship=db.relationship('Electives',backref='elective_semester',lazy='dynamic')
-
+    # elective_relationship=db.relationship('Electives',backref='elective_semester',lazy='dynamic')
+    elective_relationship=db.relationship('Electives',secondary=semesterelective,
+    lazy='dynamic',back_populates="semester_id"
+    )
+    # elective_relationship=db.relationship('Electives',secondary=semesterelective,
+    # lazy='subquery',backref=db.backref("elective_rel",lazy='subquery')
+    # )
     def __str__(self):
         return "%s" %self.semester_name
     def __repr__(self):
@@ -254,7 +265,12 @@ class Electives(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     elective_name=db.Column(db.Unicode,unique=True,nullable=False)
     subject_relationship=db.relationship('Subject',backref='elective',lazy='subquery')
-    semester_id=db.Column(db.Integer,db.ForeignKey('semester.id'),index=True)
+    # semester_id=db.Column(db.Integer,db.ForeignKey('semester.id'),index=True)
+    semester_id=db.relationship('Semester',secondary=semesterelective,
+    lazy='joined',back_populates="elective_relationship")
+    # semester_id=db.relationship('Semester',secondary=semesterelective,
+    # lazy='subquery',backref=db.backref("semester_rel",lazy='subquery')
+    # )
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'),index=True)
 
     def __str__(self):
