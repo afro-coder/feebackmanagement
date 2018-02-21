@@ -15,6 +15,8 @@ class StreamForm(FlaskForm):
     semester=QuerySelectField('Semester',allow_blank=True,blank_text=u'Select a Semester',
     query_factory=lambda: Semester.query.all(),validators=[DataRequired()])
 
+    elective_data=SelectField('Elective',
+    render_kw={'disabled':'disabled'})
 
     # submit=SubmitField('Submit')
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+</head>
+
+<select id="car">
+  
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <optgroup label="German Cars" id="tax"> 
+    <option value="mercedes">Mercedes</option>
+    <option value="audi">Audi</option>
+  </optgroup>
+</select>
+ <script>
+$(document).ready(function() {
+    $("select ").change(function() {
+        console.log('hello')
+        var clicked = $(this)
+                         .find('option:selected') // get selected option
+                         .parent()   // get that option's optgroup
+                         .attr("label");   // get optgroup's label
+        if(clicked==undefined)
+        {
+        return false;
+        }
+        alert( clicked );
+    });
+});
+ </script>
+</body>
+</html>
