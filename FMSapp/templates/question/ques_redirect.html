@@ -29,13 +29,15 @@
         // $SCRIPT_ROOT = {{ request.url[:-17]|tojson|safe }};
         $SCRIPT_ROOT = {{ url_for('question.display_question',hashid=hashid,semester=semester)|tojson|safe }};
 
-        $elective="{{request.args.get('elective')}}"
+        $elective="{{request.args.get('elective')}}";
+        console.log($elective)
         if($elective=='None'|| $elective=='__None')
         {
-            $url=$SCRIPT_ROOT+"?elective={{request.args.get('elective')}}"
+            $url=$SCRIPT_ROOT;
         }
         else {
-            $url=$SCRIPT_ROOT;
+
+            $url=$SCRIPT_ROOT+"?elective={{request.args.get('elective')}}"
         }
         setTimeout(function(){popup($url,'Welcome')},2000)
 
@@ -47,7 +49,7 @@
             if (typeof(mylink) == 'string') href=mylink;
             else href=mylink.href;
             window.open(href, windowname, 'width=1920,height=1080,scrollbars=yes,status=1');
-            window.location.replace("about:blank");
+            // window.location.replace("about:blank");
             // console.log(href)
 
             return false;

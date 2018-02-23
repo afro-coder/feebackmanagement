@@ -89,13 +89,11 @@ def gen_teacher():
         dictv =request.form.to_dict()
         # print(dictv)
         dictv.pop('csrf_token')
-        print("debug")
-        print(dictv)
+        # print("debug")
+        # print(dictv)
         d={key[7:]:dictv[key] for key in dictv if key.startswith('options')}
-        print(d)
-        for a,v in d.items():
-            if v is None or v=='':
-                abort(405)
+        if not d:
+            abort(405)
 
         # for key,value in d.items():
         #     print(key+":::"+value)

@@ -300,16 +300,17 @@ class ResultsView(BaseView):
 
                 my_chart=PieChart(("teacher_chart{0}").format(key),
                 options={'title': 'Submission', "width": 500,"height": 300,
-                "is3D":True,"pieSliceText":'value-and-percentage',
-                'legend': { 'position': 'labeled','labeledValueText': 'both',
-                'textStyle': {'fontName': 'Roboto','fontSize': 13,'color':'blue'
-
-      }}})
-
+                "is3D":'True',"pieSliceText":'value-and-percentage',
+                'tooltip' : {'trigger': 'none'},'chartArea': {  'width': "100%", 'height': "60%" }
+                }
+                )
+                # 'legend': { 'position': 'labeled','labeledValueText': 'both',
+                # 'textStyle': {'fontName': 'Roboto','fontSize': 13,'color':'blue'}
+                # }
                 my_chart.add_column("string", "Answer")
                 my_chart.add_column("number", "percent")
 
-                my_chart.add_rows([["Yes", ans_yes],["No", ans_no],["No Comment", ans_no_comment]])
+                my_chart.add_rows([["({0}) Yes".format(ans_yes), ans_yes],["({0}) No".format(ans_no), ans_no],["({0}) No Comment ".format(ans_no_comment), ans_no_comment]])
                 chart_data.append((my_chart.name,key,value))
                 charts.register(my_chart)
 
@@ -332,13 +333,16 @@ class ResultsView(BaseView):
         # print(dictv)
         options={'page-size': 'A4',
     'margin-top': '0.70in',
-    'margin-right': '0.60in',
-    'margin-bottom': '2.0in',
+    'margin-right': '0.70in',
+    'margin-bottom': '.760in',
     'margin-left': '0.60in',
     'encoding': "UTF-8",
 
     }
+        # options={'page-size': 'A4',
+        # 'encoding': "UTF-8"}
     #Windows
+        css=['FMSapp/Modules/Admin/main.css']
         import platform
         if platform.system() =="Windows":
 
@@ -347,7 +351,9 @@ class ResultsView(BaseView):
             pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
     #linux
         else:
-            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options)
+            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,css=css)
+
+            # pdfk=pdfkit.from_string(dictv['sendD'],False,css=css)
         # pdfk=pdfkit.from_string(dictv,False)
         # # #
         response = make_response(pdfk, 200)
