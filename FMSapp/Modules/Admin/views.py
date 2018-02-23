@@ -334,7 +334,7 @@ class ResultsView(BaseView):
         options={'page-size': 'A4',
     'margin-top': '0.70in',
     'margin-right': '0.70in',
-    'margin-bottom': '.760in',
+    'margin-bottom': '.60in',
     'margin-left': '0.60in',
     'encoding': "UTF-8",
 

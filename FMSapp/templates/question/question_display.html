@@ -439,7 +439,7 @@ $(function(){
     }else{
 
         var $messageDiv = $('#flash');
-        $messageDiv.show().html("<div class='alert alert-info alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Please answer all the questions</strong> </div>"); // show and set the message
+        $messageDiv.show().html("<div class='alert alert-danger alert-dismissable'><a id='mess' class='close' data-dismiss='alert' aria-label='close'>×</a><strong>Please answer all the questions</strong> </div>"); // show and set the message
 
         $('html, body').animate({
         scrollTop: $(".test").offset().top}, 200);
