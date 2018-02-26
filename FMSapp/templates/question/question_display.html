@@ -25,7 +25,7 @@
 <style>
 .set select
 {
-    padding:6%;
+    padding:3%;
     -webkit-appearance: none;
 }
 
@@ -217,7 +217,7 @@ textarea {
                 <div class="set">
 
                 <label class="first-select ">Teacher</label>
-                {{render_field(form.teacher_select,class="form-control",id="teacher_select",data_width="auto")}}
+                {{render_field(form.teacher_select,class="form-control editteach",id="teacher_select",data_width="auto")}}
             </div>
             </div>
 
@@ -334,6 +334,7 @@ $(document).ready(function(){
 <script type="text/javascript">
 $(document).ready(function(){
     $('.edit').css('width','272%')
+    $('.editteach').css('width','100%')
 
 })
 </script>
@@ -350,6 +351,7 @@ $(document).ready(function() {
 
 $(function(){
     var numopt=document.getElementById("subject_select").options.length-1;
+	console.log("subject_opt"+numopt)
 
 
 
@@ -392,6 +394,8 @@ $(function(){
                 setTimeout(function(){ $messageDiv.slideDown("slow").html('');}, 3000);
             }
                 var num=document.getElementById("teacher_select").options.length-1;
+				console.log("sub_num"+numopt)
+				console.log("te_num"+num)
                 // console.log(num)
                 if(num<=1)
                 {
@@ -400,11 +404,16 @@ $(function(){
                     $('select#teacher_select').html('').prop('disabled',true);
                     $('form#teacherform').find('select').val('__None');
                     numopt--;
+					console.log("sub_num"+numopt)
+				console.log("te_num"+num)
                 }
                 else
                 {   $("#subject_select option:selected").prop('disabled','disabled')
+
                     $('#teacher_select option:selected').remove();
                     num--;
+					console.log("sub_num"+num)
+				console.log("te_num"+num)
                 }
 
 
@@ -415,7 +424,9 @@ $(function(){
 
                 // console.log(numopt);
                 if(numopt<1)
-                {   $('html, body').animate({
+                {console.log("sub_num"+num)
+				console.log("te_num"+num)   
+				$('html, body').animate({
                 scrollTop: $(".test").offset().top}, 200);
                     setTimeout(function(){
                     var $messageDiv = $('#flash');

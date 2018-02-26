@@ -301,7 +301,7 @@ class ResultsView(BaseView):
                 my_chart=PieChart(("teacher_chart{0}").format(key),
                 options={'title': 'Submission', "width": 500,"height": 300,
                 "is3D":'True',"pieSliceText":'value-and-percentage',
-                'tooltip' : {'trigger': 'none'},'chartArea': {  'width': "100%", 'height': "60%" }
+                'tooltip' : {'trigger': 'none'},'chartArea': {  'width': "100%", 'height': "50%" }
                 }
                 )
                 # 'legend': { 'position': 'labeled','labeledValueText': 'both',
@@ -342,17 +342,20 @@ class ResultsView(BaseView):
     # 'margin-bottom': '.60in',
     # 'margin-left': '0.60in',
         # options={'page-size': 'A4',
+
+
         # 'encoding': "UTF-8"}
     #Windows
-        css=['FMSapp/Modules/Admin/main.css']
+        
         import platform
         if platform.system() =="Windows":
-
+            css=r'C:/Apache24/htdocs/fmsapp\\FMSapp\\Modules\\Admin\\main.css'
             path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
             config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
             pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config,css=css)
     #linux
         else:
+            css=['FMSapp/Modules/Admin/main.css']
             pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,css=css)
 
             # pdfk=pdfkit.from_string(dictv['sendD'],False,css=css)
