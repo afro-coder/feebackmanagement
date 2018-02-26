@@ -21,13 +21,22 @@ class Roles(db.Model):
     def __repr__(self):
         return "%r" %self.role_name
 
-teachersubject=db.Table('teachersub',db.metadata,
-db.Column('id',db.Integer,primary_key=True),
+teachersubject=db.Table('teachersub',
 db.Column('userid',db.Integer,
-db.ForeignKey('users.id')),
+db.ForeignKey('users.id',ondelete="CASCADE")),
 
 db.Column('subjectid',db.Integer,
-db.ForeignKey('subject.id')))
+db.ForeignKey('subject.id',ondelete="CASCADE")),
+db.UniqueConstraint('userid','subjectid'),
+db.PrimaryKeyConstraint('userid','subjectid')
+)
+semesterelective=db.Table('semelect',
+db.Column('electiveid',db.Integer,
+db.ForeignKey('electives.id',ondelete="CASCADE")),
+db.Column('semesterid',db.Integer,
+db.ForeignKey('semester.id',ondelete="CASCADE")),
+db.PrimaryKeyConstraint('electiveid','semesterid')
+)
 
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
@@ -42,15 +51,21 @@ class User(UserMixin,db.Model):
     organization_id=db.Column(db.Integer,db.ForeignKey('organization.id'),nullable=False)
 
     role_id=db.Column(db.Integer,db.ForeignKey('roles.id'),nullable=False)
+    # role_rel=db.relationship('Roles',backref='role',lazy='select')
 
     #User to Submissions
     user_sub=db.relationship('Submissions',backref='usersub',lazy='dynamic')
 
     #User many to many with subjects
-    sub_id=db.relationship('Subject',backref=db.backref("teacher_id"),secondary=teachersubject)
+    # sub_id=db.relationship('Subject',backref=db.backref("teacher_id",
+    # lazy="subquery"),lazy="subquery",secondary=teachersubject)
+    sub_id=db.relationship('Subject',secondary=teachersubject,
+    lazy='dynamic',back_populates="teacher_name",
+    )
 
 
-
+    #use one to many
+    # sub_id=db.relationship('Subject',backref='teacher_id',lazy='dynamic')
 
 
     def __init__(self,**kwargs):
@@ -115,10 +130,10 @@ class User(UserMixin,db.Model):
 
 
     def __repr__(self):
-        return "<Users %r >" % self.fname
+        return "{0} {1}".format(self.fname,self.lname)
 
     def __str__(self):
-        return "%s" %format(self.fname)
+        return "{0} {1}".format(self.fname,self.lname)
 
 
 
@@ -168,9 +183,11 @@ class Submissions(db.Model):
     question_id=db.Column(db.Integer,db.ForeignKey('questions.id'),index=True)
     subject_id=db.Column(db.Integer,db.ForeignKey('subject.id'),index=True)
     suggestions=db.Column(db.Text,index=True)
-    date=db.Column(db.Date,index=True,default=datetime.date.today())
+    date=db.Column(db.Date,index=True,default=datetime.date.today(),nullable=False)
+    #date_time=db.Column(db.DateTime,index=True,default=datetime.datetime.utcnow,nullable=False)
+
     def __repr__(self):
-        return "<Submissions %r>" %format(self.submission)
+        return "%r" %format(self.submission)
 
 
 class Subject(db.Model):
@@ -178,16 +195,34 @@ class Subject(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     subject_name=db.Column(db.String,index=True,nullable=False,unique=True)
 
-    submission_rel=db.relationship('Submissions',foreign_keys=[Submissions.subject_id],
-    backref=db.backref('submission_id',lazy='joined'),lazy='dynamic')
+    submission_rel=db.relationship('Submissions',backref='submission_r',lazy='dynamic')
+    # submission_rel=db.relationship('Submissions',foreign_keys=[Submissions.subject_id],
+    # backref=db.backref('submission_id',lazy='joined'),lazy='dynamic')
     #add required field
 
     stream=db.Column(db.Integer,db.ForeignKey('streams.id'))
-    #teacher_name=db.relationship('User',backref=db.backref("subject_det"),secondary=teachersubject)
+    semester=db.Column(db.Integer,db.ForeignKey('semester.id'))
 
 
+
+    # teacher=db.Column(db.Integer,db.ForeignKey('users.id'))
+    # teacher_name=db.relationship('User',backref=db.backref("subject_det",lazy="joined",
+    # cascade="all"),lazy="dynamic",secondary=teachersubject,single_parent=True)
+
+    # teacher_name=db.relationship('User',backref=db.backref("subject_det",
+    # lazy="subquery"),lazy="subquery",secondary=teachersubject)
+    teacher_name=db.relationship('User',secondary=teachersubject,
+    lazy='joined',back_populates='sub_id',
+    )
+
+
+    #one to many to electives
+    elective_name_id=db.Column(db.Integer,db.ForeignKey('electives.id'),index=True)
+    # elective_rel=db.relationship('Electives',lazy='joined')
     def __str__(self):
         return " %s" %self.subject_name
+    def __repr__(self):
+        return " %r" %self.subject_name
 
 class Stream(db.Model):
     __tablename__='streams'
@@ -196,15 +231,52 @@ class Stream(db.Model):
 
     subjects=db.relationship('Subject',backref='streamsub',lazy='dynamic')
 
-    submissions_id=db.relationship('Submissions',
-    foreign_keys=[Submissions.stream_id],
-    backref=db.backref('streamid',lazy='joined'),lazy='dynamic')
-
-
-
+    # submissions_id=db.relationship('Submissions',
+    # foreign_keys=[Submissions.stream_id],
+    # backref=db.backref('streamid',lazy='joined'),lazy='dynamic')
+    submissions_id=db.relationship('Submissions',backref='stsub',lazy='dynamic')
+    elective_stream=db.relationship('Electives',backref='stream_elect',lazy='dynamic')
 
     def __str__(self):
         return "%s" %self.stream
+    def __repr__(self):
+        return "%r" %self.stream
+
+class Semester(db.Model):
+    __tablename__='semester'
+    id=db.Column(db.Integer,primary_key=True)
+    semester_name=db.Column(db.Integer,unique=True,nullable=False)
+    subject_col=db.relationship('Subject',backref='subject_ref',lazy='dynamic')
+    # elective_relationship=db.relationship('Electives',backref='elective_semester',lazy='dynamic')
+    elective_relationship=db.relationship('Electives',secondary=semesterelective,
+    lazy='dynamic',back_populates="semester_id"
+    )
+    # elective_relationship=db.relationship('Electives',secondary=semesterelective,
+    # lazy='subquery',backref=db.backref("elective_rel",lazy='subquery')
+    # )
+    def __str__(self):
+        return "%s" %self.semester_name
+    def __repr__(self):
+        return "%r" %self.semester_name
+
+
+class Electives(db.Model):
+    __tablename__='electives'
+    id=db.Column(db.Integer,primary_key=True)
+    elective_name=db.Column(db.Unicode,unique=True,nullable=False)
+    subject_relationship=db.relationship('Subject',backref='elective',lazy='subquery')
+    # semester_id=db.Column(db.Integer,db.ForeignKey('semester.id'),index=True)
+    semester_id=db.relationship('Semester',secondary=semesterelective,
+    lazy='joined',back_populates="elective_relationship")
+    # semester_id=db.relationship('Semester',secondary=semesterelective,
+    # lazy='subquery',backref=db.backref("semester_rel",lazy='subquery')
+    # )
+    stream=db.Column(db.Integer,db.ForeignKey('streams.id'),index=True)
+
+    def __str__(self):
+        return "%s" %self.elective_name
+    def __repr__(self):
+        return "%r" %self.elective_name
 
 
 

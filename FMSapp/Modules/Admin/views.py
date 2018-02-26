@@ -221,6 +221,8 @@ admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
     column_sortable_list = ('date',)
+    column_searchable_list=(Submissions.form_id,)
+
 
 admin.add_view(SubmissionView(Submissions,db.session))
 
@@ -253,10 +255,11 @@ class ResultsView(BaseView):
         if request.method=="GET":
             try:
                 stream_id=request.args.get('b',0,type=int)
+                semester_id=request.args.get('c',0,type=int)
 
 
 
-                data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id)]
+                data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id,semester=semester_id)]
                 # print(data)
                 return jsonify(data)
                 # if len(subject_id) > 0:
@@ -346,7 +349,7 @@ class ResultsView(BaseView):
 
         # 'encoding': "UTF-8"}
     #Windows
-        
+
         import platform
         if platform.system() =="Windows":
             css=r'C:/Apache24/htdocs/fmsapp\\FMSapp\\Modules\\Admin\\main.css'

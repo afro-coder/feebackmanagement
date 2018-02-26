@@ -73,8 +73,10 @@ def create_app(config_name=None):
 
     @app.errorhandler(404)
     def pg_not_found(e):
-        return render_template(template_name_or_list='error/404.html')
-
+        return render_template(template_name_or_list='error/404.html'),404
+		
+	
+	
 
     #from .Modules.Admin.views import init_admin
 
@@ -83,6 +85,6 @@ def create_app(config_name=None):
 
 
 
-    # print(app.url_map)
+    #print(app.url_map)
     #print(app.extensions)
     return app

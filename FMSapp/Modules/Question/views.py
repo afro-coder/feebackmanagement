@@ -7,6 +7,7 @@ from wtforms.validators import ValidationError
 from flask import session
 from FMSapp import db
 from FMSapp.Modules.utils import generate_form_token
+from sqlalchemy import or_
 
 #add a url converter here
 # @question.before_request
@@ -28,17 +29,24 @@ def question_red(hashid,semester):
 def display_question(hashid,semester):
     if request.referrer is None:
         return redirect(url_for('.question_red',hashid=hashid,semester=semester))
-    dec=decode_hashid(hashid=hashid)
-    print("semester {0}".format(dec))
-    (dec,)=dec
-    stream_id=dec
-    
 
-    dec1=decode_hashid(hashid=semester)
-    print("semester"+str(dec1))
-    (dec1,)=dec1
-    semester_id=dec1
-    print("SEMESTER {0}".format(semester_id))
+    try:
+
+        dec=decode_hashid(hashid=hashid)
+        print("semester {0}".format(dec))
+        (dec,)=dec
+        stream_id=dec
+
+
+        dec1=decode_hashid(hashid=semester)
+        print("semester"+str(dec1))
+        (dec1,)=dec1
+        semester_id=dec1
+        print("SEMESTER {0}".format(semester_id))
+    except Exception as e:
+        print(e)
+        return redirect(url_for('.question_red',hashid=hashid,semester=semester))
+
     # if request.args.get('elective',0,type=int))
     elective=request.args.get('elective',type=int)
     # print(semester_id)
@@ -46,7 +54,7 @@ def display_question(hashid,semester):
     #
     #     elective_search
     # subjects= Subject.query.filter_by(stream=dec,semester=dec1)
-    from sqlalchemy import or_
+
     filters=[
     Subject.stream==dec,
     Subject.semester==dec1,
@@ -77,6 +85,7 @@ def gen_teacher():
 
     if request.method == "GET":
         subject_id=request.args.get('b',0,type=int)
+
         # list.append(subject_id)
         # print(list)
         # print(subject_id)

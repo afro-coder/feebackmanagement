@@ -9,23 +9,55 @@ from FMSapp import db
 from FMSapp.Modules.utils import generate_form_token
 
 #add a url converter here
-@question.before_request
-def before_req():
-    pass
+# @question.before_request
+# def before_req():
+#     pass
 
-@question.route("/stream/<hashid>", methods=['GET', 'POST'])
-def display_question(hashid):
 
+@question.route('/stream/red/<hashid>/<semester>',methods=['GET'])
+def question_red(hashid,semester):
+    #find the referrer using url for refer to auth login
+    # print(request.url_root[7:])
+    # print(request.endpoint)
+
+
+    return render_template('question/ques_redirect.html',hashid=hashid,semester=semester)
+
+    # return redirect(url_for('.display_question',hashid=hashid,semester=semester))
+@question.route("/stream/<hashid>/<semester>", methods=['GET', 'POST'])
+def display_question(hashid,semester):
+    if request.referrer is None:
+        return redirect(url_for('.question_red',hashid=hashid,semester=semester))
     dec=decode_hashid(hashid=hashid)
     (dec,)=dec
-    print("CHECK THIS")
-    print(str(dec))
     stream_id=dec
-    subjects= Subject.query.filter_by(stream=dec)
+    #print(stream_id)
+
+    dec1=decode_hashid(hashid=semester)
+    (dec1,)=dec1
+    semester_id=dec1
+    #print(semester_id)
+    # if request.args.get('elective',0,type=int))
+    elective=request.args.get('elective',type=int)
+    # print(semester_id)
+    # print(elective)
+    #
+    #     elective_search
+    # subjects= Subject.query.filter_by(stream=dec,semester=dec1)
+    from sqlalchemy import or_
+    filters=[
+    Subject.stream==dec,
+    Subject.semester==dec1,
+
+    ]
+    # print(*filters)
+    subjects= Subject.query.filter(*filters).filter(or_(\
+    Subject.elective_name_id==elective,Subject.elective_name_id.is_(None)))
 
     question=[(ques.id,ques.question) for ques in Questions.query.all()]
     form=QuestionSelect()
     form.subject_data.query=subjects
+    # form.teacher_select.choices={('__None','Select a Teacher')}
     form.teacher_select.choices=[]
 
     # if form.validate_on_submit():
@@ -33,18 +65,21 @@ def display_question(hashid):
     #     return "Success"
 
     form_id=generate_form_token(12)
-    session["form_id"]=form_id
-
+    # session["form_id"]=form_id
+    # print(request.endpoint)
     return render_template('question/question_display.html',form=form,question=question,hashid=hashid,form_id=form_id)
 
 
 @question.route('/_gen_teachers',methods=['GET','POST'])
 def gen_teacher():
+
     if request.method == "GET":
         subject_id=request.args.get('b',0,type=int)
-        print(subject_id)
+        # list.append(subject_id)
+        # print(list)
+        # print(subject_id)
 
-        t=[(row.id,row.fname)  for row in  User.query.filter(User.sub_id.any(id=subject_id)).all()]
+        t=[(row.id,row.fname+' '+row.lname)  for row in  User.query.filter(User.sub_id.any(id=subject_id)).all()]
 
 
         return jsonify(t)
@@ -52,19 +87,19 @@ def gen_teacher():
     if request.method == "POST":
         #datasub=Submissions()
         dictv =request.form.to_dict()
-        print(dictv)
+        # print(dictv)
         dictv.pop('csrf_token')
-        print("debug")
-        print(dictv)
-        d={key[-1:]:dictv[key] for key in dictv if key.startswith('options')}
-        if d is None:
+        # print("debug")
+        # print(dictv)
+        d={key[7:]:dictv[key] for key in dictv if key.startswith('options')}
+        if not d:
             abort(405)
+
         # for key,value in d.items():
         #     print(key+":::"+value)
 
 
         stream=decode_hashid(dictv["stream_id"])
-        print(dictv["stream_id"])
         (stream,)=stream
 
         # if session["form_id"] != dictv["form_id"]:
@@ -72,19 +107,27 @@ def gen_teacher():
         # session["dict_form_id"]=dictv["form_id"]
         # print("\t\t\After Posting",session["dict_form_id"])
         #
-        for key,value in d.items():
-            datasub=Submissions()
+        try:
 
-            datasub.form_id=dictv["form_id"]
-            datasub.user_id=int(dictv["teacher_select"])
-            datasub.subject_id=int(dictv["subject_data"])
-            datasub.stream_id=int(stream)
-            datasub.question_id=int(key)
-            datasub.submission=int(value)
-            if key == "1":
-                datasub.suggestions=dictv["suggestions"]
-            db.session.add(datasub)
-        db.session.commit()
+            for key,value in d.items():
+                datasub=Submissions()
+
+                datasub.form_id=dictv["form_id"]
+                datasub.user_id=int(dictv["teacher_select"])
+                datasub.subject_id=int(dictv["subject_data"])
+                datasub.stream_id=int(stream)
+                datasub.question_id=int(key)
+                datasub.submission=int(value)
+
+                if key == "1":
+                    datasub.suggestions=dictv["suggestions"]
+                db.session.add(datasub)
+            db.session.commit()
+
+
+
+        except Exception:
+            db.session.rollback();
 
 
         # for key,value in dictv.items():
@@ -95,7 +138,7 @@ def gen_teacher():
         jsondata=[{'type':'success','message':'success'}]
         return jsonify(jsondata)
 
-    abort(405)
+    return(jsonify({'message':'Error please contact admin'}))
 
 
 
@@ -106,32 +149,35 @@ def gen_teacher():
 @question.route('/success')
 def suc():
     return render_template("question/success.html")
-@question.route('/test_question',methods=["GET","POST"])
-def testques():
 
-    question=[(ques.id,ques.question) for ques in Questions.query.all()]
-    #form=QuestionForm()
 
-    # print(question)
 
-    form=QuestionForm()
-    form.options.append_entry(RadioField("ra"))
-    #test=[a for a in dir(form.options) if not a.startswith('__')]
-    #print(test)
-
-    return render_template('question/questiondisp.html',form=form,question=question)
-@question.route('/_subform',methods=["GET","POST"])
-def subform():
-    print("Hello")
-    dictv = request.form.to_dict()
-    print(dictv)
-    dictv.pop('csrf_token')
-    print(dictv)
-    d={key[-1:]:dictv[key] for key in dictv if key.startswith('options')}
-    # print(d)
-    # # for key in dict:
-    #     # print(key.startswith('options'))
-    #     # print("\n")
-    #     # print('form key '+dict[key])
-
-    return "Sucess"
+# @question.route('/test_question',methods=["GET","POST"])
+# def testques():
+#
+#     question=[(ques.id,ques.question) for ques in Questions.query.all()]
+#     #form=QuestionForm()
+#
+#     # print(question)
+#
+#     form=QuestionForm()
+#     form.options.append_entry(RadioField("ra"))
+#     #test=[a for a in dir(form.options) if not a.startswith('__')]
+#     #print(test)
+#
+#     return render_template('question/questiondisp.html',form=form,question=question)
+# @question.route('/_subform',methods=["GET","POST"])
+# def subform():
+#     print("Hello")
+#     dictv = request.form.to_dict()
+#     print(dictv)
+#     dictv.pop('csrf_token')
+#     print(dictv)
+#     d={key[-1:]:dictv[key] for key in dictv if key.startswith('options')}
+#     # print(d)
+#     # # for key in dict:
+#     #     # print(key.startswith('options'))
+#     #     # print("\n")
+#     #     # print('form key '+dict[key])
+#
+#     return "Sucess"
