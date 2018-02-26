@@ -1,4 +1,7 @@
 .pdf {page-break-inside: avoid;
-    margin-top: 0;
+    
+	
+	
 }
-.chart{overflow: none;}
+
+.chart{overflow:always;page-break-inside: avoid;}

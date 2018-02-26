@@ -30,7 +30,7 @@
         $SCRIPT_ROOT = {{ url_for('question.display_question',hashid=hashid,semester=semester)|tojson|safe }};
 
         $elective="{{request.args.get('elective')}}";
-        console.log($elective)
+        console.log($SCRIPT_ROOT)
         if($elective=='None'|| $elective=='__None')
         {
             $url=$SCRIPT_ROOT;
@@ -48,8 +48,8 @@
             console.log(mylink)
             if (typeof(mylink) == 'string') href=mylink;
             else href=mylink.href;
-            window.open(href, windowname, 'width=1920,height=1080,scrollbars=yes,status=1');
-            // window.location.replace("about:blank");
+            window.open(href, windowname, 'width=1366,height=690,scrollbars=yes,status=1');
+            window.location.replace("about:blank");
             // console.log(href)
 
             return false;

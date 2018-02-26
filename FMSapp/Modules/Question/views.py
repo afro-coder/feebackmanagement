@@ -29,14 +29,16 @@ def display_question(hashid,semester):
     if request.referrer is None:
         return redirect(url_for('.question_red',hashid=hashid,semester=semester))
     dec=decode_hashid(hashid=hashid)
+    print("semester {0}".format(dec))
     (dec,)=dec
     stream_id=dec
-    #print(stream_id)
+    
 
     dec1=decode_hashid(hashid=semester)
+    print("semester"+str(dec1))
     (dec1,)=dec1
     semester_id=dec1
-    #print(semester_id)
+    print("SEMESTER {0}".format(semester_id))
     # if request.args.get('elective',0,type=int))
     elective=request.args.get('elective',type=int)
     # print(semester_id)
@@ -148,6 +150,8 @@ def gen_teacher():
         # print(t)
 @question.route('/success')
 def suc():
+    if request.referrer is None:
+	    abort(404)
     return render_template("question/success.html")
 
 
