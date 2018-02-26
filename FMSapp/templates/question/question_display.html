@@ -402,7 +402,7 @@ $(function(){
                     numopt--;
                 }
                 else
-                {
+                {   $("#subject_select option:selected").prop('disabled','disabled')
                     $('#teacher_select option:selected').remove();
                     num--;
                 }
@@ -491,6 +491,7 @@ $(function()
         }
         else
         {
+
         $.getJSON("{{url_for('question.gen_teacher')}}",{
             a:subject_name,
             b:subject_id

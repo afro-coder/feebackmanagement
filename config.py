@@ -46,7 +46,7 @@ class DevConfig(Config):
     DEBUG = True
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, "devdb.sqlite")
     SQLALCHEMY_DATABASE_URI = 'postgresql://leon:@ll0wfmsapp#@localhost/fmsapp'
-
+    #SQLALCHEMY_DATABASE_URI = 'postgresql://fmsuser:@ll0wfms@localhost/fmsuser'
     TEMPLATES_AUTO_RELOAD=True
 
 

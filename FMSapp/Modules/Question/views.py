@@ -98,7 +98,7 @@ def gen_teacher():
         # for key,value in d.items():
         #     print(key+":::"+value)
 
-
+        print(dictv)
         stream=decode_hashid(dictv["stream_id"])
         (stream,)=stream
 
@@ -108,7 +108,7 @@ def gen_teacher():
         # print("\t\t\After Posting",session["dict_form_id"])
         #
         try:
-
+            print('s')
             for key,value in d.items():
                 datasub=Submissions()
 
@@ -126,7 +126,8 @@ def gen_teacher():
 
 
 
-        except Exception:
+        except Exception as e:
+            print('error'.format(e))
             db.session.rollback();
 
 
@@ -134,7 +135,7 @@ def gen_teacher():
         #     print(key[-1:]+"::"+value)
 
         # print(dictv)
-        print("success")
+        # print("success")
         jsondata=[{'type':'success','message':'success'}]
         return jsonify(jsondata)
 
@@ -148,6 +149,8 @@ def gen_teacher():
         # print(t)
 @question.route('/success')
 def suc():
+    if request.referrer is None:
+        abort(404)
     return render_template("question/success.html")
 
 

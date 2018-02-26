@@ -318,7 +318,7 @@ class ResultsView(BaseView):
             return self.render('admin/result_chart.html',chart_data=chart_data,suggestions=suggestions),200
         except  Exception as e:
             print(e)
-            return jsonify({'message':'Empty data'}),200
+            return jsonify(message='Empty data'),200
 
     @expose('/_pdfgen',methods=["GET","POST"])
     def pdfgen(self):
@@ -332,13 +332,15 @@ class ResultsView(BaseView):
         # print(dic)
         # print(dictv)
         options={'page-size': 'A4',
-    'margin-top': '0.70in',
-    'margin-right': '0.70in',
-    'margin-bottom': '.60in',
-    'margin-left': '0.60in',
+
     'encoding': "UTF-8",
 
     }
+    #merge changes from production pc ***************************^
+    # 'margin-top': '0.70in',
+    # 'margin-right': '0.70in',
+    # 'margin-bottom': '.60in',
+    # 'margin-left': '0.60in',
         # options={'page-size': 'A4',
         # 'encoding': "UTF-8"}
     #Windows
@@ -348,7 +350,7 @@ class ResultsView(BaseView):
 
             path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
             config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
-            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
+            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config,css=css)
     #linux
         else:
             pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,css=css)
