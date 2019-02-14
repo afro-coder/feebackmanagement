@@ -7,3 +7,6 @@ tem/
 __pycache__
 .inve
 .egg-info
+venv
+backup/
+*.sqlite
