@@ -1,0 +1,41 @@
+FeedBack Management System
+
+This project is not meant to be used in Production. It was a part of my TYBsc.IT Project.
+
+=========
+Synopsis
+=========
+> This project was used to take feedback of teachers from students. 
+> The main goal was to learn the Flask Framework and to understand how MVC works in Python.
+> The secondary goal from the security viewpoint was to not let a user submit twice.
+> Used hashid's to hash user's submissions.
+
+
+===================
+Learning Objectives
+===================
+> Used a Postgres Database over MySQL.
+> Used SQLAlchemy ORM over traditional SQL queries (Would still prefer SQL queries with santization)
+> Used Jinja2 Templating(Had fun with the blocks part, made templates reusable. Still not much logic should be applied to the Design Part)
+> Used RBAC (Role Based Auth) for users.
+> Used FLASK-ADMIN as a blueprint rather than a standalone.
+> Learned a lot of JQuery based Ajax calls and manipulating data in the front end.
+
+=============
+Requirements
+============
+> For python; run pip install -r final_requirements.txt
+> Postgres Database was used. For development you can use SQlite3
+
+=============
+How to use
+=============
+1. Create a virtualenv directory
+2. Install flasktools.py by using "pip install -e  ."
+3. Edit config.py with the secret key and admin email
+4. Run  flasktools initdb
+5. Run flasktools run
+6. Open browser and run
+7. Before creating a normal user a admin user has to be created (Few of the things are manual in this and it was a part of the improvement process which I never got to do as the project was discontinued.)
+6. Run  sqlite3 <dbname> || run "insert into roles values(1,'admin').
+
