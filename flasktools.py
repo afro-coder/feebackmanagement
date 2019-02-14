@@ -6,7 +6,6 @@ import os
 from flask_migrate import Migrate,MigrateCommand
 app=create_app('development')
 migrate=Migrate(app,db)
-
 def create_cli_app(info):
     return app
 

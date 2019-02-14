@@ -33,6 +33,8 @@ def display_question(hashid,semester):
     try:
 
         dec=decode_hashid(hashid=hashid)
+        # if  not dec:
+        #     abort(404)
         print("semester {0}".format(dec))
         (dec,)=dec
         stream_id=dec
@@ -43,9 +45,10 @@ def display_question(hashid,semester):
         (dec1,)=dec1
         semester_id=dec1
         print("SEMESTER {0}".format(semester_id))
+
     except Exception as e:
         print(e)
-        return redirect(url_for('.question_red',hashid=hashid,semester=semester))
+        abort(404)
 
     # if request.args.get('elective',0,type=int))
     elective=request.args.get('elective',type=int)

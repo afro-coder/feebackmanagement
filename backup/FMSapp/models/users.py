@@ -188,6 +188,8 @@ class Submissions(db.Model):
 
     def __repr__(self):
         return "%r" %format(self.submission)
+    def __str__(self):
+        return "%s" %format(self.submission)
 
 
 class Subject(db.Model):

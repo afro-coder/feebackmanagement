@@ -7,6 +7,7 @@ from wtforms.validators import ValidationError
 from flask import session
 from FMSapp import db
 from FMSapp.Modules.utils import generate_form_token
+from sqlalchemy import or_
 
 #add a url converter here
 # @question.before_request
@@ -28,15 +29,27 @@ def question_red(hashid,semester):
 def display_question(hashid,semester):
     if request.referrer is None:
         return redirect(url_for('.question_red',hashid=hashid,semester=semester))
-    dec=decode_hashid(hashid=hashid)
-    (dec,)=dec
-    stream_id=dec
-    #print(stream_id)
 
-    dec1=decode_hashid(hashid=semester)
-    (dec1,)=dec1
-    semester_id=dec1
-    #print(semester_id)
+    try:
+
+        dec=decode_hashid(hashid=hashid)
+        # if  not dec:
+        #     abort(404)
+        print("semester {0}".format(dec))
+        (dec,)=dec
+        stream_id=dec
+
+
+        dec1=decode_hashid(hashid=semester)
+        print("semester"+str(dec1))
+        (dec1,)=dec1
+        semester_id=dec1
+        print("SEMESTER {0}".format(semester_id))
+
+    except Exception as e:
+        print(e)
+        abort(404)
+
     # if request.args.get('elective',0,type=int))
     elective=request.args.get('elective',type=int)
     # print(semester_id)
@@ -44,7 +57,7 @@ def display_question(hashid,semester):
     #
     #     elective_search
     # subjects= Subject.query.filter_by(stream=dec,semester=dec1)
-    from sqlalchemy import or_
+
     filters=[
     Subject.stream==dec,
     Subject.semester==dec1,
@@ -75,6 +88,7 @@ def gen_teacher():
 
     if request.method == "GET":
         subject_id=request.args.get('b',0,type=int)
+
         # list.append(subject_id)
         # print(list)
         # print(subject_id)
@@ -98,7 +112,7 @@ def gen_teacher():
         # for key,value in d.items():
         #     print(key+":::"+value)
 
-
+        print(dictv)
         stream=decode_hashid(dictv["stream_id"])
         (stream,)=stream
 
@@ -108,7 +122,7 @@ def gen_teacher():
         # print("\t\t\After Posting",session["dict_form_id"])
         #
         try:
-
+            print('s')
             for key,value in d.items():
                 datasub=Submissions()
 
@@ -126,7 +140,8 @@ def gen_teacher():
 
 
 
-        except Exception:
+        except Exception as e:
+            print('error'.format(e))
             db.session.rollback();
 
 
@@ -134,7 +149,7 @@ def gen_teacher():
         #     print(key[-1:]+"::"+value)
 
         # print(dictv)
-        print("success")
+        # print("success")
         jsondata=[{'type':'success','message':'success'}]
         return jsonify(jsondata)
 
@@ -148,6 +163,9 @@ def gen_teacher():
         # print(t)
 @question.route('/success')
 def suc():
+    if request.referrer is None:
+
+        abort(404)
     return render_template("question/success.html")
 
 

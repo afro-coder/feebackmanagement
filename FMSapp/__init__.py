@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask
 from .mod_util import create_hashid
 from config import config
@@ -31,7 +32,7 @@ def create_app(config_name=None):
     '''Create all the blue prints and everything'''
     if not config_name:
         config_name=os.environ.get('FLASK_CONFIG','development')
-        
+
     print(config_name)
     app = Flask(__name__)
 
@@ -74,9 +75,9 @@ def create_app(config_name=None):
     @app.errorhandler(404)
     def pg_not_found(e):
         return render_template(template_name_or_list='error/404.html'),404
-		
-	
-	
+
+
+
 
     #from .Modules.Admin.views import init_admin
 

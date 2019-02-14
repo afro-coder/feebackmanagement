@@ -19,13 +19,16 @@
     <!-- Custom styles for our template -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap-theme.css') }}" media="screen" >
     <link rel="stylesheet" href="{{url_for('static',filename='css/main.css') }}">
+
     {% endblock css %}
 
 {% block cust_script %}{% endblock cust_script %}
+
  {% endblock head %}
 
 </head>
 <body>
+
 {% block navbar %}
 <div class="navbar navbar-inverse navbar-fixed-top headroom" >
 		<div class="container">
@@ -52,7 +55,7 @@
 
 
 
-
+<div class="container-fluid">
 {% block content %}
 <!--<div>-->
     <header  id="head" class="secondary"></header>
@@ -85,9 +88,8 @@
                     <h3 class="widget-title">Contact</h3>
                     <div class="widget-body">
                         <p>
-                            Leon Nunes
-                            <br>
-                            <a href="mailto:leon9923@gmail.com">leon9923@gmail.com</a><br>
+                            <h5>Leon Nunes</h5>
+
 
                         </p>
                     </div>
@@ -113,7 +115,7 @@
                 <div class="col-md-6 widget">
                     <div class="widget-body">
                         <p class="text-right">
-                            Copyright &copy; 2017 Designed by <a href="http://gettemplate.com/" rel="designer">gettemplate</a>
+                            Copyright &copy; 2017 Designed by <a href="http://gettemplate.com/" rel="designer">leon</a>
                         </p>
                     </div>
                 </div>
@@ -126,8 +128,6 @@
 {% endblock footer %}
 {% block script %}
 <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 
@@ -145,5 +145,6 @@
     <!-- modal-->
 
 {% endblock script %}
+</div>
 </body>
 </html>

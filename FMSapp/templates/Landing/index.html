@@ -1,13 +1,50 @@
 {% extends "base.html" %}
 {% block title %} FMsapp-Welcome {% endblock %}
+{% block css %}
+<link rel="shortcut icon" href="{{url_for('static',filename='images/gt_favicon.png') }}">
+<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/font-awesome.min.css') }}">
 
+<!-- Custom styles for our template -->
+<link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap-theme.css') }}" media="screen" >
+<link rel="stylesheet" href="{{url_for('static',filename='css/main.css') }}">
+{% endblock css %}
+{% block cust_script %}
+<style>
+body,html
+{
+	height:100vh;
+	width:100%;
+	margin:auto;
+}
+.container-fluid
+{
+	padding:0px;
+}
+#footer
+{
+  /* position: absolute; */
+  /* width: 100%; */
+}
+
+#head
+{
+	height:100%;
+}
+
+</style>
+{% endblock cust_script %}
 	{% block page_content %}
 
 	<!-- Header-->
 	<header id="head">
 		<div class="container">
 			<div class="row">
-				<h1 class="lead">WELCOME</h1>
+				<div class="col-lg-12">
+
+					<h1 class="lead">WELCOME</h1>
+					</div>
 			</div>
 		</div>
 		</header>

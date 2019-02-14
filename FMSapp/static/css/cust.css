@@ -53,3 +53,13 @@
             display:block;
         }
 	.form{display: block;}
+.container-fluid
+{
+  height: 100%;
+
+}
+#footer
+{
+  position: absolute;
+  width: 100%;
+}

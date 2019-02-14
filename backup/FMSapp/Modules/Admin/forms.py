@@ -26,3 +26,6 @@ class SubmissionForm(StreamForm):
 
     teacher_select=SelectField('Teacher',validators=[DataRequired('Required Field')],
     render_kw={'disabled':'disabled'})
+
+    semester_select=QuerySelectField('Semester',allow_blank=True,blank_text=u'Select a Semester',
+    query_factory=lambda: Semester.query.all(),validators=[DataRequired()],render_kw={'disabled':'disabled'})

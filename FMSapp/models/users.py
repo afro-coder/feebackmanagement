@@ -1,3 +1,4 @@
+
 from  .. import db,login_manager
 from flask_login import UserMixin,AnonymousUserMixin
 from werkzeug.security import generate_password_hash ,check_password_hash
@@ -76,14 +77,7 @@ class User(UserMixin,db.Model):
             if self.role is None:
                 self.role=Roles.query.filter_by(role_name='teacher').first()
 
-        #    vars(self).update(kwargs)
-
-        #    self.fname=fname
-        #    self.lname=lname
-
-        #    self.password=password
-        #    self.email=email
-        #    self.organization_name=organization_name
+    
 
     @property
     def password(self):
@@ -197,7 +191,7 @@ class Subject(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     subject_name=db.Column(db.String,index=True,nullable=False,unique=True)
 
-    submission_rel=db.relationship('Submissions',backref='submission_r',lazy='dynamic')
+    submission_rel=db.relationship('Submissions',backref='submission_r',lazy='joined')
     # submission_rel=db.relationship('Submissions',foreign_keys=[Submissions.subject_id],
     # backref=db.backref('submission_id',lazy='joined'),lazy='dynamic')
     #add required field

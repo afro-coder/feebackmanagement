@@ -221,6 +221,8 @@ admin.add_view(LinkView(name='Generate Link',endpoint='linkgen'))
 
 class  SubmissionView(CustomModelView):
     column_sortable_list = ('date',)
+    column_searchable_list=(Submissions.form_id,)
+
 
 admin.add_view(SubmissionView(Submissions,db.session))
 
@@ -253,10 +255,11 @@ class ResultsView(BaseView):
         if request.method=="GET":
             try:
                 stream_id=request.args.get('b',0,type=int)
+                semester_id=request.args.get('c',0,type=int)
 
 
 
-                data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id)]
+                data=[(dat.id,dat.subject_name) for dat in Subject.query.filter_by(stream=stream_id,semester=semester_id)]
                 # print(data)
                 return jsonify(data)
                 # if len(subject_id) > 0:
@@ -300,8 +303,9 @@ class ResultsView(BaseView):
 
                 my_chart=PieChart(("teacher_chart{0}").format(key),
                 options={'title': 'Submission', "width": 500,"height": 300,
-                "is3D":'True',"pieSliceText":'value-and-percentage',
-                'tooltip' : {'trigger': 'none'},'chartArea': {  'width': "100%", 'height': "60%" }
+                "is3D":'True',"pieSliceText":'percentage',
+                'tooltip' : {'trigger': 'none'},'chartArea': {  'width': "100%", 'height': "50%" },
+                'legend':{'position':'labeled'}
                 }
                 )
                 # 'legend': { 'position': 'labeled','labeledValueText': 'both',
@@ -318,7 +322,7 @@ class ResultsView(BaseView):
             return self.render('admin/result_chart.html',chart_data=chart_data,suggestions=suggestions),200
         except  Exception as e:
             print(e)
-            return jsonify({'message':'Empty data'}),200
+            return jsonify(message='Empty data'),200
 
     @expose('/_pdfgen',methods=["GET","POST"])
     def pdfgen(self):
@@ -329,28 +333,34 @@ class ResultsView(BaseView):
         # dictv=request.form['sendD'];
         dictv=request.form.to_dict();
         dic=request.form['sendD']
+        # print('{0}'.format(dictv['sendD']))
         # print(dic)
         # print(dictv)
         options={'page-size': 'A4',
-    'margin-top': '0.70in',
-    'margin-right': '0.70in',
-    'margin-bottom': '.60in',
-    'margin-left': '0.60in',
+
     'encoding': "UTF-8",
 
     }
+    #merge changes from production pc ***************************^
+    # 'margin-top': '0.70in',
+    # 'margin-right': '0.70in',
+    # 'margin-bottom': '.60in',
+    # 'margin-left': '0.60in',
         # options={'page-size': 'A4',
+
+
         # 'encoding': "UTF-8"}
     #Windows
-        css=['FMSapp/Modules/Admin/main.css']
+
         import platform
         if platform.system() =="Windows":
-
+            css=r'C:/Apache24/htdocs/fmsapp\\FMSapp\\Modules\\Admin\\main.css'
             path_to_wk=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
             config = pdfkit.configuration(wkhtmltopdf=path_to_wk)
-            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config)
+            pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,configuration=config,css=css)
     #linux
         else:
+            css=['FMSapp/Modules/Admin/main.css']
             pdfk=pdfkit.from_string(dictv['sendD'],False,options=options,css=css)
 
             # pdfk=pdfkit.from_string(dictv['sendD'],False,css=css)
@@ -358,8 +368,9 @@ class ResultsView(BaseView):
         # # #
         response = make_response(pdfk, 200)
         # response.headers['Content-type'] = 'application/octet-stream'
-        response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
-        response.headers['Content-disposition'] = "attachment;filename=output.pdf"
+        # response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
+        # response.headers['Content-type'] = "blob"
+        response.headers['Content-disposition'] = "attachment;filename={0}.pdf".format(dictv['tdata'])
         # reponse.headers['Set-Cookie']="fileDownload=true; path=/"
         # reponse.set_cookie('Set-Cookie',"fileDownload=true; path=/")
         return response
@@ -373,56 +384,59 @@ class ResultsView(BaseView):
         # print(chart_data)
         # self.render('admin/result_chart.html',chart_data=chart_data)
 
-
-    @expose('/_download_all',methods=["GET"])
-    def dw_all(self):
-
-
-        # chart_d=self.render()
-        # users=[a.fname.strip() for a in User.query.filter_by(role='teacher').all()]
-
-        # users=[user.fname.strip() for user in db.session.query(User).filter_by(role_id=2).all()]
-        # subjects=[(user.)_name for subject in db.session.query(Subject).all()]
-        # questions=[question.question for question in db.session.query(Questions).filter_by().all()]
-
-        # users=User.query.filter(Roles.role_name=='teacher').all()
-        # print(users,subjects,questions)
-        # from flask import render_template
-        # pdf=render_template('admin/test_chart.html')
-        # pdfkit.from_string(pdf,False,options=options)
-        # response = make_response(pdf, 200)
-        # response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
-        # response.headers['Content-disposition'] = "inline"
-        question=[(ques.id,ques.question) for  ques in Questions.query.all()]
-
-        teacher_details=[(teacher.user_id,teacher.submission_r,teacher.stsub,teacher.usersub) \
-        for teacher in Submissions.query.order_by(Submissions.date.desc()).limit(30).all()]
-
-        teacher_role=[(teacher.fname,teacher.role)for teacher in User.query.join(Roles).filter(Roles.role_name=='teacher')]
-        teacher_sub=[(teacher.id,teacher.teacher,teacher.teacher_id) for teacher in Subject.query.join(User).filter(Subject.id==Submissions.subject_id)]
-        print(teacher_sub)
-
-        print(teacher_role)
-        chart_data=[]
-        # for  name in teacher_details:
-        #     print(name[3])
-        #     for no,ques in question:
-        #         ans=Submissions.query.filter_by(submission=1,user_id=name[0],question_id=no).count()
-        #         ans1=Submissions.query.filter_by(submission=2,user_id=name[0],question_id=no).count()
-        #
-        #         print(no,"",ques,"\n",'yes'," ",ans," no",ans1)
-        #         print('-'*25)
-        #     print('+'*30)
-
-
-        # print(teacher_details)
-
-        # for name in teacher_details:
-        # #print(teacher_details)
-        #     print(question)
-
-
-        return self.render('admin/test_chart.html')
+    @expose('/_sem_dw',methods=["GET"])
+    def sem_dw():
+        data=request.form.to_dict()
+        
+    # @expose('/_download_all',methods=["GET"])
+    # def dw_all(self):
+    #
+    #
+    #     # chart_d=self.render()
+    #     # users=[a.fname.strip() for a in User.query.filter_by(role='teacher').all()]
+    #
+    #     # users=[user.fname.strip() for user in db.session.query(User).filter_by(role_id=2).all()]
+    #     # subjects=[(user.)_name for subject in db.session.query(Subject).all()]
+    #     # questions=[question.question for question in db.session.query(Questions).filter_by().all()]
+    #
+    #     # users=User.query.filter(Roles.role_name=='teacher').all()
+    #     # print(users,subjects,questions)
+    #     # from flask import render_template
+    #     # pdf=render_template('admin/test_chart.html')
+    #     # pdfkit.from_string(pdf,False,options=options)
+    #     # response = make_response(pdf, 200)
+    #     # response.headers['Content-type'] = "application/pdf;filename=outpu.pdf"
+    #     # response.headers['Content-disposition'] = "inline"
+    #     question=[(ques.id,ques.question) for  ques in Questions.query.all()]
+    #
+    #     teacher_details=[(teacher.user_id,teacher.submission_r,teacher.stsub,teacher.usersub) \
+    #     for teacher in Submissions.query.order_by(Submissions.date.desc()).limit(30).all()]
+    #
+    #     teacher_role=[(teacher.fname,teacher.role)for teacher in User.query.join(Roles).filter(Roles.role_name=='teacher')]
+    #     teacher_sub=[(teacher.id,teacher.teacher,teacher.teacher_id) for teacher in Subject.query.join(User).filter(Subject.id==Submissions.subject_id)]
+    #     print(teacher_sub)
+    #
+    #     print(teacher_role)
+    #     chart_data=[]
+    #     # for  name in teacher_details:
+    #     #     print(name[3])
+    #     #     for no,ques in question:
+    #     #         ans=Submissions.query.filter_by(submission=1,user_id=name[0],question_id=no).count()
+    #     #         ans1=Submissions.query.filter_by(submission=2,user_id=name[0],question_id=no).count()
+    #     #
+    #     #         print(no,"",ques,"\n",'yes'," ",ans," no",ans1)
+    #     #         print('-'*25)
+    #     #     print('+'*30)
+    #
+    #
+    #     # print(teacher_details)
+    #
+    #     # for name in teacher_details:
+    #     # #print(teacher_details)
+    #     #     print(question)
+    #
+    #
+    #     return self.render('admin/test_chart.html')
         # return response
 
     def is_accessible(self):

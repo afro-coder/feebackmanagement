@@ -21,7 +21,6 @@ Flask-Security==3.0.0
 Flask-Session==0.3.1
 Flask-Sessionstore==0.4.5
 Flask-SQLAlchemy==2.2
--e git+https://github.com/leon9923/typroj@3558e9bdaf0ccdf5fa4988a499845770eb4b7061#egg=flask_tools
 Flask-WTF==0.14.2
 future==0.16.0
 hashids==1.2.0

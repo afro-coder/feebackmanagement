@@ -75,7 +75,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div id="hidepdf">
-                    <form method="POST" id="sendData" action="{{url_for('results.pdfgen')}}">
+                    <form method="POST" id="sendData" action="{{url_for('results.pdfgen')}}" >
                         <button id="pdfconv"> <i class="fa fa-file-pdf-o fa-2x" >PDf</i></button>
                         <div id="hidedata"></div>
                     </form>
@@ -259,10 +259,15 @@ $('#pdfconv').click(function(e){
 
 
     var data=$('#pdfco,#questionbox:hidden,#suggestionbox:hidden').html();
+    // var data=$('#pdfco').children().html();
+    // console.log(data)
+    var teacher_det=$("#teacher_select option:selected").text()+'_'+$("#semester_select option:selected").text()+'_'+$("#stream_select option:selected").text();
 
     $("#hidedata").append($('<input ></input>').attr('type','hidden').attr('value',data).attr('id','sendD').attr('name','sendD'));
+    $("#hidedata").append($('<input ></input>').attr('type','hidden').attr('value',teacher_det).attr('id','tdata').attr('name','tdata'));
     $("#sendData").submit();
-    $("#hidedata").hide()
+    $("#hidedata").hide().html('')
+    $('#sendD').html('').val('')
     e.preventDefault();
 });
 });

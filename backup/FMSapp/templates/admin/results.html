@@ -47,6 +47,9 @@
 
                 {{render_field(form.stream,class="form-control",id="stream_select")}}
             </div>
+            <div class="form-group">
+                {{render_field(form.semester_select,class="form-control",id="semester_select")}}
+            </div>
 
 
 
@@ -58,6 +61,7 @@
             <div class="form-group">
                 {{render_field(form.teacher_select,class="form-control",id="teacher_select")}}
             </div>
+
             <!-- <div class="form-group">
                 <input type="text" name="date" class="form-control" id="date">
             </div> -->
@@ -71,7 +75,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div id="hidepdf">
-                    <form method="POST" id="sendData" action="{{url_for('results.pdfgen')}}">
+                    <form method="POST" id="sendData" action="{{url_for('results.pdfgen')}}" >
                         <button id="pdfconv"> <i class="fa fa-file-pdf-o fa-2x" >PDf</i></button>
                         <div id="hidedata"></div>
                     </form>
@@ -103,17 +107,21 @@ $(document).ready(function(){
 
     $("#subject_select,#teacher_select").hide();
     $("#hidepd").hide();
-
-
-
-
     $("#stream_select").on('change',function(){
+        $("#semester_select").removeAttr('disabled');
+    });
+
+
+
+
+    $("#semester_select").on('change',function(){
         // console.log(typeof($('#date').val()))
         var dataset={
-            stream:$("#stream_select").val()
+            stream:$("#stream_select").val(),
+            semester:$("#semester_select").val()
         };
         console.log("Dataset :"+dataset["stream"])
-        if(dataset["stream"]=='__None')
+        if(dataset["stream"]=='__None' || dataset["semester"]=='__None')
         {
             $("#subject_select,#teacher_select,#hidepd,#showdata").hide(500).html('');
             return false;
@@ -123,7 +131,7 @@ $(document).ready(function(){
             $.getJSON(
                 "{{url_for('results.submissions')}}",
                 {
-                    b:dataset["stream"]
+                    b:dataset["stream"],c:dataset["semester"]
                 },
                 function(data)
                 {
@@ -131,6 +139,9 @@ $(document).ready(function(){
                     //if (options.val())
                     //{
                            options.html("").val("");
+                           options.append($('<option />',{value:'__None',
+                           html:'Select a subject'})
+                       );
                         data.forEach(function(item){
                             options.append(
                                 $('<option />',{
@@ -143,6 +154,7 @@ $(document).ready(function(){
 
                         $("#subject_select").show();
                         $("#subject_select").removeAttr('disabled');
+
                     //}
                 });
 
@@ -159,9 +171,10 @@ $(document).ready(function(){
 $(document).ready(function(){
 
 
-$("#subject_select").on('click',function(){
+$("#subject_select").on('change',function(){
 
     var subject_id=$("#subject_select").val();
+
     subject_html=$('#subject_select').text();
     if(subject_id ==0 || subject_html==0 )
     {
@@ -218,7 +231,7 @@ $(document).ready(function(){
         if($('#teacher_select')!= '__None')
         {
             //$('#showdata').show(500);
-            $('#showdata').load("{{url_for('results.load_chart')}}",datas).hide().fadeIn(2500)
+            $('#showdata').load("{{url_for('results.load_chart')}}",datas).hide().fadeIn(2000)
         }
 
         // $("#showdata").appendTo('<label>'+$("#teacher_select option:selected").text()+'</label>');
@@ -243,13 +256,18 @@ $(document).ready(function(){
 
 $('#pdfconv').click(function(e){
      var dat=$( "#pdfco" ).find( ":hidden" ).not( "script" );
-     console.log(dat);
+
 
     var data=$('#pdfco,#questionbox:hidden,#suggestionbox:hidden').html();
+    // var data=$('#pdfco').children().html();
+    // console.log(data)
+    var teacher_det=$("#teacher_select option:selected").text()+'_'+$("#semester_select option:selected").text()+'_'+$("#stream_select option:selected").text();
 
     $("#hidedata").append($('<input ></input>').attr('type','hidden').attr('value',data).attr('id','sendD').attr('name','sendD'));
+    $("#hidedata").append($('<input ></input>').attr('type','hidden').attr('value',teacher_det).attr('id','tdata').attr('name','tdata'));
     $("#sendData").submit();
-    $("#hidedata").hide()
+    $("#hidedata").hide().html('')
+    $('#sendD').html('').val('')
     e.preventDefault();
 });
 });
